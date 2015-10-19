@@ -1,2 +1,2 @@
 # StationCAD
-Application to manage integration between CAD and Stations
+Application to manage integration between CAD, Stations, and Responders.
