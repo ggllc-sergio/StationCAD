@@ -7,6 +7,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StationCAD.Processor", "Sta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StationCAD.Model", "StationCAD.Model\StationCAD.Model.csproj", "{A118035E-BFE3-4BD3-9192-EAFAF4372519}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{868357E1-776A-440B-BBBA-A34268C3CDE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StationCAD.Web", "StationCAD.Web\StationCAD.Web.csproj", "{CB311FDA-8154-42A4-844C-D0C62F8FCB54}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{F63C8BB8-6F62-4CC6-9577-94E9B681ADCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StationCAD.PCL", "StationCAD.PCL\StationCAD.PCL.csproj", "{FB73B28D-0374-44D2-9306-0029D8411412}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StationCAD.Client.Android", "StationCAD.Client.Android\StationCAD.Client.Android.csproj", "{ABFA7898-F3DD-43CF-AA06-BEE8EF54D559}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,8 +31,27 @@ Global
 		{A118035E-BFE3-4BD3-9192-EAFAF4372519}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A118035E-BFE3-4BD3-9192-EAFAF4372519}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A118035E-BFE3-4BD3-9192-EAFAF4372519}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB311FDA-8154-42A4-844C-D0C62F8FCB54}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB311FDA-8154-42A4-844C-D0C62F8FCB54}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB311FDA-8154-42A4-844C-D0C62F8FCB54}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB311FDA-8154-42A4-844C-D0C62F8FCB54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB73B28D-0374-44D2-9306-0029D8411412}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB73B28D-0374-44D2-9306-0029D8411412}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB73B28D-0374-44D2-9306-0029D8411412}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB73B28D-0374-44D2-9306-0029D8411412}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABFA7898-F3DD-43CF-AA06-BEE8EF54D559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ABFA7898-F3DD-43CF-AA06-BEE8EF54D559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ABFA7898-F3DD-43CF-AA06-BEE8EF54D559}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{ABFA7898-F3DD-43CF-AA06-BEE8EF54D559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ABFA7898-F3DD-43CF-AA06-BEE8EF54D559}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ABFA7898-F3DD-43CF-AA06-BEE8EF54D559}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CB311FDA-8154-42A4-844C-D0C62F8FCB54} = {868357E1-776A-440B-BBBA-A34268C3CDE0}
+		{FB73B28D-0374-44D2-9306-0029D8411412} = {F63C8BB8-6F62-4CC6-9577-94E9B681ADCC}
+		{ABFA7898-F3DD-43CF-AA06-BEE8EF54D559} = {F63C8BB8-6F62-4CC6-9577-94E9B681ADCC}
 	EndGlobalSection
 EndGlobal
