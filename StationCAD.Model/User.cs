@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace StationCAD.Model
 {
-    class User
+    public class User
     {
+
+        public Guid ID { get; set; }
+
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public Guid OrganizationID { get; set; }
+        public string IdentificationNumber { get; set; }
+
     }
+
+
 }
