@@ -7,6 +7,12 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script>
+    <script>
+        var OneSignal = OneSignal || [];
+        OneSignal.push(["init", { appId: "950a66d5-c457-4c9e-9a8b-cca7ef8b8c68", subdomainName: "station-cad" }]);
+    </script>
+
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">

@@ -81,4 +81,17 @@
                 }*@
         </dd>
     </dl>
+    <div>
+        <a href="#" id="registerForPushLink">Subscribe to Notifications</a>
+        <script>
+          OneSignal.push(function() {
+            function registerForPush(event) {
+              OneSignal.push(["registerForPushNotifications"]);
+              event.preventDefault();
+            }
+            document.getElementById("registerForPushLink").addEventListener('click', registerForPush, false);
+
+          });
+        </script>
+    </div>
 </div>

@@ -1,0 +1,4 @@
+﻿Server name: SQL5020.Smarterasp.net
+Authentication: SQL Server Authentication
+Login: DB_993883_stationcad_admin
+Password: station!cad
