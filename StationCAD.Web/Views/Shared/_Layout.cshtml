@@ -10,7 +10,12 @@
     <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script>
     <script>
         var OneSignal = OneSignal || [];
-        OneSignal.push(["init", { appId: "950a66d5-c457-4c9e-9a8b-cca7ef8b8c68", subdomainName: "station-cad" }]);
+        OneSignal.LOGGING = true;
+        OneSignal.push(["init", {
+            appId: "950a66d5-c457-4c9e-9a8b-cca7ef8b8c68",
+            subdomainName: "station-cad",
+            notifyButton: { enable: true }
+        }]);
     </script>
 
 </head>

@@ -53,10 +53,11 @@ namespace StationCAD.Model
         public string CallerAddress { get; set; }
 
         public string CallerPhone { get; set; }
-        
+
         #endregion
 
         public List<Note> Notes { get; set; }
+        public List<Event> Events { get; set; }
     }
 
     public class Address
@@ -89,5 +90,16 @@ namespace StationCAD.Model
         public string Author { get; set; }
 
         public string Message { get; set; }
+    }
+
+    public class Event
+    {
+        public DateTime EnteredDateTime { get; set; }
+
+        public string UnitID { get; set; }
+
+        public string Disposition { get; set; }
+
+        public Note EventNote { get; set; }
     }
 }
