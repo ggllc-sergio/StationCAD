@@ -58,11 +58,11 @@ namespace StationCAD.Web
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
-            //{
-            //    ClientId = "",
-            //    ClientSecret = ""
-            //});
+            app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
+            {
+                ClientId = "98833261714-b7017ojc4r3lbj0281p2o2cetna7d931.apps.googleusercontent.com",
+                ClientSecret = "jUZjt94y1KT0Ii0H94sNStyY"
+            });
         }
     }
 }
