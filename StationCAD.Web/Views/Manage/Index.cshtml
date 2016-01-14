@@ -1,6 +1,7 @@
 ﻿@model StationCAD.Web.Models.IndexViewModel
 @{
     ViewBag.Title = "Manage";
+    Layout = "~/Views/Shared/_AppLayout.cshtml";
 }
 
 <h2>@ViewBag.Title.</h2>
@@ -81,17 +82,4 @@
                 }*@
         </dd>
     </dl>
-    <div>
-        <a href="#" id="registerForPushLink">Subscribe to Notifications</a>
-        <script>
-          OneSignal.push(function() {
-            function registerForPush(event) {
-              OneSignal.push(["registerForPushNotifications"]);
-              event.preventDefault();
-            }
-            document.getElementById("registerForPushLink").addEventListener('click', registerForPush, false);
-
-          });
-        </script>
-    </div>
 </div>

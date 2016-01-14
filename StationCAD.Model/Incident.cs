@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using StationCAD.Data.Mongo;
+
 namespace StationCAD.Model
 {
-    public class Incident
+    public class Incident : AbstractDocument
     {
+        
         public string CADIdentifier { get; set; }
 
         public Guid IncidentIdentifier { get; set; }
@@ -48,6 +51,7 @@ namespace StationCAD.Model
         #endregion
 
         #region Local Incident Caller 
+
         public string CallerName { get; set; }
 
         public string CallerAddress { get; set; }
@@ -56,8 +60,8 @@ namespace StationCAD.Model
 
         #endregion
 
-        public List<Note> Notes { get; set; }
-        public List<Event> Events { get; set; }
+        public ICollection<Note> Notes { get; set; }
+        public ICollection<Event> Events { get; set; }
     }
 
     public class Address
