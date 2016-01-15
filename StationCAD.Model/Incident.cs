@@ -8,10 +8,11 @@ using StationCAD.Data.Mongo;
 
 namespace StationCAD.Model
 {
-    public class Incident : AbstractDocument
+    public class Incident : BaseModel
     {
-        
-        public string CADIdentifier { get; set; }
+        public int OrganizationId { get; set; }
+
+        public int CADIdentifier { get; set; }
 
         public Guid IncidentIdentifier { get; set; }
 
@@ -46,7 +47,7 @@ namespace StationCAD.Model
 
         public string LocationSection { get; set; }
 
-        public Address LocationAddress { get; set; }
+        public IncidentAddress LocationAddress { get; set; }
 
         #endregion
 
@@ -60,11 +61,11 @@ namespace StationCAD.Model
 
         #endregion
 
-        public ICollection<Note> Notes { get; set; }
-        public ICollection<Event> Events { get; set; }
+        public ICollection<IncidentNote> Notes { get; set; }
+        public ICollection<IncidentEvent> Events { get; set; }
     }
 
-    public class Address
+    public class IncidentAddress : BaseModel
     {
         public string LocationType { get; set; }
 
@@ -78,17 +79,30 @@ namespace StationCAD.Model
 
         public string Street { get; set; }
 
-        public string XStreet { get; }
+        public string XStreet1 { get; set; }
+
+        public string XStreet2 { get; set; }
+
+        public string County { get; set; }
 
         public string Municipality { get; set; }
 
+        public string City { get; set; }
+
+        public string State { get; set; }
+
+        public string PostalCode { get; set; }
+        
         public string XCoordinate { get; set; }
 
         public string YCoordinate { get; set; }
+
+        public string Gelocation { get; set; }
     }
 
-    public class Note
+    public class IncidentNote : BaseModel
     {
+
         public DateTime EnteredDateTime { get; set; }
 
         public string Author { get; set; }
@@ -96,7 +110,7 @@ namespace StationCAD.Model
         public string Message { get; set; }
     }
 
-    public class Event
+    public class IncidentEvent : BaseModel
     {
         public DateTime EnteredDateTime { get; set; }
 
@@ -104,6 +118,6 @@ namespace StationCAD.Model
 
         public string Disposition { get; set; }
 
-        public Note EventNote { get; set; }
+        public IncidentNote EventNote { get; set; }
     }
 }
