@@ -16,9 +16,9 @@ namespace StationCAD.Web.DataContexts
         {
         }
 
-        public static IdentityDbContext Create()
+        public static IdentityDb Create()
         {
-            return new IdentityDbContext();
+            return new IdentityDb();
         }
     }
 
@@ -38,9 +38,9 @@ namespace StationCAD.Web.DataContexts
         public DbSet<User> Users { get; set; }
         public DbSet<OrganizationUser> OrganizationUsers { get; set; }
         public DbSet<OrganizationUserNotifcation> OrganizationUserNotifcations { get; set; }
-
-
+        
         public DbSet<Organization> Organizations { get; set; }
+        public DbSet<Address> Addresses { get; set; }
 
 
 

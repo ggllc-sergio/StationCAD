@@ -1,0 +1,10 @@
+﻿
+
+@using StationCAD.Web.Helpers
+@using StationCAD.Model
+
+@{ 
+    var items = typeof(OrganizationUserStatus).GetItems((int?)Model);
+}
+
+@Html.DropDownList("", items)

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using System.ComponentModel.DataAnnotations;
+
 namespace StationCAD.Model
 {
     public class User : BaseModel
@@ -23,6 +25,8 @@ namespace StationCAD.Model
         public string NotifcationPushMobile { get; set; }
 
         public string NotifcationPushBrowser { get; set; }
+
+        public ICollection<OrganizationUserNotifcation> NotificationHistory { get; set; }
 
     }
 
@@ -52,9 +56,13 @@ namespace StationCAD.Model
 
     public enum OrganizationUserNotifcationType
     {
+
         Email = 1,
+        [Display(Name = "Text Message")]
         TextMessage,
+        [Display(Name = "Push - Mobile Device")]
         PushMobile,
+        [Display(Name = "Push - Browser")]
         PushBrowser
     }
 
