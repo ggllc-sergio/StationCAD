@@ -1,0 +1,38 @@
+﻿{
+  "headers": {
+    "Received": [
+      "by mail-ig0-f180.google.com with SMTP id ik10so91643024igb.1 for <6999a1130570cb82181c@cloudmailin.net>; Tue, 19 Jan 2016 19:04:00 -0800",
+      "by 10.107.128.150 with HTTP; Tue, 19 Jan 2016 19:03:20 -0800"
+    ],
+    "Date": "Tue, 19 Jan 2016 22:03:20 -0500",
+    "From": "Sergio Ora <skip513@gmail.com>",
+    "To": "6999a1130570cb82181c@cloudmailin.net",
+    "Message-ID": "<CAFVZBN=j2qdN21AEBCexzv+Tnu9wqGL3c2pbLNaiKennnhCMpQ@mail.gmail.com>",
+    "Subject": "Incident LVFH201600001",
+    "Mime-Version": "1.0",
+    "Content-Type": "multipart/alternative; boundary=047d7bdc11d6dca25b0529bb3cb2",
+    "DKIM-Signature": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20120113; h=mime-version:from:date:message-id:subject:to:content-type; bh=jqASNWOawBQ1pDQaJiHwla+RN4t6YnSclkCrzGuA4h0=; b=OFM9f13LZEinc7Y7UJiwASmqFuouAUosCqp84cc3mQLOrVz0UVzwhOtytadBq+O80q UpyUP1YgMb0m9ONqKHA5S43FjD5AXpzc3uT5OsGmA2/g4FbkAId2QOHQFr6nPLw4GYvE 5evAsvq1ksR2SnnMkZJAfe19fzrwpXgitx3GElV3AS4OPxPlhoBdytGo2XkClS4R5eYy NFyCFczKheFdlcn1DqGNp31SlgqIzHrpE8w/Gf2O/9nC7nSQrezlw5O/zqyvgmrMm+5C 9Pfe3EK0CBsZp6Va9tI6Y0E+h5KvWJDZpuw4wdnVJ3ccjgOSnjgjr1qJj3y8Ch4chHH6 kSHg==",
+    "X-Google-DKIM-Signature": "v=1; a=rsa-sha256; c=relaxed/relaxed; d=1e100.net; s=20130820; h=x-gm-message-state:mime-version:from:date:message-id:subject:to :content-type; bh=jqASNWOawBQ1pDQaJiHwla+RN4t6YnSclkCrzGuA4h0=; b=Wqqp0n475RyNh1ViB5erTXn2bWDnGoD75ZEShw0E+mLdeB993TWagt7qF4J237+NIU iIBRKwmbYtCqOhDeR9hMruUH1+LGhBlkhYOS38/0bdwdSIXFq5YWxbdCbsMAKv1nhM7D i1EJrcuoQLZlAAzevx1I9511PqODmEEN7FJhHsU+jVyM3TKnnsQ9freeatKGjQ0irVCR H+pTkNzo60iNDReTY+x9kaA9CnXVdXSy+d1QsMP57di/hjkvcZ4w0uIRULYB2ZesU1t9 t0KQ0CSHrry8Ayxw4STbEsdt99zMrhpYGGEjpCa7ULf4pMTUZg5clWKh18chjUz6RZZG Jh7g==",
+    "X-Gm-Message-State": "AG10YOQv9DZNn+6DSgbKu75Ve7AQRMqFKrcEeVpxEOT9ICpCNCyWUZjAsg84wI/gHPZSTUurYMC6fKKhaqaYNA==",
+    "X-Received": "by 10.50.66.243 with SMTP id i19mr596634igt.20.1453259040266; Tue, 19 Jan 2016 19:04:00 -0800 (PST)"
+  },
+  "envelope": {
+    "to": "6999a1130570cb82181c@cloudmailin.net",
+    "recipients": [
+      "6999a1130570cb82181c@cloudmailin.net"
+    ],
+    "from": "skip513@gmail.com",
+    "helo_domain": "mail-ig0-f180.google.com",
+    "remote_ip": "209.85.213.180",
+    "spf": {
+      "result": "neutral",
+      "domain": "gmail.com"
+    }
+  },
+  "plain": "{\n  \"app_id\": \"950a66d5-c457-4c9e-9a8b-cca7ef8b8c68\",\n  \"contents\": {\n    \"en\": \"Server API Test Mesage\"\n  },\n  \"included_segments\": [\n    \"All\"\n  ]\n}\n",
+  "html": "<div dir=\"ltr\"><div class=\"gmail_default\" style=\"\"><div class=\"gmail_default\" style=\"\"><span style=\"font-family:verdana,sans-serif\">{</span><br></div><div class=\"gmail_default\" style=\"\"><font face=\"verdana, sans-serif\">  &quot;app_id&quot;: &quot;950a66d5-c457-4c9e-9a8b-cca7ef8b8c68&quot;,</font></div><div class=\"gmail_default\" style=\"\"><font face=\"verdana, sans-serif\">  &quot;contents&quot;: {</font></div><div class=\"gmail_default\" style=\"\"><font face=\"verdana, sans-serif\">    &quot;en&quot;: &quot;Server API Test Mesage&quot;</font></div><div class=\"gmail_default\" style=\"\"><font face=\"verdana, sans-serif\">  },</font></div><div class=\"gmail_default\" style=\"\"><font face=\"verdana, sans-serif\">  &quot;included_segments&quot;: [</font></div><div class=\"gmail_default\" style=\"\"><font face=\"verdana, sans-serif\">    &quot;All&quot;</font></div><div class=\"gmail_default\" style=\"\"><font face=\"verdana, sans-serif\">  ]</font></div><div class=\"gmail_default\" style=\"\"><font face=\"verdana, sans-serif\">}</font></div><div class=\"gmail_default\" style=\"font-family:verdana,sans-serif\"><br></div></div></div>\n",
+  "reply_plain": null,
+  "attachments": [
+
+  ]
+}
