@@ -26,6 +26,8 @@ namespace StationCAD.Model
 
         public string NotifcationPushBrowser { get; set; }
 
+        public ICollection<string> MobileDeviceIds { get; set; }
+
         public ICollection<OrganizationUserNotifcation> NotificationHistory { get; set; }
 
     }

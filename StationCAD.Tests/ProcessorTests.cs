@@ -25,6 +25,28 @@ namespace StationCAD.Tests
             GetPlayer().Wait();
         }
 
+        [TestMethod]
+        public void CreateDeviceJson()
+        {
+            DeviceEdit device = new DeviceEdit();
+            device.Id = "acc48677-5845-45b3-b9cc-e6544215f0c8";
+            device.Tags = new Dictionary<string, string>();
+            device.Tags.Add("OrgID", "CCPASTA47");
+
+            try
+            {
+                string json = JsonUtil<DeviceEdit>.ToJson(device);
+                Console.WriteLine(json);
+            }
+            catch (Exception ex)
+            { Console.WriteLine(ex.ToString()); }
+        }
+
+        [TestMethod]
+        public void UpdateDeviceTest()
+        {
+            UpdatePlayer().Wait();
+        }
 
         [TestMethod]
         public void GetNotificationsTest()
@@ -85,6 +107,23 @@ namespace StationCAD.Tests
             Console.WriteLine(json);
         }
 
+        protected async Task UpdatePlayer()
+        {
+            DeviceEdit device = new DeviceEdit();
+            device.Id = "acc48677-5845-45b3-b9cc-e6544215f0c8";
+            device.Tags = new Dictionary<string, string>();
+            device.Tags.Add("OrgID", "CCPASTA47");
+
+            try
+            {
+                PushNotifications pushNotifier = new PushNotifications();
+                string result = await pushNotifier.UpdateDevice(device);
+                Console.WriteLine(result);
+            }
+            catch (Exception ex)
+            { Console.WriteLine(ex.ToString()); }
+        }
+
         protected async Task GetNotifications()
         {
             PushNotifications pushNotifier = new PushNotifications();
@@ -118,6 +157,7 @@ namespace StationCAD.Tests
             catch (Exception ex)
             { Console.WriteLine(ex.ToString()); }
         }
+
         #endregion
 
     }

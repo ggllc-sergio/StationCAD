@@ -27,22 +27,25 @@ namespace StationCAD.Model.OneSignal
     {
         [JsonProperty()]
         public string Identifier { get; set; }
-        [JsonProperty(PropertyName = "session_count")]
+        [JsonProperty(PropertyName = "session_count", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public int SessionCount { get; set; }
-        public string Laanguage { get; set; }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string Language { get; set; }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string TimeZone { get; set; }
-        [JsonProperty(PropertyName = "game_version")]
+        [JsonProperty(PropertyName = "game_version", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string GameVersion { get; set; }
-        [JsonProperty(PropertyName = "device_os")]
+        [JsonProperty(PropertyName = "device_os", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string DeviceOS { get; set; }
-        [JsonProperty(PropertyName = "device_type")]
+        [JsonProperty(PropertyName = "device_type", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string DeviceType { get; set; }
-        [JsonProperty(PropertyName = "device_model")]
+        [JsonProperty(PropertyName = "device_model", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string DeviceModel { get; set; }
-        [JsonProperty(PropertyName = "ad_id")]
+        [JsonProperty(PropertyName = "ad_id", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string AdId { get; set; }
-        public ICollection<KeyValuePair<string, string>> Tags { get; set; }
-        [JsonProperty(PropertyName = "last_active")]
+        [JsonProperty(PropertyName = "tags", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public Dictionary<string, string> Tags { get; set; }
+        [JsonProperty(PropertyName = "last_active", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string LastActive { get; set; }
         public DateTime LastActiveDateTime
         {
@@ -56,9 +59,9 @@ namespace StationCAD.Model.OneSignal
                 return dt;
             }
         }
-        [JsonProperty(PropertyName = "amount_spent")]
+        [JsonProperty(PropertyName = "amount_spent", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string AmountSpent { get; set; }
-        [JsonProperty(PropertyName = "created_at")]
+        [JsonProperty(PropertyName = "created_at", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public string CreatedAt { get; set; }
         public DateTime CreatedAtDateTime
         {
@@ -72,11 +75,22 @@ namespace StationCAD.Model.OneSignal
                 return dt;
             }
         }
-        [JsonProperty(PropertyName = "invalid_identifier")]
+        [JsonProperty(PropertyName = "invalid_identifier", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public bool InvalidIdentifier { get; set; }
-        [JsonProperty(PropertyName = "badge_count")]
+        [JsonProperty(PropertyName = "badge_count", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public int BadgeCount { get; set; }
-        
+        [JsonProperty(PropertyName = "notification_types", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public string NotificationType { get; set; }
+
+    }
+    
+    [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
+    public class DeviceEdit : Device
+    {
+        [JsonProperty(PropertyName = "id")]
+        public string Id { get; set; }
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public new string Identifier { get; set; }
     }
 
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]

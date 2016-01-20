@@ -62,6 +62,18 @@ namespace StationCAD.Processor
             return results;
         }
 
+        /// POST OneSignal 'Update Player' (device)
+        /// https://onesignal.com/api/v1/players/:id
+        /// 
+        public async Task<string> UpdateDevice(DeviceEdit device)
+        {
+            string json = JsonUtil<DeviceEdit>.ToJson(device);
+            string api = string.Format("api/v1/players/{0}", device.Id);
+            string result = await OneSignalAPIPut(api, json);
+
+            return result;
+        }
+
         #endregion
 
         #region Notifications 
@@ -185,6 +197,38 @@ namespace StationCAD.Processor
             }
             return json;
         }
+        
+        private async Task<string> OneSignalAPIPut(string api, string jsonBody)
+        {
 
+            string oneSignalKey = ConfigurationManager.AppSettings["OneSignalAPIKey"];
+            if (oneSignalKey == null)
+                throw new ApplicationException("Unable to find OneSignal API Key");
+
+            string json = string.Empty;
+            using (HttpClient restClient = new HttpClient())
+            {
+                restClient.BaseAddress = new Uri("https://onesignal.com/");
+
+                restClient.DefaultRequestHeaders.Accept.Clear();
+                restClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                string authHeader = string.Format("Basic {0}", oneSignalKey);
+                restClient.DefaultRequestHeaders.Add("Authorization", authHeader);
+
+                StringContent requestContent = new StringContent(jsonBody, Encoding.UTF8, "application/json");
+
+                HttpResponseMessage response = await restClient.PutAsync(api, requestContent);
+                if (response.IsSuccessStatusCode)
+                {
+                    json = await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    Console.WriteLine(string.Format("Error Occurred. Status: {0}; Headers: {1} Message: {2}", response.ReasonPhrase, response.Headers.ToString(), response.RequestMessage.ToString()));
+                }
+
+            }
+            return json;
+        }
     }
 }
