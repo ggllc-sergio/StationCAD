@@ -25,8 +25,7 @@ namespace StationCAD.Model
 
         public ICollection<Incident> IncidentHistory { get; set; }
     }
-
-
+    
     public class Address : BaseModel
     {
         public bool PrimaryMailing { get; set; }

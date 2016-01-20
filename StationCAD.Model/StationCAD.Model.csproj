@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseModel.cs" />
+    <Compile Include="EmailNotification.cs" />
     <Compile Include="Helpers\JsonUtil.cs" />
     <Compile Include="Incident.cs" />
     <Compile Include="Location.cs" />

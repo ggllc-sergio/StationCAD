@@ -18,7 +18,7 @@ namespace StationCAD.Model
         
         public string IdentificationNumber { get; set; }
 
-        public string NoificationEmail { get; set; }
+        public string NotificationEmail { get; set; }
 
         public string NotificationCellPhone { get; set; }
 
@@ -50,7 +50,9 @@ namespace StationCAD.Model
 
         public OrganizationUserNotifcationType NotifcationType { get; set; }
 
-        public string Message { get; set; }
+        public string MessageTitle { get; set; }
+
+        public string MessageBody { get; set; }
 
         public DateTime Sent { get; set; }
     }
