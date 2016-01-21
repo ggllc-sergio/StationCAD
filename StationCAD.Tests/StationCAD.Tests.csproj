@@ -55,8 +55,9 @@
   <ItemGroup>
     <Compile Include="EmailTests.cs" />
     <Compile Include="NoSQLDBTests.cs" />
-    <Compile Include="ProcessorTests.cs" />
+    <Compile Include="PushTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SMSTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StationCAD.Data.Mongo\StationCAD.Data.NoSQL.csproj">

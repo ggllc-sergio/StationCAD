@@ -57,6 +57,7 @@
     <Compile Include="MessageMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PushNotifications.cs" />
+    <Compile Include="SMSNotifications.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Mappings\" />

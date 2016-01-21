@@ -10,7 +10,7 @@ using StationCAD.Processor;
 namespace StationCAD.Tests
 {
     [TestClass]
-    public class ProcessorTests
+    public class PushTests
     {
         [TestMethod]
         public void GetPlayersTest()
