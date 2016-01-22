@@ -4,8 +4,8 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StationCAD.Model;
 using StationCAD.Model.Helpers;
-using StationCAD.Model.OneSignal;
-using StationCAD.Processor;
+using StationCAD.Model.Notifications.OneSignal;
+using StationCAD.Processor.Notifications;
 
 namespace StationCAD.Tests
 {
@@ -93,7 +93,7 @@ namespace StationCAD.Tests
         {
             User player = new User { IdentificationNumber = "5605d53f-9d13-4865-a23c-26dfd92d5c4a" };
             
-            PushNotifications pushNotifier = new PushNotifications();
+            Push pushNotifier = new Push();
             Device result = await pushNotifier.GetDevice(player);
             string json = JsonUtil<Device>.ToJson(result);
             Console.WriteLine(json);
@@ -101,7 +101,7 @@ namespace StationCAD.Tests
 
         protected async Task GetPlayers()
         {
-            PushNotifications pushNotifier = new PushNotifications();
+            Push pushNotifier = new Push();
             DeviceList result = await pushNotifier.GetDevices();
             string json = JsonUtil<DeviceList>.ToJson(result);
             Console.WriteLine(json);
@@ -116,7 +116,7 @@ namespace StationCAD.Tests
 
             try
             {
-                PushNotifications pushNotifier = new PushNotifications();
+                Push pushNotifier = new Push();
                 string result = await pushNotifier.UpdateDevice(device);
                 Console.WriteLine(result);
             }
@@ -126,7 +126,7 @@ namespace StationCAD.Tests
 
         protected async Task GetNotifications()
         {
-            PushNotifications pushNotifier = new PushNotifications();
+            Push pushNotifier = new Push();
             PushNotificationList result = await pushNotifier.GetNotifications();
             string json = JsonUtil<PushNotificationList>.ToJson(result);
             Console.WriteLine(json);
@@ -134,7 +134,7 @@ namespace StationCAD.Tests
 
         protected async Task GetNotification()
         {
-            PushNotifications pushNotifier = new PushNotifications();
+            Push pushNotifier = new Push();
             PushNotification result = await pushNotifier.GetNotification("bee2a35c-9f5d-425d-b4ff-6196e033efc0");
             string json = JsonUtil<PushNotification>.ToJson(result);
             Console.WriteLine(json);
@@ -150,7 +150,7 @@ namespace StationCAD.Tests
 
             try
             {
-                PushNotifications pushNotifier = new PushNotifications();
+                Push pushNotifier = new Push();
                 string result = await pushNotifier.CreatNotification(push);
                 Console.WriteLine(result);
             }

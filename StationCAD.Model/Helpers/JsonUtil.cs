@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-using StationCAD.Model.OneSignal;
 
 namespace StationCAD.Model.Helpers
 {

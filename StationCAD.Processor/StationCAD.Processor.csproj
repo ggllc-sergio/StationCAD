@@ -53,11 +53,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EmailNotifications.cs" />
-    <Compile Include="MessageMapper.cs" />
+    <Compile Include="NotificationManager.cs" />
+    <Compile Include="Notifications\EmailNotifications.cs" />
+    <Compile Include="MessageManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PushNotifications.cs" />
-    <Compile Include="SMSNotifications.cs" />
+    <Compile Include="Notifications\PushNotifications.cs" />
+    <Compile Include="Notifications\SMSNotifications.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Mappings\" />

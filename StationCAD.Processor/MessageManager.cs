@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StationCAD.Processor
 {
-    public class MessageMapper
+    public class MessageManager
     {
     }
 }

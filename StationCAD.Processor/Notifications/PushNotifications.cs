@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 using StationCAD.Model;
 using StationCAD.Model.Helpers;
-using StationCAD.Model.OneSignal;
+using StationCAD.Model.Notifications.OneSignal;
 using System.Configuration;
 
-namespace StationCAD.Processor
+namespace StationCAD.Processor.Notifications
 {
-    public class PushNotifications
+    public class Push
     {
         const string ONESIGNAL_APPID = "950a66d5-c457-4c9e-9a8b-cca7ef8b8c68";
 

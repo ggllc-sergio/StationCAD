@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using StationCAD.Model;
-using StationCAD.Model.Helpers;
-using StationCAD.Processor;
+
+using StationCAD.Model.Notifications.Mailgun;
+using StationCAD.Processor.Notifications;
 
 namespace StationCAD.Tests
 {
@@ -14,7 +14,7 @@ namespace StationCAD.Tests
         [TestMethod]
         public void EmailAPITest()
         {
-            EmailNotifications emailer = new EmailNotifications();
+            Email emailer = new Email();
             try
             {
                 EmailNotification email = new EmailNotification

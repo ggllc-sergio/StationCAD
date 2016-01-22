@@ -6,15 +6,16 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+
 using System.Configuration;
 using RestSharp;
 using RestSharp.Authenticators;
 
-using StationCAD.Model;
+using StationCAD.Model.Notifications.Mailgun;
 
-namespace StationCAD.Processor
+namespace StationCAD.Processor.Notifications
 {
-    public class EmailNotifications
+    public class Email
     {
         public string SendAPIMessage(EmailNotification email)
         {

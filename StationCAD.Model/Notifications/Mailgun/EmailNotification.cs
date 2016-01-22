@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace StationCAD.Model
+namespace StationCAD.Model.Notifications.Mailgun
 {
     public class EmailNotification
     {

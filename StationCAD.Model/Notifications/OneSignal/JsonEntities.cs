@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
-namespace StationCAD.Model.OneSignal
+namespace StationCAD.Model.Notifications.OneSignal
 {
 
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
