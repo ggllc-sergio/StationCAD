@@ -17,35 +17,45 @@ namespace StationCAD.Processor.Notifications
 {
     public class Email
     {
-        public string SendAPIMessage(EmailNotification email)
+        public string SendEmailMessage(EmailNotification email)
         {
+            return SendAPIMessage(email.OrganizationName, email.OrganizationEmail, email.Recipient, email.MessageSubject, email.MessageBody);
+        }
 
-            string mailGunKey = ConfigurationManager.AppSettings["mailGunKey"];
-            if (mailGunKey == null)
+        public string SendEmailMessage(SMSEmailNotification smsEmail)
+        {
+            return SendAPIMessage(smsEmail.OrganizationName, smsEmail.OrganizationEmail, smsEmail.SMSEmailRecipient, smsEmail.MessageSubject, smsEmail.MessageBody);
+        }
+
+        protected string SendAPIMessage(string orgName, string orgEmail, string recipient, string subject, string body)
+        {
+            string mailgunKey = ConfigurationManager.AppSettings["mailgunKey"];
+            if (mailgunKey == null)
                 throw new ApplicationException("Unable to find MailGun API Key");
-            string mailGunDomain = ConfigurationManager.AppSettings["mailGunDomain"];
-            if (mailGunDomain == null)
+            string mailgunDomain = ConfigurationManager.AppSettings["mailgunDomain"];
+            if (mailgunDomain == null)
                 throw new ApplicationException("Unable to find MailGun Domain Key");
+            string mailgunAPIUri = ConfigurationManager.AppSettings["mailgunAPIUri"];
+            if (mailgunAPIUri == null)
+                throw new ApplicationException("Unable to find MailGun API Uri");
 
             RestClient client = new RestClient();
-            client.BaseUrl = new Uri("https://api.mailgun.net/v3");
-            client.Authenticator = new HttpBasicAuthenticator("api", mailGunKey);
+            client.BaseUrl = new Uri(mailgunAPIUri);
+            client.Authenticator = new HttpBasicAuthenticator("api", mailgunKey);
 
             RestRequest request = new RestRequest();
-            request.AddParameter("domain", mailGunDomain, ParameterType.UrlSegment);
-            request.Resource = string.Format("{0}/messages", mailGunDomain);
+            request.AddParameter("domain", mailgunDomain, ParameterType.UrlSegment);
+            request.Resource = string.Format("{0}/messages", mailgunDomain);
 
-            request.AddParameter("from", string.Format("{0} <{1}@{2}>", email.OrganizationName, email.OrganizationEmail, mailGunDomain));
-            request.AddParameter("to", email.Recipient);
-            request.AddParameter("subject", email.MessageSubject);
-            request.AddParameter("text", email.MessageBody);
+            request.AddParameter("from", string.Format("{0} <{1}@{2}>", orgName, orgEmail, mailgunDomain));
+            request.AddParameter("to", recipient);
+            request.AddParameter("subject", subject);
+            request.AddParameter("text", body);
             request.Method = Method.POST;
 
             IRestResponse result = client.Execute(request);
 
             return result.StatusCode.ToString();
         }
-
-        
     }
 }

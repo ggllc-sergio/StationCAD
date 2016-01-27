@@ -21,6 +21,13 @@ namespace StationCAD.Processor.Notifications
 
         public async Task<string> CreateNotification(SMSNotification message)
         {
+
+            string enableSMSGateway = ConfigurationManager.AppSettings["enableSMSGateway"];
+            if (enableSMSGateway == null)
+                throw new ApplicationException("Unable to find SMS Gateway switch");
+            else if (!bool.Parse(enableSMSGateway))
+                throw new ApplicationException("SMS Gateway disabled");
+
             string json = JsonUtil<SMSNotification>.ToJson(message);
             string result = await ClickatellAPIPost(json);
 

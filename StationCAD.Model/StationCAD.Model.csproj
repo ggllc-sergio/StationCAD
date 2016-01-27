@@ -50,11 +50,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseModel.cs" />
+    <Compile Include="Helpers\EnumUtils.cs" />
     <Compile Include="Notifications\Clickatell\SMSNotification.cs" />
     <Compile Include="Notifications\Mailgun\EmailNotification.cs" />
     <Compile Include="Helpers\JsonUtil.cs" />
     <Compile Include="Incident.cs" />
     <Compile Include="Location.cs" />
+    <Compile Include="Notifications\Mailgun\SMSEmailNotification.cs" />
     <Compile Include="Notifications\OneSignal\JsonEntities.cs" />
     <Compile Include="Organization.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

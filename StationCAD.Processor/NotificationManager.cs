@@ -12,6 +12,11 @@ namespace StationCAD.Processor
 {
     public class NotificationManager
     {
+        public List<OrganizationUserNotifcation> CreateNotifications(Incident incident)
+        {
+
+            return new List<OrganizationUserNotifcation>();
+        }
 
         public void NotifyUsers(List<OrganizationUserNotifcation> users)
         {

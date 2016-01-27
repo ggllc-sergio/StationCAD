@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using StationCAD.Data.Mongo;
+using StationCAD.Model.Notifications.Clickatell;
 
 namespace StationCAD.Model
 {
@@ -63,6 +63,17 @@ namespace StationCAD.Model
 
         public ICollection<IncidentNote> Notes { get; set; }
         public ICollection<IncidentEvent> Events { get; set; }
+
+        public SMSNotification GetSMSNotification()
+        {
+            SMSNotification sms = new SMSNotification();
+            StringBuilder sb = new StringBuilder();
+
+
+
+            sms.Text = sb.ToString();
+            return sms;
+        }
     }
 
     public class IncidentAddress : BaseModel

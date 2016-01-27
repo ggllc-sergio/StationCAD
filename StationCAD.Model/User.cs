@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace StationCAD.Model
 {
+
     public class User : BaseModel
     {
         public string UserName { get; set; }
