@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using System.ComponentModel.DataAnnotations;
 
@@ -29,15 +26,20 @@ namespace StationCAD.Model
 
         public ICollection<string> MobileDeviceIds { get; set; }
 
+        public ICollection<UserOrganizationAffiliation> OrganizationAffiliations { get; set; }
+
         public ICollection<OrganizationUserNotifcation> NotificationHistory { get; set; }
 
     }
 
-    public class OrganizationUser : BaseModel
+    public class UserOrganizationAffiliation : BaseModel
     {
+        public int UserId { get; set; }
         public int OrganizationId { get; set; }
 
-        public int UserId { get; set; }
+        
+        public User CurrentUser { get; set; }
+        public Organization CurrentOrganization { get; set; }
 
         public OrganizationUserStatus Status { get; set; }
 
@@ -47,7 +49,8 @@ namespace StationCAD.Model
 
     public class OrganizationUserNotifcation : BaseModel
     {
-        public int OrganizationUserId { get; set; }
+
+        public int UserOrganizationAffiliationId { get; set; }
 
         public OrganizationUserNotifcationType NotifcationType { get; set; }
 

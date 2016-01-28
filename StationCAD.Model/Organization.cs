@@ -1,8 +1,5 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
 namespace StationCAD.Model
@@ -24,6 +21,8 @@ namespace StationCAD.Model
         public ICollection<Address> Addresses { get; set; }
 
         public ICollection<Incident> IncidentHistory { get; set; }
+
+
     }
     
     public class Address : BaseModel

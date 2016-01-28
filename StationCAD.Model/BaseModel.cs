@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
 namespace StationCAD.Model
 {
     public abstract class BaseModel
     {
-
+        [Key]
         public int Id { get; set; }
 
         public string CreateUser { get; set; }

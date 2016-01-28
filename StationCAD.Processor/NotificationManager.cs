@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using StationCAD.Model.Notifications.OneSignal;
 using StationCAD.Model.Notifications.Mailgun;
@@ -12,7 +11,7 @@ namespace StationCAD.Processor
 {
     public class NotificationManager
     {
-        public List<OrganizationUserNotifcation> CreateNotifications(Incident incident)
+        public List<OrganizationUserNotifcation> CreateNotifications(Incident incident, Organization org)
         {
 
             return new List<OrganizationUserNotifcation>();
