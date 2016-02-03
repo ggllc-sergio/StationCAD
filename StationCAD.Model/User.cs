@@ -26,20 +26,25 @@ namespace StationCAD.Model
 
         public ICollection<string> MobileDeviceIds { get; set; }
 
-        public ICollection<UserOrganizationAffiliation> OrganizationAffiliations { get; set; }
+        public virtual ICollection<UserOrganizationAffiliation> OrganizationAffiliations { get; set; }
 
-        public ICollection<OrganizationUserNotifcation> NotificationHistory { get; set; }
+        public virtual ICollection<OrganizationUserNotifcation> NotificationHistory { get; set; }
 
+    }
+
+    public class UserAddress : Address
+    {
+        public int UserID { get; set; }
+        public virtual User User { get; set; }
     }
 
     public class UserOrganizationAffiliation : BaseModel
     {
         public int UserId { get; set; }
-        public int OrganizationId { get; set; }
+        public virtual User CurrentUser { get; set; }
 
-        
-        public User CurrentUser { get; set; }
-        public Organization CurrentOrganization { get; set; }
+        public int OrganizationId { get; set; }
+        public virtual Organization CurrentOrganization { get; set; }
 
         public OrganizationUserStatus Status { get; set; }
 
@@ -51,6 +56,7 @@ namespace StationCAD.Model
     {
 
         public int UserOrganizationAffiliationId { get; set; }
+        public virtual UserOrganizationAffiliation Affilitation { get; set; }
 
         public OrganizationUserNotifcationType NotifcationType { get; set; }
 

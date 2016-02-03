@@ -23,11 +23,13 @@ namespace StationCAD.Model.DataContexts
         public DbSet<IncidentEvent> IncidentEvents { get; set; }
 
         public DbSet<User> Users { get; set; }
+        public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<UserOrganizationAffiliation> UserOrganizationAffiliations { get; set; }
         public DbSet<OrganizationUserNotifcation> OrganizationUserNotifcations { get; set; }
 
         public DbSet<Organization> Organizations { get; set; }
-        public DbSet<Address> Addresses { get; set; }
+        public DbSet<OrganizationAddress> OrganizationAddresses { get; set; }
+
         
     }
 }

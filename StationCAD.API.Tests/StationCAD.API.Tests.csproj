@@ -105,12 +105,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\StationCAD.API\StationCAD.API.csproj">
-      <Project>{BF4B3D68-2C82-4099-B5D0-6208D04B60CA}</Project>
-      <Name>StationCAD.API</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
