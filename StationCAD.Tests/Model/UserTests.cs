@@ -25,11 +25,11 @@ namespace StationCAD.Tests.Model
         {
             using (var db = new StationCADDb())
             {
-                var usr = new User();
-                usr.FirstName = string.Format("FirstName_{0}", DateTime.Now.Ticks);
-                usr.LastName = string.Format("LastName_{0}", DateTime.Now.Ticks);
-                usr.IdentificationNumber = DateTime.Now.Ticks.ToString();
-                usr.UserName = string.Format("{0}.{1}", usr.FirstName, usr.LastName);
+            var usr = new User();
+            usr.FirstName = string.Format("FirstName_{0}", DateTime.Now.Ticks);
+            usr.LastName = string.Format("LastName_{0}", DateTime.Now.Ticks);
+            usr.IdentificationNumber = DateTime.Now.Ticks.ToString();
+            usr.UserName = string.Format("{0}.{1}", usr.FirstName, usr.LastName);
 
                 db.Users.Add(usr);
                 db.SaveChanges();
