@@ -64,6 +64,10 @@
     <Compile Include="Migrations\201602022156506_Initial.Designer.cs">
       <DependentUpon>201602022156506_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602040334462_Level2.cs" />
+    <Compile Include="Migrations\201602040334462_Level2.Designer.cs">
+      <DependentUpon>201602040334462_Level2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\Clickatell\SMSNotification.cs" />
     <Compile Include="Notifications\Mailgun\EmailNotification.cs" />
@@ -80,6 +84,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201602022156506_Initial.resx">
       <DependentUpon>201602022156506_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602040334462_Level2.resx">
+      <DependentUpon>201602040334462_Level2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
