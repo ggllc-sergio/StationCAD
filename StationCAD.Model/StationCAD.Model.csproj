@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -63,6 +64,10 @@
     <Compile Include="Migrations\201602022156506_Initial.cs" />
     <Compile Include="Migrations\201602022156506_Initial.Designer.cs">
       <DependentUpon>201602022156506_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201602032007241_Level1.cs" />
+    <Compile Include="Migrations\201602032007241_Level1.Designer.cs">
+      <DependentUpon>201602032007241_Level1.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\Clickatell\SMSNotification.cs" />
@@ -80,6 +85,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201602022156506_Initial.resx">
       <DependentUpon>201602022156506_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602032007241_Level1.resx">
+      <DependentUpon>201602032007241_Level1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

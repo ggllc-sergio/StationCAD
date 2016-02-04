@@ -58,6 +58,14 @@ namespace StationCAD.Model
         public string Gelocation { get; set; }
     }
 
+    public abstract class MobilePhoneNumber
+    {
+        [Phone]
+        public string PhoneNumber { get; set; }
+
+        public MobileCarrier Carrier { get; set; }
+    }
+
 
     public abstract class AbstractJsonEntity
     {
@@ -68,5 +76,24 @@ namespace StationCAD.Model
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToLocalTime();
             return dtDateTime;
         }
+    }
+
+    public enum MobileCarrier
+    {
+        [Display(Name = "AT&T")]
+        ATT = 1,
+        Cingular,
+        Tracfone,
+        [Display(Name = "Cellular One")]
+        CellularOne,
+        [Display(Name = "Metro PCS")]
+        MetroPCS,
+        Nextel,
+        Sprint,
+        [Display(Name = "T-Mobile")]
+        TMobile,
+        Verizon,
+        [Display(Name = "Virgin Mobile")]
+        VirginMobile
     }
 }

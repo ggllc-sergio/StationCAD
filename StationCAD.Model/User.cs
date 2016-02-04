@@ -8,14 +8,18 @@ namespace StationCAD.Model
 
     public class User : BaseModel
     {
+        [Required(AllowEmptyStrings =false)]
         public string UserName { get; set; }
 
+        [Required(AllowEmptyStrings = false)]
         public string FirstName { get; set; }
 
+        [Required(AllowEmptyStrings = false)]
         public string LastName { get; set; }
         
         public string IdentificationNumber { get; set; }
 
+        [EmailAddress]
         public string NotificationEmail { get; set; }
 
         public string NotificationCellPhone { get; set; }
@@ -31,18 +35,22 @@ namespace StationCAD.Model
         public virtual ICollection<OrganizationUserNotifcation> NotificationHistory { get; set; }
 
     }
+    
 
     public class UserAddress : Address
     {
+        [Required]
         public int UserID { get; set; }
         public virtual User User { get; set; }
     }
 
     public class UserOrganizationAffiliation : BaseModel
     {
+        [Required]
         public int UserId { get; set; }
         public virtual User CurrentUser { get; set; }
 
+        [Required]
         public int OrganizationId { get; set; }
         public virtual Organization CurrentOrganization { get; set; }
 
@@ -55,6 +63,7 @@ namespace StationCAD.Model
     public class OrganizationUserNotifcation : BaseModel
     {
 
+        [Required]
         public int UserOrganizationAffiliationId { get; set; }
         public virtual UserOrganizationAffiliation Affilitation { get; set; }
 
@@ -62,8 +71,10 @@ namespace StationCAD.Model
 
         public string MessageTitle { get; set; }
 
+        [Required(AllowEmptyStrings = false)]
         public string MessageBody { get; set; }
 
+        [Required]
         public DateTime Sent { get; set; }
     }
 

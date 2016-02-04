@@ -6,12 +6,16 @@ namespace StationCAD.Model
 {
     public class Organization : BaseModel
     {
+        [Required(AllowEmptyStrings = false)]
         public string Name { get; set; }
 
+        [Required(AllowEmptyStrings = false)]
         public string ContactPhone { get; set; }
 
         public string ContactFAX { get; set; }
 
+        [Required(AllowEmptyStrings = false)]
+        [EmailAddress]
         public string ContactEmail { get; set; }
 
         public OrganizationStatus Status { get; set; }
@@ -27,6 +31,7 @@ namespace StationCAD.Model
 
     public class OrganizationAddress : Address
     {
+        [Required]
         public int OrganizationID { get; set; }
         public virtual Organization Organization { get; set; }
 

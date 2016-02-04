@@ -72,22 +72,4 @@ namespace StationCAD.Model.Notifications.Mailgun
 
     }
 
-    public enum MobileCarrier
-    {
-        [Display(Name = "AT&T")]
-        ATT = 1,
-        Cingular,
-        Tracfone,
-        [Display(Name = "Cellular One")]
-        CellularOne,
-        [Display(Name = "Metro PCS")]
-        MetroPCS,
-        Nextel,
-        Sprint,
-        [Display(Name = "T-Mobile")]
-        TMobile,
-        Verizon,
-        [Display(Name = "Virgin Mobile")]
-        VirginMobile
-    }
 }
