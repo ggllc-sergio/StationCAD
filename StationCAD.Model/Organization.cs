@@ -10,6 +10,9 @@ namespace StationCAD.Model
         public string Name { get; set; }
 
         [Required(AllowEmptyStrings = false)]
+        public string Tag { get; set; }
+
+        [Required(AllowEmptyStrings = false)]
         public string ContactPhone { get; set; }
 
         public string ContactFAX { get; set; }
@@ -19,6 +22,8 @@ namespace StationCAD.Model
         public string ContactEmail { get; set; }
 
         public OrganizationStatus Status { get; set; }
+
+        public OrganizationType Type { get; set; }
 
         public OrganizationAddress MailingAddress { get; set; }
         public OrganizationAddress BillingAddress { get; set; }
@@ -37,6 +42,14 @@ namespace StationCAD.Model
 
         public bool MailingAddress { get; set; }
         public bool BillingAddress { get; set; }
+    }
+
+    public enum OrganizationType
+    {
+        Fire=1,
+        EMS,
+        Police,
+        GovernmentOEM
     }
 
     public enum OrganizationStatus

@@ -1,6 +1,7 @@
 ﻿/// <autosync enabled="true" />
 /// <reference path="ai.0.15.0-build58334.js" />
 /// <reference path="bootstrap.min.js" />
+/// <reference path="googlemapsapi.js" />
 /// <reference path="jquery.signalr-2.2.0.min.js" />
 /// <reference path="jquery.validate.min.js" />
 /// <reference path="jquery.validate.unobtrusive.js" />

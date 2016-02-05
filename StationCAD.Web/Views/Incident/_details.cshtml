@@ -1,0 +1,51 @@
+﻿
+@model StationCAD.Model.Incident
+
+<h3>Incident: @Model.IncidentIdentifier - @Model.IncidentType</h3>
+
+<div class="col-md-4">
+    <h4>Dispatch Information</h4>
+    <dl>
+        <dt>Entered:</dt>
+        <dd>@Model.EnteredDateTime</dd>
+        <dt>Dispateched:</dt>
+        <dd>@Model.DispatchedDateTime</dd>
+        <dt>Console:</dt>
+        <dd>@Model.ConsoleID</dd>
+        <dt>Type:</dt>
+        <dd>@Model.IncidentType (@Model.IncidentTypeCode)</dd>
+        <dt>Final Type:</dt>
+        <dd>@Model.FinalIncidentType (@Model.FinalIncidentTypeCode)</dd>
+        <dt>Priority:</dt>
+        <dd>@Model.IncidentPriority</dd>
+        <dt>XReference ID:</dt>
+        <dd>@Model.LocalXRefID</dd>
+    </dl>
+
+    <h4>Location Information</h4>
+    <dl>
+        <dt>Type:</dt>
+        <dd>@Model.LocationAddress.IncidentLocationType</dd>
+        <dt>Occupant:</dt>
+        <dd>@Model.LocationAddress.OccupantName</dd>
+        <dt>Location:</dt>
+        <dd>@Model.LocationAddress.NotificationAddress</dd>
+        <dt>Geolocation:</dt>
+        <dd>
+            @{
+            if (Model.LocationAddress.Gelocation != string.Empty)
+            { <a id="viewMap" href="#">View Map</a> }
+            else
+            { <span>Not Available</span> }
+            }
+        </dd>
+    </dl>
+</div>
+
+<div class="col-md-8 >
+    <div id="map"></div>
+
+</div>
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDvpv54be3Rkd46mDlCAqg6-qG53gvnDcg&callback=initMap">
+</script>

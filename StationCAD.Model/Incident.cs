@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-
+using System.Linq;
 using StationCAD.Model.Notifications.Clickatell;
+using StationCAD.Model.Notifications.OneSignal;
+using StationCAD.Model.Notifications.Mailgun;
 
 namespace StationCAD.Model
 {
     public class Incident : BaseModel
     {
         public int OrganizationId { get; set; }
+
+        public virtual Organization Organization { get; set; }
 
         public int CADIdentifier { get; set; }
 
@@ -23,8 +27,10 @@ namespace StationCAD.Model
 
         #region Local Incident Info 
 
+        public string IncidentTypeCode { get; set; }
         public string IncidentType { get; set; }
 
+        public string FinalIncidentTypeCode { get; set; }
         public string FinalIncidentType { get; set; }
 
         public string IncidentPriority { get; set; }
@@ -62,51 +68,95 @@ namespace StationCAD.Model
         public ICollection<IncidentNote> Notes { get; set; }
         public ICollection<IncidentEvent> Events { get; set; }
 
+        public string RAWCADIncidentData { get; set; }
+
         public SMSNotification GetSMSNotification()
         {
             SMSNotification sms = new SMSNotification();
             StringBuilder sb = new StringBuilder();
-
-
-
+            sb.AppendLine(string.Format("D: {0}", this.DispatchedDateTime));
+            sb.AppendLine(string.Format("{0}", this.IncidentType));
+            sb.AppendLine(string.Format("{0}", this.LocationAddress.NotificationAddress));
+            var firstNote = this.Notes.OrderBy(x => x.EnteredDateTime).FirstOrDefault();
+            sb.AppendLine(string.Format("NOTES: {0}", firstNote.Message));
+            switch (this.Organization.Type)
+            {
+                case OrganizationType.Fire:
+                    sb.AppendLine(string.Format("BOX: {0}", this.LocalFireBox));
+                    break;
+                case OrganizationType.EMS:
+                    sb.AppendLine(string.Format("BOX: {0}", this.LocalEMSBox));
+                    break;
+                case OrganizationType.Police:
+                    sb.AppendLine(string.Format("BOX: {0}", this.LocalPoliceBox));
+                    break;
+                case OrganizationType.GovernmentOEM:
+                default:
+                    sb.AppendLine(string.Format("BOX: F{0}, E{1}, P{2}", this.LocalFireBox, this.LocalEMSBox, this.LocalPoliceBox));
+                    break;
+            }
             sms.Text = sb.ToString();
             return sms;
         }
+
+        public SMSEmailNotification GetSMSEmailNotification()
+        {
+            SMSEmailNotification smsEmail = new SMSEmailNotification();
+            smsEmail.MessageBody = GetSMSNotification().Text;
+            return smsEmail;
+        }
+
+        public EmailNotification GetEmailNotification()
+        {
+            EmailNotification email = new EmailNotification();
+            email.MessageSubject = string.Format("{0} - Incident: {2}", this.Organization.Name, this.IncidentType);
+            email.MessageBody = this.RAWCADIncidentData;
+            email.OrganizationName = this.Organization.Name;
+            return email;
+        }
+
+        public PushNotificationCreate GetPushNotification()
+        {
+            PushNotificationCreate push = new PushNotificationCreate();
+            StringBuilder sb = new StringBuilder();
+            push.Headings = new Dictionary<string, string>();
+            push.Headings.Add("en", string.Format("{0} - {1}", this.Organization.Name, this.IncidentType));
+            push.Url = "http://station-cad.graphitegear.com";
+            push.IncludeTags.Add(new PushNotificationTag { Key = "OrgTag", Value = this.Organization.Tag, Relation = "=" });
+            push.Data.Add(new KeyValuePair<string, string>("IncidentID", this.Id.ToString()));
+            push.Contents = new Dictionary<string, string>();
+            push.Contents.Add("en", sb.ToString());
+            return push;
+        }
     }
-
-    public class IncidentAddress : BaseModel
+    public class IncidentAddress : Address
     {
-        public string LocationType { get; set; }
+        public LocationType IncidentLocationType { get; set; }
 
-        public string Building { get; set; }
-
-        public string Development { get; set; }
-        
-        public string OccupantName { get; set; }
-        
-        public string Number { get; set; }
-
-        public string Street { get; set; }
-
-        public string XStreet1 { get; set; }
-
-        public string XStreet2 { get; set; }
-
-        public string County { get; set; }
-
-        public string Municipality { get; set; }
-
-        public string City { get; set; }
-
-        public string State { get; set; }
-
-        public string PostalCode { get; set; }
-        
-        public string XCoordinate { get; set; }
-
-        public string YCoordinate { get; set; }
-
-        public string Gelocation { get; set; }
+        public string NotificationAddress
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                switch(this.IncidentLocationType)
+                {
+                    case LocationType.Intersection:
+                        sb.AppendFormat("{0}", this.Street);
+                        break;
+                    case LocationType.AddressResidential:
+                    case LocationType.AddressCommercial:
+                    default:
+                        sb.AppendFormat("{0} {1}", this.Number, this.Street);
+                        sb.AppendFormat("{0}", this.Building);
+                        sb.AppendFormat("{0}", this.Development);
+                        break;
+                }
+                sb.AppendFormat("X1: {0}", this.XStreet1);
+                sb.AppendFormat("X2: {0}", this.XStreet2);
+                sb.AppendFormat("{0} ({1}, {2})", this.Municipality, this.County, this.State);
+                return sb.ToString();
+            }
+        }
     }
 
     public class IncidentNote : BaseModel
@@ -129,4 +179,12 @@ namespace StationCAD.Model
 
         public IncidentNote EventNote { get; set; }
     }
+
+    public enum LocationType
+    {
+        AddressResidential=1,
+        AddressCommercial,
+        Intersection
+    }
+    
 }

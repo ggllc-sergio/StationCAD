@@ -307,6 +307,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Include="Scripts\jquery-2.2.0.intellisense.js" />
+    <Content Include="Scripts\googleMapsAPI.js" />
     <Content Include="Scripts\jquery-2.2.0.js" />
     <Content Include="Scripts\jquery-2.2.0.min.js" />
     <Content Include="Scripts\jquery-2.2.0.min.map" />
@@ -366,10 +367,10 @@
     <Content Include="Views\Shared\EditorTemplates\OrganizationUserStatus.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\OrganizationUserRole.cshtml" />
     <Content Include="Views\Shared\EditorTemplates\OrganizationUserNotifcationType.cshtml" />
+    <Content Include="Views\Incident\Index.cshtml" />
+    <Content Include="Views\Incident\_details.cshtml" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Incident\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
