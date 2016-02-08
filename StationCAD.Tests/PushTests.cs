@@ -67,7 +67,9 @@ namespace StationCAD.Tests
         {
             PushNotificationCreate push = new PushNotificationCreate();
             push.ApplicationId = "950a66d5-c457-4c9e-9a8b-cca7ef8b8c68";
-            push.Contents = new Dictionary<string, string>(); 
+            push.Headings = new Dictionary<string, string>();
+            push.Headings.Add("en", "StationCAD - New Message");
+            push.Contents = new Dictionary<string, string>();
             push.Contents.Add("en", "Server API Test Mesage");
             push.IncludeSegments = new List<string> { "All" };
             push.SendiOS = false;
@@ -143,6 +145,8 @@ namespace StationCAD.Tests
         protected async Task CreateNotification()
         {
             PushNotificationCreate push = new PushNotificationCreate();
+            push.Headings = new Dictionary<string, string>();
+            push.Headings.Add("en", "StationCAD - New Message");
             push.Contents = new Dictionary<string, string>();
             push.Contents.Add("en", "Server API Test Mesage");
             push.IncludeSegments = new List<string> { "All" };
