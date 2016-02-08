@@ -21,6 +21,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StationCAD.Data.NoSQL", "St
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StationCAD.Tests", "StationCAD.Tests\StationCAD.Tests.csproj", "{33450298-F0D5-4C0D-8661-7AA692CA4DD8}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Publishing.xml", "Publishing.xml", "{88E7FFC8-CFE1-4C75-9471-DED831B1B110}"
+	ProjectSection(SolutionItems) = preProject
+		StationCAD.Publishsettings = StationCAD.Publishsettings
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Android Release|Android = Android Release|Android
