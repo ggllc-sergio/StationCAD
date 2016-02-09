@@ -75,6 +75,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\Clickatell\SMSNotification.cs" />
+    <Compile Include="Notifications\IncidentNotification.cs" />
     <Compile Include="Notifications\Mailgun\EmailNotification.cs" />
     <Compile Include="Helpers\JsonUtil.cs" />
     <Compile Include="Incident.cs" />

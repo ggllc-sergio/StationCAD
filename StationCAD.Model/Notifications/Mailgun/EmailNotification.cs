@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StationCAD.Model.Notifications.Mailgun
 {
-    public class EmailNotification
+    public class EmailNotification : IncidentNotification
     {
 
         public string OrganizationName { get; set; }

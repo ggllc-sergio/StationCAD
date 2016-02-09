@@ -6,14 +6,23 @@ using StationCAD.Model.Notifications.OneSignal;
 using StationCAD.Model.Notifications.Mailgun;
 using StationCAD.Model.Notifications.Clickatell;
 using StationCAD.Model;
+using StationCAD.Model.DataContexts;
 
 namespace StationCAD.Processor
 {
     public class NotificationManager
     {
-        public List<OrganizationUserNotifcation> CreateNotifications(Incident incident, Organization org)
+        public List<OrganizationUserNotifcation> CreateNotifications(Incident incident)
         {
+            List<OrganizationUserNotifcation> results = new List<OrganizationUserNotifcation>();
+            using (var db = new StationCADDb())
+            {
+                List<UserOrganizationAffiliation> users = db.UserOrganizationAffiliations.Where(x => x.OrganizationId == incident.OrganizationId).ToList();
+                foreach(UserOrganizationAffiliation user in users)
+                {
 
+                }
+            }
             return new List<OrganizationUserNotifcation>();
         }
 
@@ -33,25 +42,7 @@ namespace StationCAD.Processor
                 Parallel.ForEach<NotificationGroup>(groups, x => ProcessNotificationGroup(x));
             }
         }
-
-        #region Type based notification creation 
-
-        protected SMSNotification CreateSMSNotification(OrganizationUserNotifcation notification)
-        {
-            return new SMSNotification();
-        }
-
-        protected EmailNotification CreateEmailNotification(OrganizationUserNotifcation notification)
-        {
-            return new EmailNotification();
-        }
-
-        protected PushNotification CreatePushNotification(OrganizationUserNotifcation notification)
-        {
-            return new PushNotification();
-        }
-
-        #endregion
+        
 
         #region Methods for sending notificaions 
 

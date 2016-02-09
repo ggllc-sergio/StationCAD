@@ -62,7 +62,6 @@ namespace StationCAD.Model
 
     public class OrganizationUserNotifcation : BaseModel
     {
-
         [Required]
         public int UserOrganizationAffiliationId { get; set; }
         public virtual UserOrganizationAffiliation Affilitation { get; set; }
@@ -76,6 +75,8 @@ namespace StationCAD.Model
 
         [Required]
         public DateTime Sent { get; set; }
+        
+        public IncidentNotification Notification { get; set; }
     }
 
 

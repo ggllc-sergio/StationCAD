@@ -67,6 +67,10 @@ namespace StationCAD.Model
     }
 
 
+    public abstract class IncidentNotification : AbstractJsonEntity
+    {
+    }
+
     public abstract class AbstractJsonEntity
     {
         public static DateTime UnixTimeStampToDateTime(long unixTimeStamp)

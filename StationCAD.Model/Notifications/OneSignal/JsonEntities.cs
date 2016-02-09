@@ -94,7 +94,7 @@ namespace StationCAD.Model.Notifications.OneSignal
     }
 
     [JsonObject(MemberSerialization = MemberSerialization.OptIn)]
-    public class PushNotificationCreate : AbstractJsonEntity
+    public class PushNotificationCreate : IncidentNotification
     {
         [JsonProperty(PropertyName = "app_id")]
         public string ApplicationId { get; set; }

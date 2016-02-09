@@ -70,9 +70,11 @@ namespace StationCAD.Model
 
         public string RAWCADIncidentData { get; set; }
 
-        public SMSNotification GetSMSNotification()
+        public SMSNotification GetSMSNotification(User user)
         {
             SMSNotification sms = new SMSNotification();
+            sms.Recipients = new List<string>();
+            sms.Recipients.Add(user.NotificationCellPhone);
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(string.Format("D: {0}", this.DispatchedDateTime));
             sb.AppendLine(string.Format("{0}", this.IncidentType));
@@ -99,10 +101,10 @@ namespace StationCAD.Model
             return sms;
         }
 
-        public SMSEmailNotification GetSMSEmailNotification()
+        public SMSEmailNotification GetSMSEmailNotification(User user)
         {
             SMSEmailNotification smsEmail = new SMSEmailNotification();
-            smsEmail.MessageBody = GetSMSNotification().Text;
+            smsEmail.MessageBody = GetSMSNotification(user).Text;
             return smsEmail;
         }
 
@@ -127,6 +129,16 @@ namespace StationCAD.Model
             push.Contents = new Dictionary<string, string>();
             push.Contents.Add("en", sb.ToString());
             return push;
+        }
+
+        public List<IncidentNotification> GetNotifications(User user)
+        {
+            List<IncidentNotification> results = new List<IncidentNotification>();
+
+            if (user.NotifcationPushMobile != null)
+                results.Add(GetPushNotification());
+
+            return results;
         }
     }
     public class IncidentAddress : Address
