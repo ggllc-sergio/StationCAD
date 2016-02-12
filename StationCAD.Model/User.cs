@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StationCAD.Model
 {
@@ -33,6 +34,8 @@ namespace StationCAD.Model
         public virtual ICollection<UserOrganizationAffiliation> OrganizationAffiliations { get; set; }
 
         public virtual ICollection<OrganizationUserNotifcation> NotificationHistory { get; set; }
+
+        public virtual ICollection<UserMobileDevice> MobileDevices { get; set; }
 
     }
     
@@ -76,9 +79,34 @@ namespace StationCAD.Model
         [Required]
         public DateTime Sent { get; set; }
         
+        [NotMapped]
         public IncidentNotification Notification { get; set; }
     }
 
+    public class UserMobileDevice : BaseModel
+    {
+
+        public int UserID { get; set; }
+        public virtual User User { get; set; }
+
+        public string MobileNumber { get; set; }
+        public MobileCarrier Carrier { get; set; }
+        
+        public bool EnablePush { get; set; }
+        public bool EnableSMS { get; set; }
+        public virtual ICollection<UserMobileDeviceOrganization> UserMobileDeviceOrganizations { get; set; }
+
+    }
+
+    public class UserMobileDeviceOrganization : BaseModel
+    {
+        public int UserMobileDeviceID { get; set; }
+        public virtual UserMobileDevice UserDevice { get; set; }
+
+        public int OrganizationID { get; set; }
+        public virtual Organization Organization { get; set; }
+
+    }
 
     public enum OrganizationUserNotifcationType
     {

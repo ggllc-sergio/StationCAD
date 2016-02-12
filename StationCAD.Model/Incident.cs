@@ -108,7 +108,7 @@ namespace StationCAD.Model
             return smsEmail;
         }
 
-        public EmailNotification GetEmailNotification()
+        public EmailNotification GetEmailNotification(User user)
         {
             EmailNotification email = new EmailNotification();
             email.MessageSubject = string.Format("{0} - Incident: {2}", this.Organization.Name, this.IncidentType);

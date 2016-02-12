@@ -73,6 +73,10 @@
     <Compile Include="Migrations\201602032007241_Level1.Designer.cs">
       <DependentUpon>201602032007241_Level1.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201602122149286_Level3.cs" />
+    <Compile Include="Migrations\201602122149286_Level3.Designer.cs">
+      <DependentUpon>201602122149286_Level3.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\Clickatell\SMSNotification.cs" />
     <Compile Include="Notifications\IncidentNotification.cs" />
@@ -96,6 +100,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201602032007241_Level1.resx">
       <DependentUpon>201602032007241_Level1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201602122149286_Level3.resx">
+      <DependentUpon>201602122149286_Level3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
