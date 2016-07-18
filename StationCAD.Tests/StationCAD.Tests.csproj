@@ -62,6 +62,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="DispatchManagerTests.cs" />
     <Compile Include="EmailTests.cs" />
     <Compile Include="Model\UserTests.cs" />
     <Compile Include="NoSQLDBTests.cs" />
@@ -87,6 +88,11 @@
     <None Include="App.config" />
     <None Include="Json\email_incident.json" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="TestData\ASCIITemp85.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

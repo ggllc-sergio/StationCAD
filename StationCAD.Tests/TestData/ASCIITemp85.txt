@@ -1,0 +1,215 @@
+ Chester County Emergency Services Clear Report 
+
+Call Time: 
+
+Event: F16000981
+Event Type Code: FIRE
+Event Subtype Code: HAZARDOUS MATERIALS INCIDENT
+ESZ: 
+
+Address:
+PSTC 
+137  MODENA RD 
+Cross Street: LOYALTY WAY AND PUMP STATION LN
+Location Information: 
+Development: 
+Municipality: SCOATV
+
+Caller Information:
+Caller Name: CROWDING, BEAU
+Caller Phone Number: (610) 344-4000 x Type: 
+Alt Phone Number:  x Type: 
+Caller Address: 123 MAIN ST
+Caller Source: 
+
+Units:
+AST15	DP	19:28:54
+AST15	AK	19:29:23
+AST15	AV	19:29:40
+AST15	DP	19:30:49
+AST15	ER	19:35:15
+AST15	UC	19:59:57
+AST15	UC	19:59:58
+AST15	UC	20:00:32
+AST15	AR	20:14:03
+AST15	AR	20:14:17
+AST15	UC	20:15:13
+AST15	AV	20:15:13
+AST15	DP	20:16:47
+AST15	ER	20:16:52
+CHF15	DP	20:10:55
+CHF15	AR	20:10:59
+CHF15	TR	20:11:33
+CHF15	TA	20:11:43
+CHF15	AR	20:11:47
+CHF15	TR	20:30:39
+CHF15	AR	20:30:47
+CHF15	UC	20:33:06
+CHF15	UC	20:33:21
+CHF37	DP	19:30:45
+CHF37	ER	19:31:12
+CHF37	AV	19:34:31
+CHF37	DP	19:34:51
+CHF37	ER	19:34:59
+CHF37	AV	19:44:04
+CHF37	DP	19:46:15
+CHF37	AR	19:46:16
+CHF37	AR	19:46:18
+CHF37	AV	20:46:00
+CHF44	DP	19:30:48
+CHF44	UC	20:15:00
+CHF44	AV	20:15:00
+CTN15	DP	19:30:51
+CTN15	ER	19:35:03
+CTN15	UC	19:59:48
+CTN15	TR	20:29:53
+CTN15	TR	20:30:14
+DEP15	DP	19:30:48
+DEP15	TR	19:48:00
+DEP15	TR	19:48:12
+DEP15	TR	19:48:48
+DEP15	ER	19:59:12
+DEP15	CL	19:59:12
+DEP15	UC	20:00:00
+DEP15	AV	20:07:29
+ENG371	DP	19:30:47
+ENG372	DP	19:30:46
+ENG431	DP	19:30:50
+ENG431	ER	19:31:03
+ENG431	AV	19:35:12
+ENG431	DP	19:36:35
+ENG431	AK	19:36:45
+ENG431	AR	20:06:23
+HMT151	DP	19:30:58
+HMT151	ER	19:35:38
+HMT151	AR	20:16:59
+HMT151	AR	20:33:54
+HMT152	DP	19:30:53
+HMT152	ER	19:35:41
+HMT152	TR	19:48:15
+HMT152	TR	19:48:24
+LAD411	DP	19:30:53
+LAD411	ER	19:35:04
+LAD411	UC	20:00:04
+LAD411	UC	20:13:10
+LAD411	AV	20:13:10
+OFC15	DP	19:30:52
+OFC15	ER	19:35:13
+OFC15	UC	20:00:49
+OFC15	TR	20:29:20
+OFC15	AR	20:33:58
+OFC37	DP	19:30:47
+OFC37	ER	19:35:09
+OFC37	UC	19:59:54
+RES44	DP	19:30:54
+RES44	ER	19:35:54
+RES44	UC	19:59:53
+RES44	TR	20:18:40
+RES44	TR	20:18:51
+RES44	TR	20:18:58
+RES44	AV	20:24:47
+RES44	DP	20:35:46
+RES44	ER	20:35:50
+TAC44	DP	19:30:52
+TAC44	AK	19:36:14
+TAC44	TR	19:47:55
+TAC44	AR	19:48:24
+TAC44	AR	19:49:16
+TAC44	UC	19:59:55
+TAC44	AV	20:23:21
+
+
+Event Comments:
+18:28:11-LEAKING PROPANE TANK
+19:35:50-System Unit Alarm
+19:35:50-System Unit Alarm
+19:35:50-System Unit Alarm
+19:35:50-System Unit Alarm
+19:35:55-System Unit Alarm
+19:35:55-System Unit Alarm
+19:36:30-MORE REMARKS
+19:42:28-EVEN MORE REMARKS
+19:42:42-THIS IS WHAT IS GOING ON
+19:43:01-System Unit Alarm
+19:43:11-System Unit Alarm
+19:43:18-EVENT SENT TO PECO BY $CHF44
+19:43:22-EVENT ACCEPTED BY PECO; PECO Event ID: c16071400004 and County ID: F16000981. OH MY GOD
+19:48:47-ICS&gt; Command Established
+19:49:58-ICS&gt; Command Established
+19:49:59-ICS&gt; Command Established
+19:50:00-ICS&gt; Command Established
+19:50:01-ICS&gt; Command Established
+19:50:04-ICS&gt; Command Established
+19:50:16-ICS&gt; Command Established
+19:50:17-ICS&gt; Command Established
+19:50:18-ICS&gt; Command Established
+19:50:22-ICS&gt; Command Established
+19:50:24-ICS&gt; Secondary Search Completed
+19:50:27-ICS&gt; Command Established
+19:50:32-ICS&gt; Command Established
+19:50:36-ICS&gt; Command Established
+19:50:39-ICS&gt; Evacuation Ordered
+19:50:39-ICS&gt; Primary Search Completed
+19:50:59-ICS&gt; Begin Operations (Suppression/Extrication/Rescue)
+19:51:19-ICS&gt; Accountability/Par Established
+19:51:19-ICS&gt; End Operations (Suppression/Extrication/Rescue)
+19:51:29-ICS&gt; Command Established
+19:51:46-ICS&gt; Secondary Search Completed
+19:51:50-ICS&gt; Mayday Declared
+19:51:50-ICS&gt; Mayday Declared
+19:51:53-ICS&gt; Mayday Declared
+19:51:53-ICS&gt; Mayday Declared
+19:51:53-ICS&gt; Mayday Declared
+19:51:54-ICS&gt; Mayday Declared
+19:51:58-ICS&gt; Mayday Declared
+19:52:19-ICS&gt; Evacuation Ordered
+19:52:39-ICS&gt; Evacuation Ordered
+19:52:48-ICS&gt; Command Established
+19:52:54-ICS&gt; Accountability/Par Established
+19:52:57-ICS&gt; Accountability/Par Established
+19:52:58-ICS&gt; Accountability/Par Established
+19:53:01-ICS&gt; Accountability/Par Established
+19:53:08-ICS&gt; Accountability/Par Established
+19:53:11-ICS&gt; Accountability/Par Established
+19:53:32-ICS&gt; Begin Operations (Suppression/Extrication/Rescue)
+19:53:35-ICS&gt; End Operations (Suppression/Extrication/Rescue)
+19:53:55-DSIUFHSDIPUHSDIPFUSHFIPSDUFH
+19:54:05-GET TO THE CHOPPA
+19:54:07-OIJDEOIDJ
+19:54:08-DSOIDODU
+19:54:10-SDIHDSIDH
+19:54:10-HELLO? Is this thing on?
+19:54:27-what does mdc stand for/
+19:54:34-IM SO HUNGRY
+19:54:41-the brown fox jump over the lazy dog
+19:54:45-whats a "chester"?
+19:55:13-WOULD YOU LIKE TO PLAY A GAME
+19:55:41-GLOBAL THERMONUCLEAR WAR
+19:55:44-DRUGS ARE BAD
+19:56:15-MMMKAY
+19:56:31-jeff is going bald
+19:58:07-System Unit Alarm
+19:58:42-System Unit Alarm
+19:59:07-System Unit Alarm
+19:59:17-System Unit Alarm
+19:59:48-Location marked with: POI Thu Jul 14 19:59:48 EDT 2016 Lat: 39 : 57 : 32.533200000 Lon: -75 : 34 : 58.573200000 Unit Status: ENROUTE
+19:59:53-Location marked with: POI Thu Jul 14 19:59:54 EDT 2016 Lat: 39 : 58 : 17.216399999 Lon: -75 : 51 : 24.976799999 Unit Status: ENROUTE
+19:59:54-Location marked with: POI Thu Jul 14 19:59:54 EDT 2016 Lat: 39 : 57 : 41.061599999 Lon: -75 : 48 : 08.866800000 Unit Status: ENROUTE
+19:59:55-Location marked with: POI Thu Jul 14 19:59:57 EDT 2016 Lat: 39 : 58 : 17.216399999 Lon: -75 : 51 : 24.976799999 Unit Status: ARRIVE
+19:59:57-Location marked with: POI Thu Jul 14 19:59:57 EDT 2016 Lat: 39 : 56 : 53.498400000 Lon: -75 : 34 : 23.642399999 Unit Status: ENROUTE
+19:59:58-Location marked with: POI Thu Jul 14 19:59:59 EDT 2016 Lat: 39 : 56 : 53.498400000 Lon: -75 : 34 : 23.642399999 Unit Status: ENROUTE
+20:00:00-Location marked with: POI Thu Jul 14 20:00:00 EDT 2016 Lat: 39 : 57 : 39.905999999 Lon: -75 : 36 : 02.897999999 Unit Status: ENROUTE
+20:00:04-Location marked with: POI Thu Jul 14 20:00:04 EDT 2016 Lat: 39 : 57 : 39.103199999 Lon: -75 : 35 : 02.313600000 Unit Status: ENROUTE
+20:00:32-Location marked with: POI Thu Jul 14 20:00:33 EDT 2016 Lat: 39 : 56 : 53.498400000 Lon: -75 : 34 : 23.642399999 Unit Status: ENROUTE
+20:00:49-Location marked with: POI Thu Jul 14 20:00:51 EDT 2016 Lat: 39 : 55 : 14.912399999 Lon: -75 : 17 : 59.276399999 Unit Status: ENROUTE
+20:05:13-System Unit Alarm
+20:06:18-System Unit Alarm
+20:09:18-System Unit Alarm
+20:13:10-Preempt Unit LAD411
+20:15:00-Preempt Unit CHF44
+20:15:13-Preempt Unit AST15
+20:18:24-System Unit Alarm
+20:21:54-System Unit Alarm
+20:23:45-ICS&gt; Command Established
+20:33:06-MDT LOCKED
+20:33:21-MDT UNLOCKED
