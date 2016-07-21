@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 using System.Linq;
 using StationCAD.Model.Notifications.Clickatell;
@@ -10,14 +11,23 @@ namespace StationCAD.Model
 {
     public class Incident : BaseModel
     {
+        /// <summary>
+        /// The Organization (First Due Station) for the Incident
+        /// </summary>
         public int OrganizationId { get; set; }
 
         public virtual Organization Organization { get; set; }
 
+        /// <summary>
+        /// The Identifier specific to the CAD system that delivered it.
+        /// </summary>
         public int CADIdentifier { get; set; }
+        
+        public string Title { get; set; }
 
         public Guid IncidentIdentifier { get; set; }
 
+        [DisplayName("Call Time")]
         public DateTime EnteredDateTime { get; set; }
 
         public DateTime DispatchedDateTime { get; set; }
@@ -27,9 +37,13 @@ namespace StationCAD.Model
 
         #region Local Incident Info 
 
+        [DisplayName("Event Type Code")]
         public string IncidentTypeCode { get; set; }
-        public string IncidentType { get; set; }
 
+        [DisplayName("Event SubType Code")]
+        public string IncidentSubTypeCode { get; set; }
+        [DisplayName("ESZ")]
+        public string ESZ { get; set; }
         public string FinalIncidentTypeCode { get; set; }
         public string FinalIncidentType { get; set; }
 
@@ -37,6 +51,7 @@ namespace StationCAD.Model
 
         public string FinalIncidentPriority { get; set; }
 
+        [DisplayName("Event")]
         public string LocalIncidentID { get; set; }
 
         public string LocalXRefID { get; set; }
@@ -65,8 +80,10 @@ namespace StationCAD.Model
 
         #endregion
 
+        [DisplayName("Event Comments")]
         public ICollection<IncidentNote> Notes { get; set; }
-        public ICollection<IncidentEvent> Events { get; set; }
+        
+        public ICollection<IncidentEvent> Units { get; set; }
 
         public string RAWCADIncidentData { get; set; }
 
@@ -77,7 +94,7 @@ namespace StationCAD.Model
             sms.Recipients.Add(user.NotificationCellPhone);
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(string.Format("D: {0}", this.DispatchedDateTime));
-            sb.AppendLine(string.Format("{0}", this.IncidentType));
+            sb.AppendLine(string.Format("{0}", this.IncidentTypeCode));
             sb.AppendLine(string.Format("{0}", this.LocationAddress.NotificationAddress));
             var firstNote = this.Notes.OrderBy(x => x.EnteredDateTime).FirstOrDefault();
             sb.AppendLine(string.Format("NOTES: {0}", firstNote.Message));
@@ -111,7 +128,7 @@ namespace StationCAD.Model
         public EmailNotification GetEmailNotification(User user)
         {
             EmailNotification email = new EmailNotification();
-            email.MessageSubject = string.Format("{0} - Incident: {2}", this.Organization.Name, this.IncidentType);
+            email.MessageSubject = string.Format("{0} - Incident: {2}", this.Organization.Name, this.IncidentTypeCode);
             email.MessageBody = this.RAWCADIncidentData;
             email.OrganizationName = this.Organization.Name;
             return email;
@@ -122,7 +139,7 @@ namespace StationCAD.Model
             PushNotificationCreate push = new PushNotificationCreate();
             StringBuilder sb = new StringBuilder();
             push.Headings = new Dictionary<string, string>();
-            push.Headings.Add("en", string.Format("{0} - {1}", this.Organization.Name, this.IncidentType));
+            push.Headings.Add("en", string.Format("{0} - {1}", this.Organization.Name, this.IncidentTypeCode));
             push.Url = "http://station-cad.graphitegear.com";
             push.IncludeTags.Add(new PushNotificationTag { Key = "OrgTag", Value = this.Organization.Tag, Relation = "=" });
             push.Data.Add(new KeyValuePair<string, string>("IncidentID", this.Id.ToString()));

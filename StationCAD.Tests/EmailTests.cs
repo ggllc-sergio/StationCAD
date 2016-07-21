@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using StationCAD.Model;
 using StationCAD.Model.Notifications.Mailgun;
 using StationCAD.Processor.Notifications;
+using System.IO;
 
 namespace StationCAD.Tests
 {
@@ -17,12 +18,15 @@ namespace StationCAD.Tests
             Email emailer = new Email();
             try
             {
+                string data;
+                using (StreamReader sr = new StreamReader(@"TestData\ASCIITemp85.txt"))
+                { data = sr.ReadToEnd(); }
                 EmailNotification email = new EmailNotification
                 {
-                    Recipient = "skip513@gmail.com",
+                    Recipient = "ccpafd47@stationcad.graphitegear.com",
                     OrganizationName = "Lionville Fire Company",
                     MessageSubject = "Incident - AFA",
-                    MessageBody = "Fire Alarm \r\n 15 S Village Ave"
+                    MessageBody = data
                 };
                 string result = emailer.SendEmailMessage(email);
                 Console.WriteLine(result);

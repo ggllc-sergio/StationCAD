@@ -3,8 +3,10 @@ using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
+using StationCAD.Model;
 using StationCAD.Processor;
 using System.IO;
+using StationCAD.Model.Helpers;
 
 namespace StationCAD.Tests
 {
@@ -67,9 +69,11 @@ namespace StationCAD.Tests
             string data;
             using (StreamReader sr = new StreamReader(@"TestData\ASCIITemp85.txt"))
             { data = sr.ReadToEnd(); }
-            DispatchManager dispMgr = new DispatchManager();
-            ChesCoPAEventMessage eventMsg = dispMgr.ParseEventText(data);
+            DispatchManager<ChesCoPAEventMessage> dispMgr = new DispatchManager<ChesCoPAEventMessage>();
+            DispatchEvent eventMsg = dispMgr.ParseEventText(data);
 
+            string json = JsonUtil<DispatchEvent>.ToJson(eventMsg);
+            Console.WriteLine(json);
 
         }
     }
