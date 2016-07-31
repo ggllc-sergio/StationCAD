@@ -51,11 +51,11 @@ namespace StationCAD.Model
 
         public string PostalCode { get; set; }
 
-        public string XCoordinate { get; set; }
+        public decimal XCoordinate { get; set; }
 
-        public string YCoordinate { get; set; }
+        public decimal YCoordinate { get; set; }
 
-        public string Gelocation { get; set; }
+        public string PlaceID { get; set; }
     }
 
     public abstract class MobilePhoneNumber

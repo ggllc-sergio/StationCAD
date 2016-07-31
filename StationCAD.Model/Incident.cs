@@ -11,6 +11,10 @@ namespace StationCAD.Model
 {
     public class Incident : BaseModel
     {
+        public Incident()
+        {
+            this.IncidentIdentifier = Guid.NewGuid();
+        }
         /// <summary>
         /// The Organization (First Due Station) for the Incident
         /// </summary>
@@ -28,8 +32,6 @@ namespace StationCAD.Model
         public Guid IncidentIdentifier { get; set; }
 
         [DisplayName("Call Time")]
-        public DateTime EnteredDateTime { get; set; }
-
         public DateTime DispatchedDateTime { get; set; }
 
         public string ConsoleID { get; set; }
@@ -40,8 +42,6 @@ namespace StationCAD.Model
         public string IncidentTypeCode { get; set; }
 
         public string IncidentSubTypeCode { get; set; }
-        [DisplayName("ESZ")]
-        public string ESZ { get; set; }
 
         [DisplayName("Event Type Code")]
         public string FinalIncidentTypeCode { get; set; }
@@ -144,6 +144,9 @@ namespace StationCAD.Model
     public class IncidentAddress : Address
     {
         public LocationType IncidentLocationType { get; set; }
+
+        public string RawAddress { get; set; }
+        public string FormattedAddress { get; set; }
 
         public string NotificationAddress
         {

@@ -14,6 +14,7 @@ namespace StationCAD.Model
         public string FormattedAddress { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
+        public ICollection<GoogleAddressComponent> AddressComponents { get; set; }
     }
 
     public class GoogleGeoCodeResponse
@@ -51,6 +52,18 @@ namespace StationCAD.Model
         public string long_name { get; set; }
         public string short_name { get; set; }
         public string[] types { get; set; }
+    }
+    public enum GoogleAddressComponentType
+    {
+        street_number,
+        route,
+        locality,
+        administrative_area_level_3,
+        administrative_area_level_2,
+        administrative_area_level_1,
+        country,
+        postal_code,
+        postal_code_suffix
     }
 
 

@@ -147,7 +147,8 @@ namespace StationCAD.Processor
                         PartialMatch = item.partial_match,
                         PlaceID = item.place_id,
                         Latitude = item.geometry.location.lat,
-                        Longitude = item.geometry.location.lng
+                        Longitude = item.geometry.location.lng,
+                        AddressComponents = item.address_components
                     });
                 }
             }
@@ -176,10 +177,63 @@ namespace StationCAD.Processor
 
         protected void PopulateIncidentFromChesCoEvent(ChesCoPAEventMessage eventMessage, ref Incident incident)
         {
+            incident.Title = eventMessage.Title;
+            incident.LocalIncidentID = eventMessage.Event;
+            incident.LocalBoxArea = eventMessage.ESZ;
+            // Times
+            string[] dtParts = eventMessage.CallTime.Split(' ');
+            List<string> dtTrimmed = new List<string>();
+            foreach (string item in dtParts)
+            {
+                if (item != string.Empty)
+                    dtTrimmed.Add(item);
+            }
+            dtParts = dtTrimmed.ToArray();
+            string[] dParts = dtParts[0].Split('-');
+            string[] tParts = dtParts[1].Split(':');
+            incident.DispatchedDateTime = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), int.Parse(tParts[0]), int.Parse(tParts[1]), 0);
 
-            incident = new Incident();
+            // Incident Type Info 
+            if (incident.Id == 0)
+            {
+                incident.IncidentTypeCode = eventMessage.EventTypeCode;
+                incident.IncidentSubTypeCode = eventMessage.EventSubTypeCode;
+                incident.FinalIncidentTypeCode = eventMessage.EventTypeCode;
+                incident.FinalIncidentTypeCode = eventMessage.EventTypeCode;
+            }
+            else
+            {
+                incident.FinalIncidentTypeCode = eventMessage.EventTypeCode;
+                incident.FinalIncidentTypeCode = eventMessage.EventTypeCode;
+            }
 
-            
+            // Incident Location
+            incident.LocationAddress = new IncidentAddress();
+            incident.LocationAddress.RawAddress = eventMessage.Address;
+            if (eventMessage.GeoLocations != null && eventMessage.GeoLocations.Count == 1)
+            {
+                GeoLocation location = eventMessage.GeoLocations.First();
+                incident.LocationAddress.FormattedAddress = location.FormattedAddress;
+                incident.LocationAddress.XCoordinate = location.Latitude;
+                incident.LocationAddress.YCoordinate = location.Longitude;
+                incident.LocationAddress.PlaceID = location.PlaceID;
+                foreach(GoogleAddressComponent addrComp in location.AddressComponents)
+                {
+                    switch (addrComp.types[0])
+                    {
+                        case "street_number":
+
+                            break;
+
+                    }
+                }
+            }
+            // Caller Info
+            incident.CallerName = eventMessage.CallerName;
+            incident.CallerAddress = eventMessage.CallerAddress;
+            incident.CallerPhone = eventMessage.CallerPhoneNumber;
+
+
         }
     }
 

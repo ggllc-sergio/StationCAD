@@ -70,11 +70,30 @@ namespace StationCAD.Tests
             using (StreamReader sr = new StreamReader(@"TestData\Test-Dispatch-CHESCO-1.txt"))
             { data = sr.ReadToEnd(); }
             DispatchManager<ChesCoPAEventMessage> dispMgr = new DispatchManager<ChesCoPAEventMessage>();
-            DispatchEvent eventMsg = dispMgr.ParseEventText(data);
+            //DispatchEvent eventMsg = dispMgr.ParseEventText(data);
+            dispMgr.ProcessEvent(data);
+            //string json = JsonUtil<DispatchEvent>.ToJson(eventMsg);
+            //Console.WriteLine(json);
 
-            string json = JsonUtil<DispatchEvent>.ToJson(eventMsg);
-            Console.WriteLine(json);
+        }
 
+        [TestMethod]
+        public void ParseDate()
+        {
+            string dt = "28-07-2016              13:42";
+            string[] dtParts = dt.Split(' ');
+            List<string> dtTrimmed = new List<string>();
+            foreach(string item in dtParts)
+            {
+                if (item != string.Empty)
+                    dtTrimmed.Add(item);
+            }
+            dtParts = dtTrimmed.ToArray();
+            string[] dParts = dtParts[0].Split('-');
+            string[] tParts = dtParts[1].Split(':');
+            DateTime dtParsed = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), int.Parse(tParts[0]), int.Parse(tParts[1]), 0);
+
+            Console.WriteLine(dtParsed.ToString());
         }
     }
 }
