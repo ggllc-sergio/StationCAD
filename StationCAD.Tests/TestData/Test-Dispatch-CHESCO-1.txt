@@ -1,0 +1,33 @@
+ Chester County Emergency Services Dispatch Report 
+
+Call Time: 28-07-2016  10:14
+
+Event: F16001456
+Event Type Code: FIRE
+Event Subtype Code: AGRICULTURAL RESCUE
+ESZ: 
+Beat: 38
+
+Address:
+ 
+615  CALN RD 
+Cross Street: RIDGEVIEW DR AND RIDGEVIEW DR
+Location Information: 
+Development: 
+Municipality: CLN
+
+Caller Information:
+Caller Name: 
+Caller Phone Number:  x Type: 
+Alt Phone Number:  x Type: 
+Caller Address: 
+Caller Source: 
+
+Units:
+AMB411		
+ENG38		
+MED931		
+RES38		
+
+
+Event Comments:

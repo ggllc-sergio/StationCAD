@@ -6,6 +6,10 @@ using System.ComponentModel;
 using System.Linq.Expressions;
 
 using StationCAD.Model;
+using StationCAD.Model.DataContexts;
+using System.Web.Script.Serialization;
+using System.Text;
+using System.Configuration;
 
 namespace StationCAD.Processor
 {
@@ -17,15 +21,25 @@ namespace StationCAD.Processor
         {
 
             // Parse the raw message
-
+            ChesCoPAEventMessage dispEvent = ParseEventText(rawEvent);
             // Persist to the Database
+            using (var db = new StationCADDb())
+            {
+                Incident incident = db.Incidents.Where(x => x.LocalIncidentID == dispEvent.Event).FirstOrDefault();
+                if (incident == null)
+                    incident = new Incident();
+                PopulateIncidentFromChesCoEvent(dispEvent, ref incident);
+                if (incident.Id == 0)
+                    db.Incidents.Add(incident);
+                db.SaveChanges();
+            }
 
             // Create Notifications
 
             // Task Parallel Library - Send notifications
         }
 
-        public DispatchEvent ParseEventText(string rawMessage)
+        public ChesCoPAEventMessage ParseEventText(string rawMessage)
         {
             ChesCoPAEventMessage result = new ChesCoPAEventMessage();
 
@@ -42,7 +56,17 @@ namespace StationCAD.Processor
                 foreach(string line in lines)
                 {
                     if (result.Title == null)
-                    { result.Title = line; }
+                    {
+                        result.Title = line;
+                        if (line.IndexOf("Dispatch") != 0)
+                            result.ReportType = ReportType.Dispatch;
+                        if (line.IndexOf("Update") != 0)
+                            result.ReportType = ReportType.Update;
+                        if (line.IndexOf("Clear") != 0)
+                            result.ReportType = ReportType.Clear;
+                        if (line.IndexOf("Close") != 0)
+                            result.ReportType = ReportType.Close;
+                    }
                     else
                     {
                         var pieces = line.Split(new[] { ':' }, 2);
@@ -73,7 +97,8 @@ namespace StationCAD.Processor
                                 case "Units":
                                     var unitPieces = line.Split(new[] { '\t' });
                                     if (unitPieces.Count() == 3)
-                                        result.Units.Add(new UnitEntry { Unit = unitPieces[0].Trim(), Disposition = unitPieces[1].Trim(), TimeStamp = unitPieces[2].Trim() });
+                                    { result.Units.Add(new UnitEntry { Unit = unitPieces[0].Trim(), Disposition = unitPieces[1].Trim(), TimeStamp = unitPieces[2].Trim() }); }
+                                    
                                     break;
                                 case "Event Comments":
                                     var commentPieces = line.Split(new[] { '-' }, 2);
@@ -91,16 +116,71 @@ namespace StationCAD.Processor
                         }
                     }
                 }
+                // Parse Location info for mapping...
+                ParseLocationforMapping(ref result);
             }
 
             return result;
         }
+        
 
-        protected void ParseLine(string line, ref DispatchEvent eventMessage)
+        protected void ParseLocationforMapping(ref ChesCoPAEventMessage eventMessage)
         {
+            // Build Address 
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("{0}{1}", eventMessage.Address.Trim(), "+");
+            if (eventMessage.LocationMunicipality != null)
+            {
+                sb.Append(eventMessage.LocationMunicipality.Name.Replace(" ", "+"));
+            }
+            GoogleGeoCodeResponse results = GEOCodeAddress(sb.ToString());
+            // If results are ok, save the latitude/longitude
+            if (results != null && results.status == "OK")
+            {
+                eventMessage.GeoLocations = new List<GeoLocation>();
+                foreach(GoogleResult item in results.results)
+                {
+                    eventMessage.GeoLocations.Add(new GeoLocation
+                    {
+                        FormattedAddress = item.formatted_address,
+                        Type = item.types[0],
+                        PartialMatch = item.partial_match,
+                        PlaceID = item.place_id,
+                        Latitude = item.geometry.location.lat,
+                        Longitude = item.geometry.location.lng
+                    });
+                }
+            }
 
         }
 
+        protected static GoogleGeoCodeResponse GEOCodeAddress(String Address)
+        {
+            try
+            {
+
+                string googleAPIKey = ConfigurationManager.AppSettings["GoogleAPIKey"];
+                if (googleAPIKey == null)
+                    throw new ApplicationException("Unable to find Google API Key");
+                var address = String.Format("https://maps.google.com/maps/api/geocode/json?address={0}&key={1}", Address.Replace(" ", "+"), googleAPIKey);
+                var result = new System.Net.WebClient().DownloadString(address);
+                JavaScriptSerializer jss = new JavaScriptSerializer();
+                return jss.Deserialize<GoogleGeoCodeResponse>(result);
+            }
+            catch(Exception ex)
+            {
+                string message = ex.ToString();
+            }
+            return null;
+        }
+
+        protected void PopulateIncidentFromChesCoEvent(ChesCoPAEventMessage eventMessage, ref Incident incident)
+        {
+
+            incident = new Incident();
+
+            
+        }
     }
 
 

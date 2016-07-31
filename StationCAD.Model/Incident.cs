@@ -37,35 +37,25 @@ namespace StationCAD.Model
 
         #region Local Incident Info 
 
-        [DisplayName("Event Type Code")]
         public string IncidentTypeCode { get; set; }
 
-        [DisplayName("Event SubType Code")]
         public string IncidentSubTypeCode { get; set; }
         [DisplayName("ESZ")]
         public string ESZ { get; set; }
+
+        [DisplayName("Event Type Code")]
         public string FinalIncidentTypeCode { get; set; }
-        public string FinalIncidentType { get; set; }
 
-        public string IncidentPriority { get; set; }
-
-        public string FinalIncidentPriority { get; set; }
-
+        [DisplayName("Event SubType Code")]
+        public string FinalIncidentSubTypeCode { get; set; }
+        
         [DisplayName("Event")]
         public string LocalIncidentID { get; set; }
 
         public string LocalXRefID { get; set; }
 
-        public string LocalFireBox { get; set; }
-
-        public string LocalEMSBox { get; set; }
-
-        public string LocalPoliceBox { get; set; }
-
-        public string LocationGroup { get; set; }
-
-        public string LocationSection { get; set; }
-
+        public string LocalBoxArea { get; set; }
+        
         public IncidentAddress LocationAddress { get; set; }
 
         #endregion
@@ -83,6 +73,8 @@ namespace StationCAD.Model
         [DisplayName("Event Comments")]
         public ICollection<IncidentNote> Notes { get; set; }
         
+        public string LocalUnits { get; set; }
+
         public ICollection<IncidentEvent> Units { get; set; }
 
         public string RAWCADIncidentData { get; set; }
@@ -92,36 +84,27 @@ namespace StationCAD.Model
             SMSNotification sms = new SMSNotification();
             sms.Recipients = new List<string>();
             sms.Recipients.Add(user.NotificationCellPhone);
+            sms.Text = GetShortNotificationBody();
+            return sms;
+        }
+
+        protected string GetShortNotificationBody()
+        {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(string.Format("D: {0}", this.DispatchedDateTime));
             sb.AppendLine(string.Format("{0}", this.IncidentTypeCode));
             sb.AppendLine(string.Format("{0}", this.LocationAddress.NotificationAddress));
             var firstNote = this.Notes.OrderBy(x => x.EnteredDateTime).FirstOrDefault();
             sb.AppendLine(string.Format("NOTES: {0}", firstNote.Message));
-            switch (this.Organization.Type)
-            {
-                case OrganizationType.Fire:
-                    sb.AppendLine(string.Format("BOX: {0}", this.LocalFireBox));
-                    break;
-                case OrganizationType.EMS:
-                    sb.AppendLine(string.Format("BOX: {0}", this.LocalEMSBox));
-                    break;
-                case OrganizationType.Police:
-                    sb.AppendLine(string.Format("BOX: {0}", this.LocalPoliceBox));
-                    break;
-                case OrganizationType.GovernmentOEM:
-                default:
-                    sb.AppendLine(string.Format("BOX: F{0}, E{1}, P{2}", this.LocalFireBox, this.LocalEMSBox, this.LocalPoliceBox));
-                    break;
-            }
-            sms.Text = sb.ToString();
-            return sms;
+            sb.AppendLine(string.Format("BOX: {0}", this.LocalBoxArea));
+            sb.AppendLine(string.Format("Units: {0}", this.LocalUnits));
+            return sb.ToString();
         }
 
         public SMSEmailNotification GetSMSEmailNotification(User user)
         {
             SMSEmailNotification smsEmail = new SMSEmailNotification();
-            smsEmail.MessageBody = GetSMSNotification(user).Text;
+            smsEmail.MessageBody = GetShortNotificationBody();
             return smsEmail;
         }
 
@@ -129,7 +112,7 @@ namespace StationCAD.Model
         {
             EmailNotification email = new EmailNotification();
             email.MessageSubject = string.Format("{0} - Incident: {2}", this.Organization.Name, this.IncidentTypeCode);
-            email.MessageBody = this.RAWCADIncidentData;
+            email.MessageBody = GetShortNotificationBody();
             email.OrganizationName = this.Organization.Name;
             return email;
         }

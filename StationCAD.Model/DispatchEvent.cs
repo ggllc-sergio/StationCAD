@@ -21,13 +21,17 @@ namespace StationCAD.Model
         {
             this.Units = new List<UnitEntry>();
             this.Comments = new List<EventComment>();
+            this.ChesCoData = new Model.ChesterCountyData();
         }
 
+        protected ChesterCountyData ChesCoData { get; set; }
 
         public int OrganizationId { get; set; }
 
         public virtual Organization Organization { get; set; }
 
+        public ReportType ReportType { get; set;
+        }
         public string Title { get; set; }
 
         [DisplayName("Call Time")]
@@ -45,6 +49,9 @@ namespace StationCAD.Model
         [DisplayName("ESZ")]
         public string ESZ { get; set; }
 
+        [DisplayName("Beat")]
+        public string Beat { get; set; }
+
         [DisplayName("Address")]
         public string Address { get; set; }
 
@@ -59,6 +66,22 @@ namespace StationCAD.Model
 
         [DisplayName("Municipality")]
         public string Municipality { get; set; }
+
+        public Municipality LocationMunicipality
+        {
+            get
+            {
+                if (Municipality.Length > 0)
+                {
+                    Municipality item = ChesCoData.Municipalities.Where(x => x.Abbreviation == Municipality).FirstOrDefault();
+                    if (item != null)
+                        return item;
+                }
+                return null;
+            }
+        }
+       
+        public ICollection<GeoLocation> GeoLocations { get; set; }
 
         [DisplayName("Caller Information")]
         public string CallerInformation { get; set; }

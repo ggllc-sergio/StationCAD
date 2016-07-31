@@ -1,0 +1,46 @@
+ Chester County Emergency Services Clear Report 
+
+Call Time: 28-07-2016  14:09
+
+Event: F16001464
+Event Type Code: ALARM
+Event Subtype Code: FIRE
+ESZ: 
+Beat: 61
+
+Address:
+ROYERSFORD FOUNDRY 
+835  TOWNSHIP LINE RD 
+Cross Street: SCHUYLKILL RIVER TRL AND SPRING CITY RD
+Location Information: 
+Development: 
+Municipality: EPIKEL
+
+Caller Information:
+Caller Name: VECTOR/88
+Caller Phone Number: (800) 638-7077 x Type: 
+Alt Phone Number:  x Type: 
+Caller Address: 
+Caller Source: 
+
+Units:
+09A01	DP	09:42:07
+09A01	AK	09:42:12
+12A01	DP	09:51:07
+12A01	AK	09:54:37
+26P06	DP	09:40:12
+26P06	AK	09:40:56
+ENG61	DP	09:40:23
+ENG61	ER	09:42:53
+ENG61	AR	09:52:43
+ENG61	TR	09:59:11
+ENG61	TA	09:59:24
+ENG61	AV	10:09:44
+
+
+Event Comments:
+09:39:46-AFA - SPRINKLER, MACHINE ROOM - ATN
+09:40:35-REQ TO CANCEL, SPOKE TO ADAM ON LOC FALSE ALARM PER 88
+09:53:08-System Unit Alarm
+10:00:46-07/28/16 10:00:46 Command Established for set PD Incident Command.
+10:00:49-07/28/16 10:00:49 Situation Under Control for set PD Incident Command.

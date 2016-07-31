@@ -67,7 +67,7 @@ namespace StationCAD.Tests
         public void TestEventParsing()
         {
             string data;
-            using (StreamReader sr = new StreamReader(@"TestData\ASCIITemp85.txt"))
+            using (StreamReader sr = new StreamReader(@"TestData\Test-Dispatch-CHESCO-1.txt"))
             { data = sr.ReadToEnd(); }
             DispatchManager<ChesCoPAEventMessage> dispMgr = new DispatchManager<ChesCoPAEventMessage>();
             DispatchEvent eventMsg = dispMgr.ParseEventText(data);
