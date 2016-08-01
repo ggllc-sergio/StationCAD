@@ -221,18 +221,18 @@ namespace StationCAD.Processor
             }
 
             // Incident Location
-            incident.LocationAddress = new IncidentAddress();
-            incident.LocationAddress.RawAddress = eventMessage.Address;
-            incident.LocationAddress.Municipality = eventMessage.LocationMunicipality != null ? eventMessage.LocationMunicipality.Name : eventMessage.Municipality;
-
-            if (eventMessage.GeoLocations != null && eventMessage.GeoLocations.Count == 1)
+            incident.LocationAddresses = new  List<IncidentAddress>();
+            
+            foreach(GeoLocation local in eventMessage.GeoLocations)
             {
-                GeoLocation location = eventMessage.GeoLocations.First();
-                incident.LocationAddress.FormattedAddress = location.FormattedAddress;
-                incident.LocationAddress.XCoordinate = location.Latitude;
-                incident.LocationAddress.YCoordinate = location.Longitude;
-                incident.LocationAddress.PlaceID = location.PlaceID;
-                foreach(GoogleAddressComponent addrComp in location.AddressComponents)
+                IncidentAddress addr = new IncidentAddress();
+                addr.RawAddress = eventMessage.Address;
+                addr.Municipality = eventMessage.LocationMunicipality != null ? eventMessage.LocationMunicipality.Name : eventMessage.Municipality;
+                addr.FormattedAddress = local.FormattedAddress;
+                addr.XCoordinate = local.Latitude;
+                addr.YCoordinate = local.Longitude;
+                addr.PlaceID = local.PlaceID;
+                foreach(GoogleAddressComponent addrComp in local.AddressComponents)
                 {
                     switch (addrComp.types[0])
                     {

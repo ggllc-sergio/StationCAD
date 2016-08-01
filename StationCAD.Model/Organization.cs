@@ -28,16 +28,14 @@ namespace StationCAD.Model
         public OrganizationAddress MailingAddress { get; set; }
         public OrganizationAddress BillingAddress { get; set; }
 
-        public ICollection<OrganizationAddress> Addresses { get; set; }
+        public virtual ICollection<OrganizationAddress> Addresses { get; set; }
 
-        public ICollection<Incident> IncidentHistory { get; set; }
+        public virtual ICollection<Incident> IncidentHistory { get; set; }
         
     }
 
     public class OrganizationAddress : Address
     {
-        [Required]
-        public int OrganizationID { get; set; }
         public virtual Organization Organization { get; set; }
 
         public bool MailingAddress { get; set; }

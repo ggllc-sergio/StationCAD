@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Linq;
 using StationCAD.Model.Notifications.Clickatell;
 using StationCAD.Model.Notifications.OneSignal;
 using StationCAD.Model.Notifications.Mailgun;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace StationCAD.Model
 {
@@ -61,7 +63,18 @@ namespace StationCAD.Model
 
         public string LocalBoxArea { get; set; }
         
-        public IncidentAddress LocationAddress { get; set; }
+        public IncidentAddress PrimaryAddress
+        {
+            get
+            {
+                if (LocationAddresses != null && LocationAddresses.Count == 1)
+                { return LocationAddresses.First(); }
+                else
+                { return null; }
+            }
+        }
+
+        public virtual ICollection<IncidentAddress> LocationAddresses { get; set; }
 
         #endregion
 
@@ -76,11 +89,11 @@ namespace StationCAD.Model
         #endregion
 
         [DisplayName("Event Comments")]
-        public ICollection<IncidentNote> Notes { get; set; }
+        public virtual ICollection<IncidentNote> Notes { get; set; }
         
         public string LocalUnits { get; set; }
 
-        public ICollection<IncidentEvent> Units { get; set; }
+        public ICollection<IncidentUnit> Units { get; set; }
 
         public string RAWCADIncidentData { get; set; }
 
@@ -98,7 +111,7 @@ namespace StationCAD.Model
             StringBuilder sb = new StringBuilder();
             sb.AppendLine(string.Format("D: {0}", this.DispatchedDateTime));
             sb.AppendLine(string.Format("{0}", this.IncidentTypeCode));
-            sb.AppendLine(string.Format("{0}", this.LocationAddress.NotificationAddress));
+            sb.AppendLine(string.Format("{0}", this.PrimaryAddress.NotificationAddress));
             var firstNote = this.Notes.OrderBy(x => x.EnteredDateTime).FirstOrDefault();
             sb.AppendLine(string.Format("NOTES: {0}", firstNote.Message));
             sb.AppendLine(string.Format("BOX: {0}", this.LocalBoxArea));
@@ -148,14 +161,14 @@ namespace StationCAD.Model
     }
     public class IncidentAddress : Address
     {
-        []
-        public int IncidentId { get; set; }
         public virtual Incident Incident { get; set; }
 
         public LocationType IncidentLocationType { get; set; }
 
         public string RawAddress { get; set; }
         public string FormattedAddress { get; set; }
+
+        public bool GeoPartialMatch { get; set; }
 
         public string NotificationAddress
         {
@@ -185,7 +198,6 @@ namespace StationCAD.Model
 
     public class IncidentNote : BaseModel
     {
-        public int IncidentId { get; set; }
         public virtual Incident Incident { get; set; }
         public DateTime EnteredDateTime { get; set; }
 
@@ -194,9 +206,8 @@ namespace StationCAD.Model
         public string Message { get; set; }
     }
 
-    public class IncidentEvent : BaseModel
+    public class IncidentUnit : BaseModel
     {
-        public int IncidentId { get; set; }
         public virtual Incident Incident { get; set; }
         public DateTime EnteredDateTime { get; set; }
 
@@ -204,7 +215,7 @@ namespace StationCAD.Model
 
         public string Disposition { get; set; }
 
-        public IncidentNote EventNote { get; set; }
+        public string Comment { get; set; }
     }
 
     public enum LocationType

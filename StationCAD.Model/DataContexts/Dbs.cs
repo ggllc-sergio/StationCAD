@@ -22,10 +22,38 @@ namespace StationCAD.Model.DataContexts
             return new StationCADDb();
         }
 
+        protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // 1-to-many
+            modelBuilder.Entity<IncidentAddress>()
+                .HasRequired<Incident>(i => i.Incident)
+                .WithMany(i => i.LocationAddresses);
+
+            // 1-to-many
+            modelBuilder.Entity<IncidentNote>()
+                .HasRequired<Incident>(i => i.Incident)
+                .WithMany(i => i.Notes);
+
+            // 1-to-many
+            modelBuilder.Entity<IncidentUnit>()
+                .HasRequired<Incident>(i => i.Incident)
+                .WithMany(i => i.Units);
+
+            // 1-to-many
+            modelBuilder.Entity<OrganizationAddress>()
+                .HasRequired<Organization>(o => o.Organization)
+                .WithMany(o => o.Addresses)
+                .WillCascadeOnDelete(false);
+
+
+        }
+
         public DbSet<Incident> Incidents { get; set; }
         public DbSet<IncidentAddress> IncidentAddresses { get; set; }
         public DbSet<IncidentNote> IncidentNotes { get; set; }
-        public DbSet<IncidentEvent> IncidentEvents { get; set; }
+        public DbSet<IncidentUnit> IncidentUnits { get; set; }
 
         public DbSet<User> Users { get; set; }
         public DbSet<UserAddress> UserAddresses { get; set; }
