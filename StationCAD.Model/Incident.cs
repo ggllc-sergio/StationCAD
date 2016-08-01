@@ -11,10 +11,15 @@ namespace StationCAD.Model
 {
     public class Incident : BaseModel
     {
-        public Incident()
+
+        public Incident() { }
+
+        public Incident(Organization org)
         {
             this.IncidentIdentifier = Guid.NewGuid();
+            this.OrganizationId = org.Id;
         }
+
         /// <summary>
         /// The Organization (First Due Station) for the Incident
         /// </summary>
@@ -143,6 +148,10 @@ namespace StationCAD.Model
     }
     public class IncidentAddress : Address
     {
+        []
+        public int IncidentId { get; set; }
+        public virtual Incident Incident { get; set; }
+
         public LocationType IncidentLocationType { get; set; }
 
         public string RawAddress { get; set; }
@@ -176,7 +185,8 @@ namespace StationCAD.Model
 
     public class IncidentNote : BaseModel
     {
-
+        public int IncidentId { get; set; }
+        public virtual Incident Incident { get; set; }
         public DateTime EnteredDateTime { get; set; }
 
         public string Author { get; set; }
@@ -186,6 +196,8 @@ namespace StationCAD.Model
 
     public class IncidentEvent : BaseModel
     {
+        public int IncidentId { get; set; }
+        public virtual Incident Incident { get; set; }
         public DateTime EnteredDateTime { get; set; }
 
         public string UnitID { get; set; }

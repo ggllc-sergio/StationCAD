@@ -2,8 +2,10 @@
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 using StationCAD.Model;
+using StationCAD.Model.DataContexts;
 using StationCAD.Processor;
 using System.IO;
 using StationCAD.Model.Helpers;
@@ -66,15 +68,59 @@ namespace StationCAD.Tests
         [TestMethod]
         public void TestEventParsing()
         {
-            string data;
-            using (StreamReader sr = new StreamReader(@"TestData\Test-Dispatch-CHESCO-1.txt"))
-            { data = sr.ReadToEnd(); }
-            DispatchManager<ChesCoPAEventMessage> dispMgr = new DispatchManager<ChesCoPAEventMessage>();
-            //DispatchEvent eventMsg = dispMgr.ParseEventText(data);
-            dispMgr.ProcessEvent(data);
-            //string json = JsonUtil<DispatchEvent>.ToJson(eventMsg);
-            //Console.WriteLine(json);
+            string tag = "CC47-LVFC";
+            using (var db = new StationCADDb())
+            {
+                string data;
+                using (StreamReader sr = new StreamReader(@"TestData\Test-Dispatch-CHESCO-2.txt"))
+                { data = sr.ReadToEnd(); }
+                DispatchManager<ChesCoPAEventMessage> dispMgr = new DispatchManager<ChesCoPAEventMessage>();
 
+                Organization org = db.Organizations.Where(x => x.Tag == tag).FirstOrDefault();
+                if (org == null)
+                {
+                    org = new Organization();
+                    org.Name = "Lionville Volunteer Fire Company";
+                    org.Status = OrganizationStatus.Active;
+                    org.Type = OrganizationType.Fire;
+                    org.Tag = tag;
+                    org.ContactEmail = "sergio.ora@graphitegear.com";
+                    org.ContactPhone = "610.883.3253";
+                    //OrganizationAddress addr = new OrganizationAddress();
+                    //addr.Type = AddressType.MainStation;
+                    //addr.Number = "15";
+                    //addr.Street = "Village Ave";
+                    //addr.City = "Lionville";
+                    //addr.Municipality = "Uwchlan";
+                    //addr.County = "Chester";
+                    //addr.State = "PA";
+                    //addr.PostalCode = "19353";
+                    //addr.BillingAddress = true;
+                    //addr.MailingAddress = true;
+                    //addr.PrimaryBilling = true;
+                    //addr.PrimaryMailing = true;
+
+                    //org.Addresses = new List<OrganizationAddress>();
+                    //org.Addresses.Add(addr);
+                    //org.BillingAddress = addr;
+                    //org.MailingAddress = addr;
+                    
+                    db.Organizations.Add(org);
+                    try
+                    {
+                        db.SaveChanges();
+                    }
+                    catch (Exception ex)
+                    {
+                        ex.ToString();
+                    }
+                }
+
+                //DispatchEvent eventMsg = dispMgr.ParseEventText(data);
+                dispMgr.ProcessEvent(org, data);
+                //string json = JsonUtil<DispatchEvent>.ToJson(eventMsg);
+                //Console.WriteLine(json);
+            }
         }
 
         [TestMethod]

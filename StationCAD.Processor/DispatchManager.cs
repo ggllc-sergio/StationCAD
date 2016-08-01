@@ -17,21 +17,31 @@ namespace StationCAD.Processor
         where T : DispatchEvent
     {
 
-        public void ProcessEvent(string rawEvent)
+        public void ProcessEvent(Organization organization, string rawEvent)
         {
 
             // Parse the raw message
             ChesCoPAEventMessage dispEvent = ParseEventText(rawEvent);
+
             // Persist to the Database
             using (var db = new StationCADDb())
             {
-                Incident incident = db.Incidents.Where(x => x.LocalIncidentID == dispEvent.Event).FirstOrDefault();
+                // Does this incident exist in the database with the CAD Event ID and Organization ID
+                Incident incident = db.Incidents.Where(x => x.LocalIncidentID == dispEvent.Event && x.OrganizationId == organization.Id).FirstOrDefault();
                 if (incident == null)
-                    incident = new Incident();
+                    incident = new Incident(organization);
+
                 PopulateIncidentFromChesCoEvent(dispEvent, ref incident);
                 if (incident.Id == 0)
                     db.Incidents.Add(incident);
-                db.SaveChanges();
+                try
+                {
+                    db.SaveChanges();
+                }
+                catch(Exception ex)
+                {
+                    ex.ToString();
+                }
             }
 
             // Create Notifications
@@ -97,7 +107,10 @@ namespace StationCAD.Processor
                                 case "Units":
                                     var unitPieces = line.Split(new[] { '\t' });
                                     if (unitPieces.Count() == 3)
-                                    { result.Units.Add(new UnitEntry { Unit = unitPieces[0].Trim(), Disposition = unitPieces[1].Trim(), TimeStamp = unitPieces[2].Trim() }); }
+                                    {
+                                        string disposition = unitPieces[1].Length > 0 ? unitPieces[1].Trim() : result.ReportType.ToString();
+                                        result.Units.Add(new UnitEntry { Unit = unitPieces[0].Trim(), Disposition = disposition, TimeStamp = unitPieces[2].Trim() });
+                                    }
                                     
                                     break;
                                 case "Event Comments":
@@ -210,6 +223,8 @@ namespace StationCAD.Processor
             // Incident Location
             incident.LocationAddress = new IncidentAddress();
             incident.LocationAddress.RawAddress = eventMessage.Address;
+            incident.LocationAddress.Municipality = eventMessage.LocationMunicipality != null ? eventMessage.LocationMunicipality.Name : eventMessage.Municipality;
+
             if (eventMessage.GeoLocations != null && eventMessage.GeoLocations.Count == 1)
             {
                 GeoLocation location = eventMessage.GeoLocations.First();

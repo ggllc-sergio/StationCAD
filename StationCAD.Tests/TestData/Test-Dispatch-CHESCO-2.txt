@@ -1,0 +1,31 @@
+ Chester County Emergency Services Dispatch Report 
+
+Call Time: 28-07-2016  10:14
+
+Event: F16001457
+Event Type Code: FIRE
+Event Subtype Code: APPLIANCE
+ESZ: 4701
+Beat: 47
+
+Address:
+ 
+113 Caernarvon Ct 
+Cross Street: Caernarvon DR AND Dead End
+Location Information: 
+Development: 
+Municipality: UWCHLN
+
+Caller Information:
+Caller Name: STA47
+Caller Phone Number:  x Type: 
+Alt Phone Number:  x Type: 
+Caller Address: 
+Caller Source: 
+
+Units:
+ENG47		
+RES47		
+
+
+Event Comments:
