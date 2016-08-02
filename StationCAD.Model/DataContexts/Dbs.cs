@@ -55,6 +55,8 @@ namespace StationCAD.Model.DataContexts
         public DbSet<IncidentNote> IncidentNotes { get; set; }
         public DbSet<IncidentUnit> IncidentUnits { get; set; }
 
+        public DbSet<Response> Responses { get; set; }
+
         public DbSet<User> Users { get; set; }
         public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<UserOrganizationAffiliation> UserOrganizationAffiliations { get; set; }

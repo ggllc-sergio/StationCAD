@@ -6,10 +6,8 @@ namespace StationCAD.Model
 {
     public class Response : BaseModel
     {
-        public int UserOrganizationAffiliationID { get; set; }
         public virtual UserOrganizationAffiliation User { get; set; }
-
-        public int IncidentID { get; set; }
+        
         public virtual Incident Incident { get; set; }
 
         public ResponseStatus Status { get; set; }

@@ -7,13 +7,13 @@ namespace StationCAD.Model.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Level3 : IMigrationMetadata
+    public sealed partial class AddResponses : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Level3));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(AddResponses));
         
         string IMigrationMetadata.Id
         {
-            get { return "201602122149286_Level3"; }
+            get { return "201608020325304_AddResponses"; }
         }
         
         string IMigrationMetadata.Source

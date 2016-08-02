@@ -68,13 +68,13 @@ namespace StationCAD.Processor
                     if (result.Title == null)
                     {
                         result.Title = line;
-                        if (line.IndexOf("Dispatch") != 0)
+                        if (line.IndexOf("Dispatch") != -1)
                             result.ReportType = ReportType.Dispatch;
-                        if (line.IndexOf("Update") != 0)
+                        if (line.IndexOf("Update") != -1)
                             result.ReportType = ReportType.Update;
-                        if (line.IndexOf("Clear") != 0)
+                        if (line.IndexOf("Clear") != -1)
                             result.ReportType = ReportType.Clear;
-                        if (line.IndexOf("Close") != 0)
+                        if (line.IndexOf("Close") != -1)
                             result.ReportType = ReportType.Close;
                     }
                     else
@@ -109,7 +109,8 @@ namespace StationCAD.Processor
                                     if (unitPieces.Count() == 3)
                                     {
                                         string disposition = unitPieces[1].Length > 0 ? unitPieces[1].Trim() : result.ReportType.ToString();
-                                        result.Units.Add(new UnitEntry { Unit = unitPieces[0].Trim(), Disposition = disposition, TimeStamp = unitPieces[2].Trim() });
+                                        string timeStamp = unitPieces[2].Length > 0 ? unitPieces[2].Trim() : result.CallTime;
+                                        result.Units.Add(new UnitEntry { Unit = unitPieces[0].Trim(), Disposition = disposition, TimeStamp = timeStamp });
                                     }
                                     
                                     break;
@@ -212,7 +213,7 @@ namespace StationCAD.Processor
                 incident.IncidentTypeCode = eventMessage.EventTypeCode;
                 incident.IncidentSubTypeCode = eventMessage.EventSubTypeCode;
                 incident.FinalIncidentTypeCode = eventMessage.EventTypeCode;
-                incident.FinalIncidentTypeCode = eventMessage.EventTypeCode;
+                incident.FinalIncidentSubTypeCode = eventMessage.EventSubTypeCode;
             }
             else
             {
@@ -237,16 +238,60 @@ namespace StationCAD.Processor
                     switch (addrComp.types[0])
                     {
                         case "street_number":
+                            addr.Number = addrComp.long_name;
+                            break;
 
+                        case "route":
+                            addr.Street = addrComp.long_name;
+                            break;
+
+                        case "administrative_area_level_3":
+                            addr.Municipality = addrComp.long_name;
+                            break;
+
+                        case "administrative_area_level_2":
+                            addr.County = addrComp.long_name;
+                            break;
+
+                        case "administrative_area_level_1":
+                            addr.State = addrComp.long_name;
+                            break;
+                            
+                        case "postal_code":
+                            addr.PostalCode = addrComp.long_name;
                             break;
 
                     }
                 }
+                incident.LocationAddresses.Add(addr);
             }
+
             // Caller Info
             incident.CallerName = eventMessage.CallerName;
             incident.CallerAddress = eventMessage.CallerAddress;
             incident.CallerPhone = eventMessage.CallerPhoneNumber;
+
+            if (eventMessage.Units != null && eventMessage.Units.Count > 0)
+            {
+                incident.Units = new List<IncidentUnit>();
+                foreach (UnitEntry unit in eventMessage.Units)
+                {
+                    DateTime ts;
+                    DateTime.TryParse(unit.TimeStamp, out ts);
+                    incident.Units.Add(new IncidentUnit { UnitID = unit.Unit, Disposition = unit.Disposition, EnteredDateTime = ts });
+                }
+            }
+
+            if (eventMessage.Comments != null && eventMessage.Comments.Count > 0)
+            {
+                incident.Notes = new List<IncidentNote>();
+                foreach (EventComment note in eventMessage.Comments)
+                {
+                    DateTime ts;
+                    DateTime.TryParse(note.TimeStamp, out ts);
+                    incident.Notes.Add(new IncidentNote { Message = note.Comment, EnteredDateTime = ts });
+                }
+            }
 
 
         }

@@ -63,29 +63,13 @@
     <Compile Include="DispatchEvent.cs" />
     <Compile Include="Helpers\EnumUtils.cs" />
     <Compile Include="Helpers\ReflectionUtils.cs" />
-    <Compile Include="Migrations\201602022156506_Initial.cs" />
-    <Compile Include="Migrations\201602022156506_Initial.Designer.cs">
-      <DependentUpon>201602022156506_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201608020215545_Initial.cs" />
+    <Compile Include="Migrations\201608020215545_Initial.Designer.cs">
+      <DependentUpon>201608020215545_Initial.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201602040334462_Level2.cs" />
-    <Compile Include="Migrations\201602040334462_Level2.Designer.cs">
-      <DependentUpon>201602040334462_Level2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602032007241_Level1.cs" />
-    <Compile Include="Migrations\201602032007241_Level1.Designer.cs">
-      <DependentUpon>201602032007241_Level1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201602122149286_Level3.cs" />
-    <Compile Include="Migrations\201602122149286_Level3.Designer.cs">
-      <DependentUpon>201602122149286_Level3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201607310422376_Level4.cs" />
-    <Compile Include="Migrations\201607310422376_Level4.Designer.cs">
-      <DependentUpon>201607310422376_Level4.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201608012058337_Level5.cs" />
-    <Compile Include="Migrations\201608012058337_Level5.Designer.cs">
-      <DependentUpon>201608012058337_Level5.cs</DependentUpon>
+    <Compile Include="Migrations\201608020325304_AddResponses.cs" />
+    <Compile Include="Migrations\201608020325304_AddResponses.Designer.cs">
+      <DependentUpon>201608020325304_AddResponses.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\Clickatell\SMSNotification.cs" />
@@ -102,26 +86,6 @@
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201602022156506_Initial.resx">
-      <DependentUpon>201602022156506_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602040334462_Level2.resx">
-      <DependentUpon>201602040334462_Level2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602032007241_Level1.resx">
-      <DependentUpon>201602032007241_Level1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201602122149286_Level3.resx">
-      <DependentUpon>201602122149286_Level3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201607310422376_Level4.resx">
-      <DependentUpon>201607310422376_Level4.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201608012058337_Level5.resx">
-      <DependentUpon>201608012058337_Level5.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\StationCAD.Data.Mongo\StationCAD.Data.NoSQL.csproj">
       <Project>{9f3b3152-ab73-4311-b5d1-308983740f3a}</Project>
       <Name>StationCAD.Data.NoSQL</Name>
@@ -130,6 +94,14 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201608020215545_Initial.resx">
+      <DependentUpon>201608020215545_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608020325304_AddResponses.resx">
+      <DependentUpon>201608020325304_AddResponses.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
