@@ -16,6 +16,8 @@ namespace StationCAD.Web.Controllers
 {
     public class EventController : Controller
     {
+        private readonly string _byteOrderMarkUtf8 =
+                Encoding.UTF8.GetString(Encoding.UTF8.GetPreamble());
         // GET: Event
         public ActionResult Index()
         {
@@ -124,9 +126,6 @@ namespace StationCAD.Web.Controllers
             byte[] fileContent = new byte[0];
             string attachment = string.Empty;
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(string.Format("Keys:{0} {1}{0}{0}", Environment.NewLine, keystring));
-            sb.AppendLine(string.Format("User IP:{1}{0}{0}", Environment.NewLine, userIP));
-            sb.AppendLine(string.Format("User Domain:{1}{0}{0}", Environment.NewLine, userDomain));
             try
             {
                 DateTime eventRecieved = DateTime.Now;
@@ -139,6 +138,10 @@ namespace StationCAD.Web.Controllers
                 {
                     keystring += item.ToString() + ",";
                 }
+                sb.AppendLine(string.Format("Keys:{0} {1}{0}{0}", Environment.NewLine, keystring));
+                sb.AppendLine(string.Format("User IP:{1}{0}{0}", Environment.NewLine, userIP));
+                sb.AppendLine(string.Format("User Domain:{1}{0}{0}", Environment.NewLine, userDomain));
+
                 vFileCnt = Request.Files.Count.ToString();
                 uvFileCnt = Request.Unvalidated.Files.Count.ToString();
                 sb.AppendLine(string.Format("Attachment Count: {1}, {2}{0}{0} ", Environment.NewLine, vFileCnt, uvFileCnt));
@@ -157,7 +160,8 @@ namespace StationCAD.Web.Controllers
                         file.InputStream.Read(fileContent, 0, file.ContentLength);
                         sb.AppendLine(string.Format("File Content Length:{0}{1}{0}{0}", Environment.NewLine, fileContent.Length));
                         // fileContent now contains the byte[] of your attachment...
-                        attachmentData = System.Text.Encoding.Default.GetString(fileContent);
+                        attachmentData = System.Text.Encoding.UTF8.GetString(fileContent).Remove(0, _byteOrderMarkUtf8.Length); 
+
                         sb.AppendLine(string.Format("Attachment Data:{0}{1}{0}{0}", Environment.NewLine, attachmentData));
                     }
                 }
