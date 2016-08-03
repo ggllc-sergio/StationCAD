@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace StationCAD.Model
 {
@@ -30,12 +31,16 @@ namespace StationCAD.Model
 
         public virtual ICollection<OrganizationAddress> Addresses { get; set; }
 
+
+
+        [JsonIgnore]
         public virtual ICollection<Incident> IncidentHistory { get; set; }
         
     }
 
     public class OrganizationAddress : Address
     {
+        [JsonIgnore]
         public virtual Organization Organization { get; set; }
 
         public bool MailingAddress { get; set; }

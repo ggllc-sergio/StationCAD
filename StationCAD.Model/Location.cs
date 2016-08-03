@@ -11,6 +11,7 @@ namespace StationCAD.Model
         public bool PartialMatch { get; set; }
         public string Type { get; set; }
         public string PlaceID { get; set; }
+        public string MapUrl { get; set; }
         public string FormattedAddress { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }

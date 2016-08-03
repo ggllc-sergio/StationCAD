@@ -7,28 +7,65 @@ using StationCAD.Model.Notifications.Mailgun;
 using StationCAD.Model.Notifications.Clickatell;
 using StationCAD.Model;
 using StationCAD.Model.DataContexts;
+using System.Collections.Concurrent;
+using StationCAD.Processor.Notifications;
+using System.Configuration;
 
 namespace StationCAD.Processor
 {
-    public class NotificationManager
+    public static class NotificationManager
     {
-        public List<OrganizationUserNotifcation> CreateNotifications(Incident incident)
+        public static List<OrganizationUserNotifcation> CreateNotifications(Incident incident)
         {
             List<OrganizationUserNotifcation> results = new List<OrganizationUserNotifcation>();
+            ConcurrentBag<OrganizationUserNotifcation> resultsBag = new ConcurrentBag<OrganizationUserNotifcation>();
+            List<UserOrganizationAffiliation> uoas;
             using (var db = new StationCADDb())
             {
-                List<UserOrganizationAffiliation> users = db.UserOrganizationAffiliations.Where(x => x.OrganizationId == incident.OrganizationId).ToList();
-                foreach(UserOrganizationAffiliation user in users)
-                {
-
-                }
+                uoas = db.UserOrganizationAffiliations
+                    .Include("CurrentUser")
+                    .Include("CurrentOrganization")
+                    .Where(x => x.OrganizationId == incident.OrganizationId).ToList();
             }
-            return new List<OrganizationUserNotifcation>();
+            if (uoas == null)
+                throw new InvalidProgramException("Unable to find valid User-Org Affiliations.");
+
+            ParallelOptions opts = new ParallelOptions();
+            opts.MaxDegreeOfParallelism = ParallelismFactor;
+            ParallelLoopResult ptlseResult = Parallel.ForEach(
+                uoas,
+                opts,
+                current =>
+                {
+                    OrganizationUserNotifcation item = new OrganizationUserNotifcation();
+                    SMSEmailNotification notification = incident.GetSMSEmailNotification(current.CurrentUser);
+                    item.NotifcationType = OrganizationUserNotifcationType.TextMessage;
+                    item.Notification = notification;
+                    item.MessageTitle = notification.MessageSubject;
+                    item.MessageBody = notification.MessageBody;
+                    item.UserOrganizationAffiliationId = current.Id;
+                    resultsBag.Add(item);
+                });
+                
+            ParallelLoopResult ptleResult = Parallel.ForEach(
+                uoas,
+                opts,
+                current =>
+                {
+                    OrganizationUserNotifcation item = new OrganizationUserNotifcation();
+                    EmailNotification notification = incident.GetEmailNotification(current.CurrentUser);
+                    item.NotifcationType = OrganizationUserNotifcationType.Email;
+                    item.Notification = notification;
+                    item.MessageTitle = notification.MessageSubject;
+                    item.MessageBody = notification.MessageBody;
+                    item.UserOrganizationAffiliationId = current.Id;
+                    resultsBag.Add(item);
+                });
+            return resultsBag.ToList<OrganizationUserNotifcation>();
         }
 
-        public void NotifyUsers(List<OrganizationUserNotifcation> users)
+        public static void NotifyUsers(ref List<OrganizationUserNotifcation> users)
         {
-
             // First group the notifications by notificaion Type
             List<NotificationGroup> groups = users
                 .GroupBy(g => g.NotifcationType)
@@ -39,7 +76,7 @@ namespace StationCAD.Processor
             {
                 ParallelOptions tplOptions = new ParallelOptions();
                 tplOptions.MaxDegreeOfParallelism = ParallelismFactor;
-                Parallel.ForEach<NotificationGroup>(groups, x => ProcessNotificationGroup(x));
+                Parallel.ForEach<NotificationGroup>(groups, x => ProcessNotificationGroup(ref x));
             }
         }
         
@@ -50,15 +87,35 @@ namespace StationCAD.Processor
 
         #region TPL task for notification processing 
 
-        private void ProcessNotificationGroup(NotificationGroup group)
+        private static void ProcessNotificationGroup(ref NotificationGroup group)
         {
             switch(group.Type)
             {
                 case OrganizationUserNotifcationType.Email:
-
+                    foreach(var item in group.Users)
+                    {
+                        string result = Email.SendEmailMessage(item.Notification as EmailNotification);
+                        if (result == "OK")
+                            item.Sent = DateTime.Now;
+                    }
                     break;
                 case OrganizationUserNotifcationType.TextMessage:
 
+                    bool enableSMSGateway;
+                    bool.TryParse(ConfigurationManager.AppSettings["enableSMSGateway"], out enableSMSGateway);
+                    foreach (var item in group.Users)
+                    {
+                        if(enableSMSGateway)
+                        {
+
+                        }
+                        else
+                        {
+                            string result = Email.SendEmailMessage(item.Notification as SMSEmailNotification);
+                            if (result == "OK")
+                                item.Sent = DateTime.Now;
+                        }
+                    }
                     break;
 
                 default:
@@ -70,7 +127,7 @@ namespace StationCAD.Processor
         #endregion
 
 
-        protected int ParallelismFactor
+        private static int ParallelismFactor
         {
             get
             {

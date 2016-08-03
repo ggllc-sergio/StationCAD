@@ -15,19 +15,19 @@ using StationCAD.Model.Notifications.Mailgun;
 
 namespace StationCAD.Processor.Notifications
 {
-    public class Email
+    public static class Email
     {
-        public string SendEmailMessage(EmailNotification email)
+        public static string SendEmailMessage(EmailNotification email)
         {
             return SendAPIMessage(email.OrganizationName, email.OrganizationEmail, email.Recipient, email.MessageSubject, email.MessageBody);
         }
 
-        public string SendEmailMessage(SMSEmailNotification smsEmail)
+        public static string SendEmailMessage(SMSEmailNotification smsEmail)
         {
             return SendAPIMessage(smsEmail.OrganizationName, smsEmail.OrganizationEmail, smsEmail.SMSEmailRecipient, smsEmail.MessageSubject, smsEmail.MessageBody);
         }
 
-        protected string SendAPIMessage(string orgName, string orgEmail, string recipient, string subject, string body)
+        private static string SendAPIMessage(string orgName, string orgEmail, string recipient, string subject, string body)
         {
             string mailgunKey = ConfigurationManager.AppSettings["mailgunKey"];
             if (mailgunKey == null)

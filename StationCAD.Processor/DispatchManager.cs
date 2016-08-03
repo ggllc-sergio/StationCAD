@@ -10,6 +10,7 @@ using StationCAD.Model.DataContexts;
 using System.Web.Script.Serialization;
 using System.Text;
 using System.Configuration;
+using System.Globalization;
 
 namespace StationCAD.Processor
 {
@@ -19,15 +20,20 @@ namespace StationCAD.Processor
 
         public void ProcessEvent(Organization organization, string rawEvent)
         {
-
             // Parse the raw message
             ChesCoPAEventMessage dispEvent = ParseEventText(rawEvent);
-
+            Incident incident;
             // Persist to the Database
             using (var db = new StationCADDb())
             {
                 // Does this incident exist in the database with the CAD Event ID and Organization ID
-                Incident incident = db.Incidents.Where(x => x.LocalIncidentID == dispEvent.Event && x.OrganizationId == organization.Id).FirstOrDefault();
+                incident = db.Incidents
+                    .Include("Organization")
+                    .Include("LocationAddresses")
+                    .Include("Notes")
+                    .Include("Units")
+                    .Where(x => x.LocalIncidentID == dispEvent.Event && x.OrganizationId == organization.Id)                    
+                    .FirstOrDefault();
                 if (incident == null)
                     incident = new Incident(organization);
 
@@ -40,13 +46,19 @@ namespace StationCAD.Processor
                 }
                 catch(Exception ex)
                 {
-                    ex.ToString();
+                    throw ex;
                 }
+
+                // Create Notifications
+                // 1. Get list of users by org affiliation
+                List<OrganizationUserNotifcation> notifications = NotificationManager.CreateNotifications(incident);
+                db.OrganizationUserNotifcations.AddRange(notifications);
+                db.SaveChanges();
+                // Task Parallel Library - Send notifications
+                NotificationManager.NotifyUsers(ref notifications);
+                db.SaveChanges();
+
             }
-
-            // Create Notifications
-
-            // Task Parallel Library - Send notifications
         }
 
         public ChesCoPAEventMessage ParseEventText(string rawMessage)
@@ -151,15 +163,21 @@ namespace StationCAD.Processor
             // If results are ok, save the latitude/longitude
             if (results != null && results.status == "OK")
             {
+
+                string googleAPIKey = ConfigurationManager.AppSettings["GoogleAPIKey"];
+                if (googleAPIKey == null)
+                    throw new ApplicationException("Unable to find Google API Key");
                 eventMessage.GeoLocations = new List<GeoLocation>();
                 foreach(GoogleResult item in results.results)
                 {
+                    string mapUrl = string.Format("https://maps.googleapis.com/maps/api/staticmap?zoom=16&size=400x400&markers=color:red%7C{0},{1}&key={2}", item.geometry.location.lat, item.geometry.location.lng, googleAPIKey);
                     eventMessage.GeoLocations.Add(new GeoLocation
                     {
                         FormattedAddress = item.formatted_address,
                         Type = item.types[0],
                         PartialMatch = item.partial_match,
                         PlaceID = item.place_id,
+                        MapUrl = mapUrl,
                         Latitude = item.geometry.location.lat,
                         Longitude = item.geometry.location.lng,
                         AddressComponents = item.address_components
@@ -173,7 +191,6 @@ namespace StationCAD.Processor
         {
             try
             {
-
                 string googleAPIKey = ConfigurationManager.AppSettings["GoogleAPIKey"];
                 if (googleAPIKey == null)
                     throw new ApplicationException("Unable to find Google API Key");
@@ -182,7 +199,7 @@ namespace StationCAD.Processor
                 JavaScriptSerializer jss = new JavaScriptSerializer();
                 return jss.Deserialize<GoogleGeoCodeResponse>(result);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 string message = ex.ToString();
             }
@@ -195,17 +212,8 @@ namespace StationCAD.Processor
             incident.LocalIncidentID = eventMessage.Event;
             incident.LocalBoxArea = eventMessage.ESZ;
             // Times
-            string[] dtParts = eventMessage.CallTime.Split(' ');
-            List<string> dtTrimmed = new List<string>();
-            foreach (string item in dtParts)
-            {
-                if (item != string.Empty)
-                    dtTrimmed.Add(item);
-            }
-            dtParts = dtTrimmed.ToArray();
-            string[] dParts = dtParts[0].Split('-');
-            string[] tParts = dtParts[1].Split(':');
-            incident.DispatchedDateTime = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), int.Parse(tParts[0]), int.Parse(tParts[1]), 0);
+            DateTime callTime = ParseChesCoEventDate(eventMessage.CallTime, DateTime.Now);
+            incident.DispatchedDateTime = callTime != DateTime.MinValue ? callTime : DateTime.Now;
 
             // Incident Type Info 
             if (incident.Id == 0)
@@ -218,21 +226,24 @@ namespace StationCAD.Processor
             else
             {
                 incident.FinalIncidentTypeCode = eventMessage.EventTypeCode;
-                incident.FinalIncidentTypeCode = eventMessage.EventTypeCode;
+                incident.FinalIncidentSubTypeCode = eventMessage.EventSubTypeCode;
             }
 
             // Incident Location
-            incident.LocationAddresses = new  List<IncidentAddress>();
             
             foreach(GeoLocation local in eventMessage.GeoLocations)
             {
-                IncidentAddress addr = new IncidentAddress();
+                // Look for an existing Address
+                IncidentAddress addr = incident.LocationAddresses.Where(x => x.FormattedAddress == local.FormattedAddress).FirstOrDefault();
+                if (addr == null)
+                    addr = new IncidentAddress();
                 addr.RawAddress = eventMessage.Address;
                 addr.Municipality = eventMessage.LocationMunicipality != null ? eventMessage.LocationMunicipality.Name : eventMessage.Municipality;
                 addr.FormattedAddress = local.FormattedAddress;
                 addr.XCoordinate = local.Latitude;
                 addr.YCoordinate = local.Longitude;
                 addr.PlaceID = local.PlaceID;
+                addr.MapUrl = local.MapUrl;
                 foreach(GoogleAddressComponent addrComp in local.AddressComponents)
                 {
                     switch (addrComp.types[0])
@@ -263,7 +274,8 @@ namespace StationCAD.Processor
 
                     }
                 }
-                incident.LocationAddresses.Add(addr);
+                if (addr.Id == 0)
+                    incident.LocationAddresses.Add(addr);
             }
 
             // Caller Info
@@ -273,27 +285,101 @@ namespace StationCAD.Processor
 
             if (eventMessage.Units != null && eventMessage.Units.Count > 0)
             {
-                incident.Units = new List<IncidentUnit>();
+                string localUnits = string.Empty;
                 foreach (UnitEntry unit in eventMessage.Units)
                 {
-                    DateTime ts;
-                    DateTime.TryParse(unit.TimeStamp, out ts);
-                    incident.Units.Add(new IncidentUnit { UnitID = unit.Unit, Disposition = unit.Disposition, EnteredDateTime = ts });
+                    IncidentUnit item = incident.Units.Where(x => x.UnitID == unit.Unit && x.Disposition == unit.Disposition).FirstOrDefault();
+                    if (item == null)
+                        item = new IncidentUnit();
+                    DateTime ts = ParseChesCoEventDate(unit.TimeStamp, incident.DispatchedDateTime);
+                    item.UnitID = unit.Unit;
+                    item.Disposition = unit.Disposition;
+                    item.EnteredDateTime = ts != DateTime.MinValue ? ts : incident.DispatchedDateTime;
+                    if (item.Id == 0)
+                        incident.Units.Add(item);
+                    if (unit.Unit.Contains(eventMessage.Beat))
+                        localUnits += string.Format("{0} ", unit.Unit);
                 }
+                incident.LocalUnits = localUnits;
             }
 
             if (eventMessage.Comments != null && eventMessage.Comments.Count > 0)
             {
-                incident.Notes = new List<IncidentNote>();
                 foreach (EventComment note in eventMessage.Comments)
                 {
-                    DateTime ts;
-                    DateTime.TryParse(note.TimeStamp, out ts);
-                    incident.Notes.Add(new IncidentNote { Message = note.Comment, EnteredDateTime = ts });
+                    DateTime ts = ParseChesCoEventDate(note.TimeStamp, incident.DispatchedDateTime);
+                    IncidentNote item = incident.Notes.Where(x => x.Message == note.Comment && x.EnteredDateTime == ts).FirstOrDefault();
+                    if (item == null)
+                        item = new IncidentNote();
+                    item.Message = note.Comment;
+                    item.EnteredDateTime = ts != DateTime.MinValue ? ts : incident.DispatchedDateTime;
+                    if (item.Id == 0)
+                        incident.Notes.Add(item);
                 }
             }
+        }
 
 
+        protected DateTime ParseChesCoEventDate(string eventDate, DateTime dispatchTime)
+        {
+            // Times
+            try
+            {
+                if (eventDate.Length == 0)
+                    return DateTime.MinValue;
+                string[] dtParts = eventDate.Split(' ');
+                List<string> dtTrimmed = new List<string>();
+                string[] dParts;
+                string[] tParts;
+                DateTime dtParsed = dispatchTime;
+                foreach (string item in dtParts)
+                {
+                    if (item != string.Empty)
+                        dtTrimmed.Add(item);
+                }
+                dtParts = dtTrimmed.ToArray();
+                if (dtParts.Count() == 1)
+                {
+                    // Are there date components?
+                    dParts = dtParts[0].Split('-');
+                    if (dParts.Count() > 1)
+                    { dtParsed = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), 0, 0, 0); }
+                    dParts = dtParts[0].Split('/');
+                    if (dParts.Count() > 1)
+                    { dtParsed = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), 0, 0, 0); }
+                    // Are there time components?
+                    tParts = dtParts[0].Split(':');
+                    if (tParts.Count() > 1)
+                    { dtParsed = new DateTime(dispatchTime.Year, dispatchTime.Month, dispatchTime.Day, int.Parse(tParts[0], NumberStyles.Any), int.Parse(tParts[1], NumberStyles.Any), int.Parse(tParts[2], NumberStyles.Any)); }
+                }
+                else
+                {
+                    dParts = dtParts[0].Split('-');
+                    tParts = dtParts[1].Split(':');
+                    dtParsed = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), int.Parse(tParts[0]), int.Parse(tParts[1]), 0);
+                }
+                return dtParsed;
+            }
+            catch
+            { return DateTime.MinValue; }
+        }
+
+
+        protected int ParallelismFactor
+        {
+            get
+            {
+                int dop = 1;
+                int procCnt = Environment.ProcessorCount;
+                // if the available procs are 4 or more, use half.
+                // otherwise just use 1.
+                if (procCnt > 3)
+                { dop = procCnt / 2; }
+                else
+                { dop = 1; }
+
+                return dop;
+            }
         }
     }
 

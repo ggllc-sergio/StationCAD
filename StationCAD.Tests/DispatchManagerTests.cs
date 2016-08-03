@@ -9,6 +9,7 @@ using StationCAD.Model.DataContexts;
 using StationCAD.Processor;
 using System.IO;
 using StationCAD.Model.Helpers;
+using System.Globalization;
 
 namespace StationCAD.Tests
 {
@@ -66,13 +67,14 @@ namespace StationCAD.Tests
         #endregion
 
         [TestMethod]
-        public void TestEventParsing()
+        public void TestDispatchEventParsing()
         {
-            string tag = "CC47-LVFC";
+            string tag = "CC03-PVFC";
             using (var db = new StationCADDb())
             {
+
                 string data;
-                using (StreamReader sr = new StreamReader(@"TestData\Test-Dispatch-CHESCO-2.txt"))
+                using (StreamReader sr = new StreamReader(@"TestData\Test-CHESCO-F16001462-Dispatch.txt"))
                 { data = sr.ReadToEnd(); }
                 DispatchManager<ChesCoPAEventMessage> dispMgr = new DispatchManager<ChesCoPAEventMessage>();
 
@@ -80,31 +82,13 @@ namespace StationCAD.Tests
                 if (org == null)
                 {
                     org = new Organization();
-                    org.Name = "Lionville Volunteer Fire Company";
+                    org.Name = "Paoli Volunteer Fire Company";
                     org.Status = OrganizationStatus.Active;
                     org.Type = OrganizationType.Fire;
                     org.Tag = tag;
                     org.ContactEmail = "sergio.ora@graphitegear.com";
                     org.ContactPhone = "610.883.3253";
-                    //OrganizationAddress addr = new OrganizationAddress();
-                    //addr.Type = AddressType.MainStation;
-                    //addr.Number = "15";
-                    //addr.Street = "Village Ave";
-                    //addr.City = "Lionville";
-                    //addr.Municipality = "Uwchlan";
-                    //addr.County = "Chester";
-                    //addr.State = "PA";
-                    //addr.PostalCode = "19353";
-                    //addr.BillingAddress = true;
-                    //addr.MailingAddress = true;
-                    //addr.PrimaryBilling = true;
-                    //addr.PrimaryMailing = true;
 
-                    //org.Addresses = new List<OrganizationAddress>();
-                    //org.Addresses.Add(addr);
-                    //org.BillingAddress = addr;
-                    //org.MailingAddress = addr;
-                    
                     db.Organizations.Add(org);
                     try
                     {
@@ -115,29 +99,97 @@ namespace StationCAD.Tests
                         ex.ToString();
                     }
                 }
+                // Add User
+                User usr;
+                usr = db.Users
+                    .Include("OrganizationAffiliations")
+                    .Include("MobileDevices")
+                    .Where(w => w.NotificationEmail == "skip513@gmail.com")
+                    .FirstOrDefault();
+                if (usr == null)
+                {
+                    usr = new User();
+                    usr.FirstName = string.Format("FirstName_{0}", DateTime.Now.Ticks);
+                    usr.LastName = string.Format("LastName_{0}", DateTime.Now.Ticks);
+                    usr.IdentificationNumber = DateTime.Now.Ticks.ToString();
+                    usr.UserName = string.Format("{0}.{1}", usr.FirstName, usr.LastName);
+                    usr.OrganizationAffiliations = new List<UserOrganizationAffiliation>();
+                    usr.OrganizationAffiliations.Add(new UserOrganizationAffiliation { Status = OrganizationUserStatus.Active, Role = OrganizationUserRole.User, OrganizationId = org.Id });
+                    usr.NotificationEmail = "skip513@gmail.com";
+                    usr.MobileDevices = new List<UserMobileDevice>();
+                    usr.MobileDevices.Add(new UserMobileDevice { Carrier = MobileCarrier.ATT, EnableSMS = true, MobileNumber = "6108833253" });
 
-                //DispatchEvent eventMsg = dispMgr.ParseEventText(data);
+                    db.Users.Add(usr);
+                    db.SaveChanges();
+                }
                 dispMgr.ProcessEvent(org, data);
-                //string json = JsonUtil<DispatchEvent>.ToJson(eventMsg);
-                //Console.WriteLine(json);
+
+                db.Users.Remove(usr);
+                db.SaveChanges();
+            }
+        }
+
+        [TestMethod]
+        public void LoadExistingIncident()
+        {
+            using (var db = new StationCADDb())
+            {
+                Incident inc = db.Incidents
+                    .Include("Organization")
+                    .Include("LocationAddresses")
+                    .Include("Notes")
+                    .Include("Units")
+                    .Where(x => x.LocalIncidentID == "F16001462").FirstOrDefault();
+                if (inc != null)
+                {
+                    string json = JsonUtil<Incident>.ToJson(inc);
+                    Console.WriteLine(json);
+                }
+                else
+                {
+                    Console.WriteLine("Couldn't find it.");
+                }
             }
         }
 
         [TestMethod]
         public void ParseDate()
         {
-            string dt = "28-07-2016              13:42";
+            DateTime now = DateTime.Now;
+            //string dt = "28-07-2016  14:09";
+            //string dt = "14:09:00";
+            string dt = "28/07/2016";
             string[] dtParts = dt.Split(' ');
             List<string> dtTrimmed = new List<string>();
-            foreach(string item in dtParts)
+            string[] dParts;
+            string[] tParts;
+            DateTime dtParsed = now;
+            foreach (string item in dtParts)
             {
                 if (item != string.Empty)
                     dtTrimmed.Add(item);
             }
             dtParts = dtTrimmed.ToArray();
-            string[] dParts = dtParts[0].Split('-');
-            string[] tParts = dtParts[1].Split(':');
-            DateTime dtParsed = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), int.Parse(tParts[0]), int.Parse(tParts[1]), 0);
+            if (dtParts.Count() == 1)
+            {
+                // Are there date components?
+                dParts = dtParts[0].Split('-');
+                if (dParts.Count() > 1)
+                { dtParsed = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), 0, 0, 0); }
+                dParts = dtParts[0].Split('/');
+                if (dParts.Count() > 1)
+                { dtParsed = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), 0, 0, 0); }
+                // Are there time components?
+                tParts = dtParts[0].Split(':');
+                if (tParts.Count() > 1)
+                { dtParsed = new DateTime(now.Year, now.Month, now.Day, int.Parse(tParts[0], NumberStyles.Any), int.Parse(tParts[1], NumberStyles.Any), int.Parse(tParts[2], NumberStyles.Any)); }
+            }
+            else
+            {
+                dParts = dtParts[0].Split('-');
+                tParts = dtParts[1].Split(':');
+                dtParsed = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), int.Parse(tParts[0]), int.Parse(tParts[1]), 0);
+            }
 
             Console.WriteLine(dtParsed.ToString());
         }

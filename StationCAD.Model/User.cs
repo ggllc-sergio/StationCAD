@@ -86,7 +86,6 @@ namespace StationCAD.Model
     public class UserMobileDevice : BaseModel
     {
 
-        public int UserID { get; set; }
         public virtual User User { get; set; }
 
         public string MobileNumber { get; set; }

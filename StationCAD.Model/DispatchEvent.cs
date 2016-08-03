@@ -43,7 +43,7 @@ namespace StationCAD.Model
         [DisplayName("Event Type Code")]
         public string EventTypeCode { get; set; }
 
-        [DisplayName("Event SubType Code")]
+        [DisplayName("Event Subtype Code")]
         public string EventSubTypeCode { get; set; }
 
         [DisplayName("ESZ")]

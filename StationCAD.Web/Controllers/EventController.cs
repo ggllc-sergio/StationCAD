@@ -52,8 +52,7 @@ namespace StationCAD.Web.Controllers
                     MessageSubject = string.Format("Event email recieved from [{0}] @ {1}", sender, DateTime.Now),
                     MessageBody = string.Format("Keys: {1}{0}{0} User IP:{2}{0}{0} User Domain:{3}{0}{0} Json Body: {4}", Environment.NewLine,  keystring, userIP, userDomain, json)
                 };
-                Email emailer = new Email();
-                string result = emailer.SendEmailMessage(email);
+                string result = Email.SendEmailMessage(email);
             }
             catch (Exception ex)
             {

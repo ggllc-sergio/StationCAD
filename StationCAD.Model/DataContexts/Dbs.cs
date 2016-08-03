@@ -67,20 +67,11 @@ namespace StationCAD.Model.DataContexts
 
         public override int SaveChanges()
         {
-            ObjectContext context = ((IObjectContextAdapter)this).ObjectContext;
-
-            //Find all Entities that are Added/Modified that inherit from my EntityBase
-            IEnumerable<ObjectStateEntry> objectStateEntries =
-                from e in context.ObjectStateManager.GetObjectStateEntries(EntityState.Added | EntityState.Modified)
-                where
-                    e.IsRelationship == false &&
-                    e.Entity != null &&
-                    typeof(BaseModel).IsAssignableFrom(e.Entity.GetType())
-                select e;
+            var entries = ChangeTracker.Entries();
 
             var currentTime = DateTime.Now;
 
-            foreach (var entry in objectStateEntries)
+            foreach (var entry in entries)
             {   
                 var baseModel = entry.Entity as BaseModel;
                 var user = HttpContext.Current != null && HttpContext.Current.User != null && HttpContext.Current.User.Identity.IsAuthenticated ? HttpContext.Current.User.Identity.Name : "Anonymous";

@@ -56,6 +56,8 @@ namespace StationCAD.Model
         public decimal YCoordinate { get; set; }
 
         public string PlaceID { get; set; }
+
+        public string MapUrl { get; set; }
     }
 
     public abstract class MobilePhoneNumber

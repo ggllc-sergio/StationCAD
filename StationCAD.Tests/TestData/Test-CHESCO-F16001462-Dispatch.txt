@@ -1,0 +1,38 @@
+ Chester County Emergency Services Dispatch Report 
+
+Call Time: 28-07-2016  13:42
+
+Event: F16001462
+Event Type Code: ACCIDENT
+Event Subtype Code: SERIOUS123
+ESZ: 
+Beat: 03
+
+Address:
+ 
+16  INDUSTRIAL BLVD 
+Cross Street: W CENTRAL AVE AND W INDUSTRIAL BLVD
+Location Information: 
+Development: 
+Municipality: WILSTN
+
+Caller Information:
+Caller Name: SENLER, MARVIN
+Caller Phone Number: (908) 251-0827 x Type: CELL
+Alt Phone Number:  x Type: 
+Caller Address: 2 STONEHILL LA
+Caller Source: 
+
+Units:
+AMB031	DP	
+AMB542	DP	
+AMB562	DP	
+ENG031	DP	
+ENG052	DP	
+MED041	DP	
+
+
+Event Comments:
+09:34:12-VEH VS ELDERLY MALE, CONSC AND ALERT BLEEDING FROM FACE AND ARM
+09:34:39-OPER OF VEH STILL ON LOC AND NOT INJ - RP WAITNG W/ PT
+09:35:42-System Unit Alarm

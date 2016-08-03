@@ -71,6 +71,10 @@
     <Compile Include="Migrations\201608020325304_AddResponses.Designer.cs">
       <DependentUpon>201608020325304_AddResponses.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608021520027_Add-Column-MapUrl-Table-Addresses.cs" />
+    <Compile Include="Migrations\201608021520027_Add-Column-MapUrl-Table-Addresses.Designer.cs">
+      <DependentUpon>201608021520027_Add-Column-MapUrl-Table-Addresses.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\Clickatell\SMSNotification.cs" />
     <Compile Include="Notifications\IncidentNotification.cs" />
@@ -101,6 +105,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201608020325304_AddResponses.resx">
       <DependentUpon>201608020325304_AddResponses.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608021520027_Add-Column-MapUrl-Table-Addresses.resx">
+      <DependentUpon>201608021520027_Add-Column-MapUrl-Table-Addresses.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

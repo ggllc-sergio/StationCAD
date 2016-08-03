@@ -100,7 +100,10 @@
     <Content Include="TestData\ASCIITemp85.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="TestData\Test-Clear-CHESCO-1.txt">
+    <Content Include="TestData\Test-CHESCO-F16001462-Dispatch.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="TestData\Test-CHESCO-F16001462-Clear.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="TestData\Test-Clear-CHESCO-2.txt">

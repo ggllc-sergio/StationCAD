@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Linq;
 using StationCAD.Model.Notifications.Clickatell;
 using StationCAD.Model.Notifications.OneSignal;
 using StationCAD.Model.Notifications.Mailgun;
-using System.ComponentModel.DataAnnotations.Schema;
+using Newtonsoft.Json;
 
 namespace StationCAD.Model
 {
@@ -19,6 +18,9 @@ namespace StationCAD.Model
         public Incident(Organization org)
         {
             this.IncidentIdentifier = Guid.NewGuid();
+            this.LocationAddresses = new List<IncidentAddress>();
+            this.Units = new List<IncidentUnit>();
+            this.Notes = new List<IncidentNote>();
             this.OrganizationId = org.Id;
         }
 
@@ -109,27 +111,34 @@ namespace StationCAD.Model
         protected string GetShortNotificationBody()
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(string.Format("D: {0}", this.DispatchedDateTime));
-            sb.AppendLine(string.Format("{0}", this.IncidentTypeCode));
+            sb.AppendLine(string.Format("DISPATCH TIME: {0}", this.DispatchedDateTime));
+            sb.AppendLine(string.Format("INCIDENT: {0}", this.IncidentTypeCode));
+            if (this.IncidentSubTypeCode != null)
+                sb.AppendLine(string.Format("          {0}", this.IncidentSubTypeCode));
+            sb.AppendLine("LOCATION:");
             sb.AppendLine(string.Format("{0}", this.PrimaryAddress.NotificationAddress));
             var firstNote = this.Notes.OrderBy(x => x.EnteredDateTime).FirstOrDefault();
             sb.AppendLine(string.Format("NOTES: {0}", firstNote.Message));
             sb.AppendLine(string.Format("BOX: {0}", this.LocalBoxArea));
-            sb.AppendLine(string.Format("Units: {0}", this.LocalUnits));
+            sb.AppendLine(string.Format("UNITS: {0}", this.LocalUnits));
             return sb.ToString();
         }
 
         public SMSEmailNotification GetSMSEmailNotification(User user)
         {
             SMSEmailNotification smsEmail = new SMSEmailNotification();
+            smsEmail.MobileNumber = user.MobileDevices.First().MobileNumber;
+            smsEmail.Carrier = user.MobileDevices.First().Carrier;
             smsEmail.MessageBody = GetShortNotificationBody();
+            smsEmail.OrganizationName = this.Organization.Name;
             return smsEmail;
         }
 
         public EmailNotification GetEmailNotification(User user)
         {
             EmailNotification email = new EmailNotification();
-            email.MessageSubject = string.Format("{0} - Incident: {2}", this.Organization.Name, this.IncidentTypeCode);
+            email.Recipient = user.NotificationEmail;
+            email.MessageSubject = string.Format("{0} - Incident: {1}", this.Organization.Name, this.IncidentTypeCode);
             email.MessageBody = GetShortNotificationBody();
             email.OrganizationName = this.Organization.Name;
             return email;
@@ -161,6 +170,7 @@ namespace StationCAD.Model
     }
     public class IncidentAddress : Address
     {
+        [JsonIgnore]
         public virtual Incident Incident { get; set; }
 
         public LocationType IncidentLocationType { get; set; }
@@ -178,19 +188,23 @@ namespace StationCAD.Model
                 switch(this.IncidentLocationType)
                 {
                     case LocationType.Intersection:
-                        sb.AppendFormat("{0}", this.Street);
+                        sb.AppendFormat("{1}{0}", Environment.NewLine, this.Street);
                         break;
                     case LocationType.AddressResidential:
                     case LocationType.AddressCommercial:
                     default:
-                        sb.AppendFormat("{0} {1}", this.Number, this.Street);
-                        sb.AppendFormat("{0}", this.Building);
-                        sb.AppendFormat("{0}", this.Development);
+                        sb.AppendFormat("{1} {2}{0}", Environment.NewLine, this.Number, this.Street);
+                        if (this.Building != null)
+                            sb.AppendFormat("{1}{0}", Environment.NewLine, this.Building);
+                        if (this.Development != null)
+                            sb.AppendFormat("{1}{0}", Environment.NewLine, this.Development);
                         break;
                 }
-                sb.AppendFormat("X1: {0}", this.XStreet1);
-                sb.AppendFormat("X2: {0}", this.XStreet2);
-                sb.AppendFormat("{0} ({1}, {2})", this.Municipality, this.County, this.State);
+                if (this.XStreet1 != null)
+                    sb.AppendFormat("X1: {1}{0}", Environment.NewLine, this.XStreet1);
+                if (this.XStreet2 != null)
+                    sb.AppendFormat("X2: {1}{0}", Environment.NewLine, this.XStreet2);
+                sb.AppendFormat("{1} ({2}, {3}){0}", Environment.NewLine, this.Municipality, this.County, this.State);
                 return sb.ToString();
             }
         }
@@ -198,6 +212,7 @@ namespace StationCAD.Model
 
     public class IncidentNote : BaseModel
     {
+        [JsonIgnore]
         public virtual Incident Incident { get; set; }
         public DateTime EnteredDateTime { get; set; }
 
@@ -208,6 +223,7 @@ namespace StationCAD.Model
 
     public class IncidentUnit : BaseModel
     {
+        [JsonIgnore]
         public virtual Incident Incident { get; set; }
         public DateTime EnteredDateTime { get; set; }
 
