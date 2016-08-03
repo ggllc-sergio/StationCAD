@@ -34,8 +34,15 @@ namespace StationCAD.Model
         }
         public string Title { get; set; }
 
+        public string Unit { get; set; }
+
+        public string Group { get; set; }
+
         [DisplayName("Call Time")]
         public string CallTime { get; set; }
+
+        [DisplayName("Clear Time")]
+        public string ClearTime { get; set; }
 
         [DisplayName("Event")]
         public string Event { get; set; }

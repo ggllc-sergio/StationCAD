@@ -12,6 +12,8 @@ using System.Text;
 using System.Configuration;
 using System.Globalization;
 
+using HtmlAgilityPack;
+
 namespace StationCAD.Processor
 {
     public class DispatchManager <T>
@@ -146,6 +148,138 @@ namespace StationCAD.Processor
                 ParseLocationforMapping(ref result);
             }
 
+            return result;
+        }
+
+        public ChesCoPAEventMessage ParseEventHtml(string rawMessage)
+        {
+            ChesCoPAEventMessage result = new ChesCoPAEventMessage();
+            if (rawMessage.Length > 0)
+            {
+                var html = new HtmlDocument();
+                html.LoadHtml(rawMessage); // load a string 
+                var root = html.DocumentNode;
+                var nodes = root.Descendants("td");
+                var totalNodes = nodes.Count();
+                // Incident Info
+                result.Title = nodes.Where(n => n.GetAttributeValue("class", "").Equals("Title"))
+                                    .Single().InnerText;
+                var unitHeaderKey = nodes.Where(x => x.InnerText.Contains("Unit:")).Single();
+                result.Unit = nodes.Where(x => x.Line == unitHeaderKey.Line + 1).Single().InnerText;
+
+                #region Dispatch / Clear Times 
+
+                string typeText;
+                if (result.Title.IndexOf("Dispatch") != -1)
+                {
+                    result.ReportType = ReportType.Dispatch;
+                    typeText = string.Format("{0} Time:", result.ReportType.ToString());
+                    var timeHeaderKey = nodes.Where(x => x.InnerText.Contains(typeText)).Single();
+                    result.CallTime = nodes.Where(x => x.Line == timeHeaderKey.Line + 1).Single().InnerText;
+                }
+                if (result.Title.IndexOf("Update") != -1)
+                    result.ReportType = ReportType.Update;
+                if (result.Title.IndexOf("Clear") != -1)
+                {
+                    result.ReportType = ReportType.Clear;
+                    typeText = string.Format("{0} Time: ", result.ReportType.ToString());
+                    var timeHeaderKey = nodes.Where(x => x.InnerText.Contains(typeText)).Single();
+                    result.ClearTime = nodes.Where(x => x.Line == timeHeaderKey.Line + 1).Single().InnerText;
+                }
+                if (result.Title.IndexOf("Close") != -1)
+                    result.ReportType = ReportType.Close;
+
+                #endregion
+
+                #region Event Type Codes 
+                var typeHeaderKey = nodes.Where(x => x.InnerText.Contains("Event Type:")).Single();
+                result.EventTypeCode = nodes.Where(x => x.Line == typeHeaderKey.Line + 1).Single().InnerText;
+
+                var subtypeHeaderKey = nodes.Where(x => x.InnerText.Contains("Event Sub-Type:")).Single();
+                result.EventSubTypeCode = nodes.Where(x => x.Line == subtypeHeaderKey.Line + 1).Single().InnerText;
+                #endregion
+
+                var groupHeaderKey = nodes.Where(x => x.InnerText.Contains("Dispatch Group: ")).Single();
+                result.Group = nodes.Where(x => x.Line == groupHeaderKey.Line + 1).Single().InnerText;
+
+                #region Location 
+                var addrHeaderKey = nodes.Where(x => x.InnerText == ("Address: ")).Single();
+                result.Address = nodes.Where(x => x.Line == addrHeaderKey.Line + 1).Single().InnerText.Replace(result.Group, "");
+                var xsHeaderKey = nodes.Where(x => x.InnerText.Contains("Cross Street:")).Single();
+                result.CrossStreet = nodes.Where(x => x.Line == xsHeaderKey.Line + 1).Single().InnerText;
+                var municHeaderKey = nodes.Where(x => x.InnerText.Contains("Municipality:")).Single();
+                result.Municipality = nodes.Where(x => x.Line == municHeaderKey.Line + 1).Single().InnerText;
+                var devHeaderKey = nodes.Where(x => x.InnerText.Contains("Development:")).Single();
+                result.Development = nodes.Where(x => x.Line == devHeaderKey.Line + 1).Single().InnerText;
+                var beatHeaderKey = nodes.Where(x => x.InnerText.Contains("Beat:")).Single();
+                result.Beat = nodes.Where(x => x.Line == beatHeaderKey.Line + 1).Single().InnerText;
+                #endregion
+
+                #region Caller Information 
+                var cnHeaderKey = nodes.Where(x => x.InnerText.Contains("Caller Name:")).Single();
+                result.Group = nodes.Where(x => x.Line == cnHeaderKey.Line + 1).Single().InnerText;
+                var cpHeaderKey = nodes.Where(x => x.InnerText.Contains("Caller Phone:")).Single();
+                result.Group = nodes.Where(x => x.Line == cpHeaderKey.Line + 1).Single().InnerText;
+                var caHeaderKey = nodes.Where(x => x.InnerText.Contains("Caller Address:")).Single();
+                result.Group = nodes.Where(x => x.Line == caHeaderKey.Line + 1).Single().InnerText;
+                var csHeaderKey = nodes.Where(x => x.InnerText.Contains("Caller Source:")).Single();
+                result.Group = nodes.Where(x => x.Line == csHeaderKey.Line + 1).Single().InnerText;
+                #endregion
+
+                #region Assigned Units
+                // Get the table rows...
+                var unitRows = root.Descendants().Where(n => n.GetAttributeValue("class", "").Equals("EventUnits"))
+                    .Single()
+                    .Descendants("tr");
+                // Loop through the rows...
+                if (unitRows.Count() > 0)
+                { 
+                    bool first = true;
+                    foreach (var item in unitRows)
+                    {
+                        if (first)
+                        {
+                            // Do nothing
+                            first = false;
+                        }
+                        else
+                        {
+                            HtmlNode[] parts = item.Descendants("td").ToArray<HtmlNode>();
+                            if (parts.Length > 0)
+                            {
+                                string unit = parts[0].InnerText;
+                                string station = parts[1].InnerText;
+                                string agency = parts[2].InnerText;
+                                string status = parts[3].InnerText;
+                                string time = parts[4].InnerText;
+                                result.Units.Add(new UnitEntry { Unit = unit, Disposition = status, TimeStamp = time });
+                            }
+                        }
+                    }
+                }
+                #endregion
+
+                #region Comments 
+                // Get the tds...
+                var comments = root.Descendants()
+                    .Where(n => n.GetAttributeValue("class", "").Equals("EventComment") && n.GetAttributeValue("COLSPAN", "").Equals("3"));
+                if (comments.Count() > 0)
+                {
+                    foreach(var item in comments)
+                    {
+                        // get the parent node
+                        var parent = item.ParentNode;
+                        var parts = parent.Descendants("td").ToArray<HtmlNode>();
+                        string time = parts[0].InnerText;
+                        string note = parts[1].InnerText;
+                        result.Comments.Add(new EventComment { TimeStamp = time, Comment = note });
+                    }
+                }
+                #endregion
+
+                // Parse Location info for mapping...
+                ParseLocationforMapping(ref result);
+            }
             return result;
         }
         

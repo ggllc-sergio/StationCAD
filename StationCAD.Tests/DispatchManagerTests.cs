@@ -10,6 +10,7 @@ using StationCAD.Processor;
 using System.IO;
 using StationCAD.Model.Helpers;
 using System.Globalization;
+using HtmlAgilityPack;
 
 namespace StationCAD.Tests
 {
@@ -192,6 +193,37 @@ namespace StationCAD.Tests
             }
 
             Console.WriteLine(dtParsed.ToString());
+        }
+
+        [TestMethod]
+        public void TestDispatchHtmlParsing()
+        {
+            string data;
+            using (StreamReader sr = new StreamReader(@"TestData\UnitClearReport22.htm"))
+            { data = sr.ReadToEnd(); }
+            
+            if (data.Length > 0)
+            {
+
+                //var html = new HtmlDocument();
+                //html.LoadHtml(data); // load a string 
+                //var root = html.DocumentNode;
+                //var nodes = root.Descendants("td");
+
+                
+                //int index = 0;
+                //foreach(var item in nodes)
+                //{
+                //    Console.WriteLine(string.Format("[{0}] - {1}", index,item.InnerText));
+                //    index++;
+                //}
+
+                DispatchManager<ChesCoPAEventMessage> dispMgr = new DispatchManager<ChesCoPAEventMessage>();
+                ChesCoPAEventMessage eventInc = dispMgr.ParseEventHtml(data);
+
+                string json = JsonUtil<ChesCoPAEventMessage>.ToJson(eventInc);
+                Console.WriteLine(json);
+            }
         }
     }
 }
