@@ -11,7 +11,7 @@ namespace StationCAD.Model
 {
      public abstract class DispatchEvent : BaseModel
     {
-
+        public string FileName { get; set; }
     }
 
 
@@ -30,8 +30,8 @@ namespace StationCAD.Model
 
         public virtual Organization Organization { get; set; }
 
-        public ReportType ReportType { get; set;
-        }
+        public ReportType ReportType { get; set; }
+
         public string Title { get; set; }
 
         public string Unit { get; set; }

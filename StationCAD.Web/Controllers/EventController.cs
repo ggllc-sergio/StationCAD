@@ -14,7 +14,7 @@ using System.Text;
 
 namespace StationCAD.Web.Controllers
 {
-    public class EventController : Controller
+    public class EventController : BaseController
     {
         private readonly string _byteOrderMarkUtf8 =
                 Encoding.UTF8.GetString(Encoding.UTF8.GetPreamble());
@@ -23,12 +23,15 @@ namespace StationCAD.Web.Controllers
         {
             return View();
         }
+
+
         [HttpPost]
         [ValidateInput(false)]
-        public ActionResult ProcessText(FormCollection oColl)
+        public ActionResult Process(FormCollection oColl)
         {
-            string sender = Request.Unvalidated.Form["sender"];
-            string body = Request.Unvalidated.Form["body-plain"];
+            HttpStatusCodeResult httpResult;
+            string sender = string.Empty;
+            string body = string.Empty;
             string attachmentData = string.Empty;
             string userIP = string.Empty;
             string userDomain = string.Empty;
@@ -39,17 +42,19 @@ namespace StationCAD.Web.Controllers
             string vFileCnt = string.Empty;
             int fileLen = 0;
             byte[] fileContent = new byte[0];
-            string attachment = string.Empty;
+            string attachmentName = string.Empty;
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine(string.Format("Keys:{0} {1}{0}{0}", Environment.NewLine, keystring));
-            sb.AppendLine(string.Format("User IP:{1}{0}{0}", Environment.NewLine, userIP));
-            sb.AppendLine(string.Format("User Domain:{1}{0}{0}", Environment.NewLine, userDomain));
             try
             {
+                sender = Request.Unvalidated.Form["sender"];
+                body = Request.Unvalidated.Form["body-plain"];
                 DateTime eventRecieved = DateTime.Now;
                 // Validate the sender
                 userIP = Request.UserHostAddress;
                 userDomain = Request.UserHostName;
+                sb.AppendLine(string.Format("Keys:{0} {1}{0}{0}", Environment.NewLine, keystring));
+                sb.AppendLine(string.Format("User IP:{1}{0}{0}", Environment.NewLine, userIP));
+                sb.AppendLine(string.Format("User Domain:{1}{0}{0}", Environment.NewLine, userDomain));
 
                 var formkeys = Request.Unvalidated.Form.Keys;
                 foreach (var item in formkeys)
@@ -61,10 +66,10 @@ namespace StationCAD.Web.Controllers
                 sb.AppendLine(string.Format("Attachment Count: {1}, {2}{0}{0} ", Environment.NewLine, vFileCnt, uvFileCnt));
                 if (Request.Unvalidated.Files.Count > 0)
                 {
-                    attachment = Request.Unvalidated.Form["attachment-0"];
                     // for this example; processing just the first file
                     HttpPostedFileBase file = Request.Unvalidated.Files[0];
                     fileLen = file.ContentLength;
+                    attachmentName = file.FileName;
                     sb.AppendLine(string.Format("Length:{0}{1}{0}{0}", Environment.NewLine, fileLen));
                     if (fileLen >= 0)
                     {
@@ -79,95 +84,15 @@ namespace StationCAD.Web.Controllers
                     }
                 }
 
-                DispatchManager<ChesCoPAEventMessage> dispMgr = new DispatchManager<ChesCoPAEventMessage>();
-                DispatchEvent eventMsg = dispMgr.ParseEventText(body);
-                json = JsonUtil<DispatchEvent>.ToJson(eventMsg);
-                sb.AppendLine(string.Format("Json Body:{0} {1}{0}{0}", Environment.NewLine, json));
-            }
-            catch (Exception ex)
-            {
-                err = ex.ToString();
-                sb.AppendLine(string.Format("Error:{0}{1}{0}{0}", Environment.NewLine, err));
-                //return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, string.Format("Error encountered processing the event. Message: {0}", ex.Message));
-            }
-            // do something with data 
-            EmailNotification email = new EmailNotification
-            {
-                Recipient = "skip513@gmail.com",
-                OrganizationName = "Lionville Fire Company",
-                MessageSubject = string.Format("Event email recieved from [{0}] @ {1}", sender, DateTime.Now),
-                MessageBody = sb.ToString()
-            };
-            string result = Email.SendEmailMessage(email);
-
-
-            return new HttpStatusCodeResult(HttpStatusCode.OK);
-
-
-        }
-
-
-        [HttpPost]
-        [ValidateInput(false)]
-        public ActionResult ProcessHtml(FormCollection oColl)
-        {
-            HttpStatusCodeResult httpResult;
-            string sender = Request.Unvalidated.Form["sender"];
-            string body = Request.Unvalidated.Form["body-plain"];
-            string attachmentData = string.Empty;
-            string userIP = string.Empty;
-            string userDomain = string.Empty;
-            string keystring = string.Empty;
-            string json = string.Empty;
-            string err = string.Empty;
-            string uvFileCnt = string.Empty;
-            string vFileCnt = string.Empty;
-            int fileLen = 0;
-            byte[] fileContent = new byte[0];
-            string attachment = string.Empty;
-            StringBuilder sb = new StringBuilder();
-            try
-            {
-                DateTime eventRecieved = DateTime.Now;
-                // Validate the sender
-                userIP = Request.UserHostAddress;
-                userDomain = Request.UserHostName;
-
-                var formkeys = Request.Unvalidated.Form.Keys;
-                foreach (var item in formkeys)
+                DispatchManager dispMgr = new DispatchManager();
+                DispatchEvent eventMsg;
+                if (attachmentData.Length > 0)
                 {
-                    keystring += item.ToString() + ",";
+                    eventMsg = dispMgr.ParseEventHtml(attachmentData);
+                    eventMsg.FileName = attachmentName;
                 }
-                sb.AppendLine(string.Format("Keys:{0} {1}{0}{0}", Environment.NewLine, keystring));
-                sb.AppendLine(string.Format("User IP:{1}{0}{0}", Environment.NewLine, userIP));
-                sb.AppendLine(string.Format("User Domain:{1}{0}{0}", Environment.NewLine, userDomain));
-
-                vFileCnt = Request.Files.Count.ToString();
-                uvFileCnt = Request.Unvalidated.Files.Count.ToString();
-                sb.AppendLine(string.Format("Attachment Count: {1}, {2}{0}{0} ", Environment.NewLine, vFileCnt, uvFileCnt));
-                if (Request.Unvalidated.Files.Count > 0)
-                {
-                    attachment = Request.Unvalidated.Form["attachment-0"];
-                    // for this example; processing just the first file
-                    HttpPostedFileBase file = Request.Unvalidated.Files[0];
-                    fileLen = file.ContentLength;
-                    sb.AppendLine(string.Format("Length:{0}{1}{0}{0}", Environment.NewLine, fileLen));
-                    if (fileLen >= 0)
-                    {
-                        // throw an error here if content length is not > 0
-                        // you'll probably want to do something with file.ContentType and file.FileName
-                        fileContent = new byte[file.ContentLength];
-                        file.InputStream.Read(fileContent, 0, file.ContentLength);
-                        sb.AppendLine(string.Format("File Content Length:{0}{1}{0}{0}", Environment.NewLine, fileContent.Length));
-                        // fileContent now contains the byte[] of your attachment...
-                        attachmentData = System.Text.Encoding.UTF8.GetString(fileContent).Remove(0, _byteOrderMarkUtf8.Length); 
-
-                        sb.AppendLine(string.Format("Attachment Data:{0}{1}{0}{0}", Environment.NewLine, attachmentData));
-                    }
-                }
-
-                DispatchManager<ChesCoPAEventMessage> dispMgr = new DispatchManager<ChesCoPAEventMessage>();
-                DispatchEvent eventMsg = dispMgr.ParseEventHtml(body);
+                else
+                    eventMsg = dispMgr.ParseEventText(body);
                 json = JsonUtil<DispatchEvent>.ToJson(eventMsg);
                 sb.AppendLine(string.Format("Json Body:{0} {1}{0}{0}", Environment.NewLine, json));
                 httpResult = new HttpStatusCodeResult(HttpStatusCode.OK);
@@ -176,7 +101,7 @@ namespace StationCAD.Web.Controllers
             {
                 err = ex.ToString();
                 sb.AppendLine(string.Format("Error:{0}{1}{0}{0}", Environment.NewLine, err));
-                httpResult  = new HttpStatusCodeResult(HttpStatusCode.InternalServerError, string.Format("Error encountered processing the event. Message: {0}", ex.Message));
+                httpResult = new HttpStatusCodeResult(HttpStatusCode.InternalServerError, string.Format("Error encountered processing the event. Message: {0}", ex.Message));
             }
             finally
             {
@@ -188,10 +113,10 @@ namespace StationCAD.Web.Controllers
                     MessageSubject = string.Format("Event email recieved from [{0}] @ {1}", sender, DateTime.Now),
                     MessageBody = sb.ToString()
                 };
-                string result = Email.SendEmailMessage(email);                
+                string result = Email.SendEmailMessage(email);
             }
             return httpResult;
-
         }
+        
     }
 }

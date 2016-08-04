@@ -75,9 +75,9 @@ namespace StationCAD.Tests
             {
 
                 string data;
-                using (StreamReader sr = new StreamReader(@"TestData\Test-CHESCO-F16001462-Dispatch.txt"))
+                using (StreamReader sr = new StreamReader(@"TestData\UnitClearReport22.htm"))
                 { data = sr.ReadToEnd(); }
-                DispatchManager<ChesCoPAEventMessage> dispMgr = new DispatchManager<ChesCoPAEventMessage>();
+                DispatchManager dispMgr = new DispatchManager();
 
                 Organization org = db.Organizations.Where(x => x.Tag == tag).FirstOrDefault();
                 if (org == null)
@@ -123,7 +123,7 @@ namespace StationCAD.Tests
                     db.Users.Add(usr);
                     db.SaveChanges();
                 }
-                dispMgr.ProcessEvent(org, data);
+                dispMgr.ProcessEvent(org, data, DispatchManager.MessageType.Html);
 
                 db.Users.Remove(usr);
                 db.SaveChanges();
@@ -218,7 +218,7 @@ namespace StationCAD.Tests
                 //    index++;
                 //}
 
-                DispatchManager<ChesCoPAEventMessage> dispMgr = new DispatchManager<ChesCoPAEventMessage>();
+                DispatchManager dispMgr = new DispatchManager();
                 ChesCoPAEventMessage eventInc = dispMgr.ParseEventHtml(data);
 
                 string json = JsonUtil<ChesCoPAEventMessage>.ToJson(eventInc);

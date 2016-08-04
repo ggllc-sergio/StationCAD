@@ -14,7 +14,7 @@ using StationCAD.Model;
 namespace StationCAD.Web.Controllers
 {
     [Authorize]
-    public class IncidentController : Controller
+    public class IncidentController : BaseController
     {
         
         public IncidentController() { }

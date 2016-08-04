@@ -67,6 +67,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseManager.cs" />
     <Compile Include="DispatchManager.cs" />
     <Compile Include="NotificationManager.cs" />
     <Compile Include="Notifications\EmailNotifications.cs" />

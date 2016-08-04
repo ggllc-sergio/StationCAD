@@ -92,6 +92,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="Json\email_incident.json" />
+    <Content Include="NLog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="TestData\event_type.csv">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -10,6 +10,7 @@ using StationCAD.Model.DataContexts;
 using System.Collections.Concurrent;
 using StationCAD.Processor.Notifications;
 using System.Configuration;
+using NLog;
 
 namespace StationCAD.Processor
 {
@@ -20,63 +21,81 @@ namespace StationCAD.Processor
             List<OrganizationUserNotifcation> results = new List<OrganizationUserNotifcation>();
             ConcurrentBag<OrganizationUserNotifcation> resultsBag = new ConcurrentBag<OrganizationUserNotifcation>();
             List<UserOrganizationAffiliation> uoas;
-            using (var db = new StationCADDb())
+            try
             {
-                uoas = db.UserOrganizationAffiliations
-                    .Include("CurrentUser")
-                    .Include("CurrentOrganization")
-                    .Where(x => x.OrganizationId == incident.OrganizationId).ToList();
-            }
-            if (uoas == null)
-                throw new InvalidProgramException("Unable to find valid User-Org Affiliations.");
+                using (var db = new StationCADDb())
+                {
+                    uoas = db.UserOrganizationAffiliations
+                        .Include("CurrentUser")
+                        .Include("CurrentOrganization")
+                        .Where(x => x.OrganizationId == incident.OrganizationId).ToList();
+                }
+                if (uoas == null)
+                    throw new InvalidProgramException("Unable to find valid User-Org Affiliations.");
 
-            ParallelOptions opts = new ParallelOptions();
-            opts.MaxDegreeOfParallelism = ParallelismFactor;
-            ParallelLoopResult ptlseResult = Parallel.ForEach(
-                uoas,
-                opts,
-                current =>
-                {
-                    OrganizationUserNotifcation item = new OrganizationUserNotifcation();
-                    SMSEmailNotification notification = incident.GetSMSEmailNotification(current.CurrentUser);
-                    item.NotifcationType = OrganizationUserNotifcationType.TextMessage;
-                    item.Notification = notification;
-                    item.MessageTitle = notification.MessageSubject;
-                    item.MessageBody = notification.MessageBody;
-                    item.UserOrganizationAffiliationId = current.Id;
-                    resultsBag.Add(item);
-                });
-                
-            ParallelLoopResult ptleResult = Parallel.ForEach(
-                uoas,
-                opts,
-                current =>
-                {
-                    OrganizationUserNotifcation item = new OrganizationUserNotifcation();
-                    EmailNotification notification = incident.GetEmailNotification(current.CurrentUser);
-                    item.NotifcationType = OrganizationUserNotifcationType.Email;
-                    item.Notification = notification;
-                    item.MessageTitle = notification.MessageSubject;
-                    item.MessageBody = notification.MessageBody;
-                    item.UserOrganizationAffiliationId = current.Id;
-                    resultsBag.Add(item);
-                });
+                ParallelOptions opts = new ParallelOptions();
+                opts.MaxDegreeOfParallelism = ParallelismFactor;
+                ParallelLoopResult ptlseResult = Parallel.ForEach(
+                    uoas,
+                    opts,
+                    current =>
+                    {
+                        OrganizationUserNotifcation item = new OrganizationUserNotifcation();
+                        SMSEmailNotification notification = incident.GetSMSEmailNotification(current.CurrentUser);
+                        item.NotifcationType = OrganizationUserNotifcationType.TextMessage;
+                        item.Notification = notification;
+                        item.MessageTitle = notification.MessageSubject;
+                        item.MessageBody = notification.MessageBody;
+                        item.UserOrganizationAffiliationId = current.Id;
+                        resultsBag.Add(item);
+                    });
+
+                ParallelLoopResult ptleResult = Parallel.ForEach(
+                    uoas,
+                    opts,
+                    current =>
+                    {
+                        OrganizationUserNotifcation item = new OrganizationUserNotifcation();
+                        EmailNotification notification = incident.GetEmailNotification(current.CurrentUser);
+                        item.NotifcationType = OrganizationUserNotifcationType.Email;
+                        item.Notification = notification;
+                        item.MessageTitle = notification.MessageSubject;
+                        item.MessageBody = notification.MessageBody;
+                        item.UserOrganizationAffiliationId = current.Id;
+                        resultsBag.Add(item);
+                    });
+            }
+            catch (Exception ex)
+            {
+                string errMsg = string.Format("An error occurred in NotificationManager.CreateNotifications(). Exception: {0}", ex.Message);
+                LogException(errMsg, ex);
+                throw ex;
+            }
             return resultsBag.ToList<OrganizationUserNotifcation>();
         }
 
         public static void NotifyUsers(ref List<OrganizationUserNotifcation> users)
         {
-            // First group the notifications by notificaion Type
-            List<NotificationGroup> groups = users
-                .GroupBy(g => g.NotifcationType)
-                .Select(x => new NotificationGroup { Type = x.Key, Users = x.ToList<OrganizationUserNotifcation>() })
-                .ToList<NotificationGroup>();
-            // Use TPL to process each type of notification
-            if (groups.Count> 0)
+            try
             {
-                ParallelOptions tplOptions = new ParallelOptions();
-                tplOptions.MaxDegreeOfParallelism = ParallelismFactor;
-                Parallel.ForEach<NotificationGroup>(groups, x => ProcessNotificationGroup(ref x));
+                // First group the notifications by notificaion Type
+                List<NotificationGroup> groups = users
+                    .GroupBy(g => g.NotifcationType)
+                    .Select(x => new NotificationGroup { Type = x.Key, Users = x.ToList<OrganizationUserNotifcation>() })
+                    .ToList<NotificationGroup>();
+                // Use TPL to process each type of notification
+                if (groups.Count > 0)
+                {
+                    ParallelOptions tplOptions = new ParallelOptions();
+                    tplOptions.MaxDegreeOfParallelism = ParallelismFactor;
+                    Parallel.ForEach<NotificationGroup>(groups, x => ProcessNotificationGroup(ref x));
+                }
+            }
+            catch (Exception ex)
+            {
+                string errMsg = string.Format("An error occurred in NotificationManager.NotifyUsers(). Exception: {0}", ex.Message);
+                LogException(errMsg, ex);
+                throw ex;
             }
         }
         
@@ -99,6 +118,7 @@ namespace StationCAD.Processor
                             item.Sent = DateTime.Now;
                     }
                     break;
+
                 case OrganizationUserNotifcationType.TextMessage:
 
                     bool enableSMSGateway;
@@ -119,8 +139,7 @@ namespace StationCAD.Processor
                     break;
 
                 default:
-
-
+                    
                     break;
             }
         }
@@ -143,6 +162,19 @@ namespace StationCAD.Processor
                 return dop;
             }
         }
+        
+        private static readonly Logger logger = LogManager.GetCurrentClassLogger();
+
+        private static void LogInfo(string message)
+        {
+            logger.Log(LogLevel.Info, message);
+        }
+
+        private static void LogException(string message, Exception ex)
+        {
+            logger.Log(LogLevel.Error, ex, message);
+        }
+
     }
 
     public class NotificationGroup
