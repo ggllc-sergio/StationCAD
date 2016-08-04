@@ -240,6 +240,8 @@ namespace StationCAD.Processor
                     result.Development = nodes.Where(x => x.Line == devHeaderKey.Line + 1).Single().InnerText;
                     var beatHeaderKey = nodes.Where(x => x.InnerText.Contains("Beat:")).Single();
                     result.Beat = nodes.Where(x => x.Line == beatHeaderKey.Line + 1).Single().InnerText;
+                    var eszHeaderKey = nodes.Where(x => x.InnerText.Contains("ESZ:")).Single();
+                    result.ESZ = nodes.Where(x => x.Line == eszHeaderKey.Line + 1).Single().InnerText;
                     #endregion
 
                     #region Caller Information 
@@ -456,16 +458,18 @@ namespace StationCAD.Processor
                 string localUnits = string.Empty;
                 foreach (UnitEntry unit in eventMessage.Units)
                 {
-                    IncidentUnit item = incident.Units.Where(x => x.UnitID == unit.Unit && x.Disposition == unit.Disposition).FirstOrDefault();
-                    if (item == null)
-                        item = new IncidentUnit();
                     DateTime ts = ParseChesCoEventDate(unit.TimeStamp, incident.DispatchedDateTime);
-                    item.UnitID = unit.Unit;
-                    item.Disposition = unit.Disposition;
-                    item.EnteredDateTime = ts != DateTime.MinValue ? ts : incident.DispatchedDateTime;
-                    if (item.Id == 0)
-                        incident.Units.Add(item);
-                    if (unit.Unit.Contains(eventMessage.Beat))
+                    IncidentUnit item = incident.Units.Where(x => x.UnitID == unit.Unit && x.Disposition == unit.Disposition && x.EnteredDateTime == ts).FirstOrDefault();
+                    if (item == null)
+                    {
+                        item = new IncidentUnit();
+                        item.UnitID = unit.Unit;
+                        item.Disposition = unit.Disposition;
+                        item.EnteredDateTime = ts != DateTime.MinValue ? ts : incident.DispatchedDateTime;
+                        if (item.Id == 0)
+                            incident.Units.Add(item);
+                    }
+                    if (unit.Unit.Contains(eventMessage.Beat) && !localUnits.Contains(eventMessage.Beat))
                         localUnits += string.Format("{0} ", unit.Unit);
                 }
                 incident.LocalUnits = localUnits;
@@ -478,11 +482,13 @@ namespace StationCAD.Processor
                     DateTime ts = ParseChesCoEventDate(note.TimeStamp, incident.DispatchedDateTime);
                     IncidentNote item = incident.Notes.Where(x => x.Message == note.Comment && x.EnteredDateTime == ts).FirstOrDefault();
                     if (item == null)
+                    {
                         item = new IncidentNote();
-                    item.Message = note.Comment;
-                    item.EnteredDateTime = ts != DateTime.MinValue ? ts : incident.DispatchedDateTime;
-                    if (item.Id == 0)
-                        incident.Notes.Add(item);
+                        item.Message = note.Comment;
+                        item.EnteredDateTime = ts != DateTime.MinValue ? ts : incident.DispatchedDateTime;
+                        if (item.Id == 0)
+                            incident.Notes.Add(item);
+                    }
                 }
             }
         }

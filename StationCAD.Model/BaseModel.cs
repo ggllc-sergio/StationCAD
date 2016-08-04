@@ -11,11 +11,9 @@ namespace StationCAD.Model
 
         [Required]
         public string CreateUser { get; set; }
-        [Required]
         public DateTime CreateDate { get; set; }
         [Required]
         public string LastUpdateUser { get; set; }
-        [Required]
         public DateTime LastUpdateDate { get; set; }
     }
 
