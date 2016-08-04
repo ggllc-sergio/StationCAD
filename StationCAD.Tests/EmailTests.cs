@@ -99,9 +99,9 @@ namespace StationCAD.Tests
                         db.Users.Add(usr);
                         db.SaveChanges();
                     }
-                    EmailNotification email = inc.GetEmailNotification(usr);
+                    EmailNotification email = inc.GetEmailNotification(usr.OrganizationAffiliations.First());
                     string emailResult = Email.SendEmailMessage(email);
-                    SMSEmailNotification sms = inc.GetSMSEmailNotification(usr);
+                    SMSEmailNotification sms = inc.GetSMSEmailNotification(usr.OrganizationAffiliations.First());
                     string smsResult = Email.SendEmailMessage(sms);
                     Console.WriteLine(string.Format("Email: {0}; SMS: {1}", emailResult, smsResult));
 

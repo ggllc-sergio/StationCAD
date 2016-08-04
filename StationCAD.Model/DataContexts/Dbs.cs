@@ -24,7 +24,13 @@ namespace StationCAD.Model.DataContexts
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+
             base.OnModelCreating(modelBuilder);
+
+
+            modelBuilder.Properties<DateTime>()
+                .Configure(c => c.HasColumnType("datetime2"));
+
 
             // 1-to-many
             modelBuilder.Entity<IncidentAddress>()

@@ -29,7 +29,8 @@ namespace StationCAD.Model
         /// </summary>
         public int OrganizationId { get; set; }
 
-        public virtual Organization Organization { get; set; }
+        public virtual Organization Organization
+        { get; set; }
 
         /// <summary>
         /// The Identifier specific to the CAD system that delivered it.
@@ -124,23 +125,23 @@ namespace StationCAD.Model
             return sb.ToString();
         }
 
-        public SMSEmailNotification GetSMSEmailNotification(User user)
+        public SMSEmailNotification GetSMSEmailNotification(UserOrganizationAffiliation userOrgAffiliation)
         {
             SMSEmailNotification smsEmail = new SMSEmailNotification();
-            smsEmail.MobileNumber = user.MobileDevices.First().MobileNumber;
-            smsEmail.Carrier = user.MobileDevices.First().Carrier;
+            smsEmail.MobileNumber = userOrgAffiliation.CurrentUser.MobileDevices.First().MobileNumber;
+            smsEmail.Carrier = userOrgAffiliation.CurrentUser.MobileDevices.First().Carrier;
             smsEmail.MessageBody = GetShortNotificationBody();
-            smsEmail.OrganizationName = this.Organization.Name;
+            smsEmail.OrganizationName = userOrgAffiliation.CurrentOrganization.Name;
             return smsEmail;
         }
 
-        public EmailNotification GetEmailNotification(User user)
+        public EmailNotification GetEmailNotification(UserOrganizationAffiliation userOrgAffiliation)
         {
             EmailNotification email = new EmailNotification();
-            email.Recipient = user.NotificationEmail;
-            email.MessageSubject = string.Format("{0} - Incident: {1}", this.Organization.Name, this.IncidentTypeCode);
+            email.Recipient = userOrgAffiliation.CurrentUser.NotificationEmail;
+            email.MessageSubject = string.Format("{0} - Incident: {1}", userOrgAffiliation.CurrentOrganization.Name, this.IncidentTypeCode);
             email.MessageBody = GetShortNotificationBody();
-            email.OrganizationName = this.Organization.Name;
+            email.OrganizationName = userOrgAffiliation.CurrentOrganization.Name;
             return email;
         }
 
@@ -158,11 +159,11 @@ namespace StationCAD.Model
             return push;
         }
 
-        public List<IncidentNotification> GetNotifications(User user)
+        public List<IncidentNotification> GetNotifications(UserOrganizationAffiliation userOrgAffiliation)
         {
             List<IncidentNotification> results = new List<IncidentNotification>();
 
-            if (user.NotifcationPushMobile != null)
+            if (userOrgAffiliation.CurrentUser.NotifcationPushMobile != null)
                 results.Add(GetPushNotification());
 
             return results;

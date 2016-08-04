@@ -27,6 +27,7 @@ namespace StationCAD.Processor
                 {
                     uoas = db.UserOrganizationAffiliations
                         .Include("CurrentUser")
+                        .Include("CurrentUser.MobileDevices")
                         .Include("CurrentOrganization")
                         .Where(x => x.OrganizationId == incident.OrganizationId).ToList();
                 }
@@ -41,7 +42,7 @@ namespace StationCAD.Processor
                     current =>
                     {
                         OrganizationUserNotifcation item = new OrganizationUserNotifcation();
-                        SMSEmailNotification notification = incident.GetSMSEmailNotification(current.CurrentUser);
+                        SMSEmailNotification notification = incident.GetSMSEmailNotification(current);
                         item.NotifcationType = OrganizationUserNotifcationType.TextMessage;
                         item.Notification = notification;
                         item.MessageTitle = notification.MessageSubject;
@@ -56,7 +57,7 @@ namespace StationCAD.Processor
                     current =>
                     {
                         OrganizationUserNotifcation item = new OrganizationUserNotifcation();
-                        EmailNotification notification = incident.GetEmailNotification(current.CurrentUser);
+                        EmailNotification notification = incident.GetEmailNotification(current);
                         item.NotifcationType = OrganizationUserNotifcationType.Email;
                         item.Notification = notification;
                         item.MessageTitle = notification.MessageSubject;

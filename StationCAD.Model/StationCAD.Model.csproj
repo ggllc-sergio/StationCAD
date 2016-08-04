@@ -63,33 +63,9 @@
     <Compile Include="DispatchEvent.cs" />
     <Compile Include="Helpers\EnumUtils.cs" />
     <Compile Include="Helpers\ReflectionUtils.cs" />
-    <Compile Include="Migrations\201608020215545_Initial.cs" />
-    <Compile Include="Migrations\201608020215545_Initial.Designer.cs">
-      <DependentUpon>201608020215545_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201608020325304_AddResponses.cs" />
-    <Compile Include="Migrations\201608020325304_AddResponses.Designer.cs">
-      <DependentUpon>201608020325304_AddResponses.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201608021520027_Add-Column-MapUrl-Table-Addresses.cs" />
-    <Compile Include="Migrations\201608021520027_Add-Column-MapUrl-Table-Addresses.Designer.cs">
-      <DependentUpon>201608021520027_Add-Column-MapUrl-Table-Addresses.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201608040411197_Level1.cs" />
-    <Compile Include="Migrations\201608040411197_Level1.Designer.cs">
-      <DependentUpon>201608040411197_Level1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201608041428516_Table_Incident-DateTime-Nullable.cs" />
-    <Compile Include="Migrations\201608041428516_Table_Incident-DateTime-Nullable.Designer.cs">
-      <DependentUpon>201608041428516_Table_Incident-DateTime-Nullable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201608041434258_BaseModel-DateTime-Nullable.cs" />
-    <Compile Include="Migrations\201608041434258_BaseModel-DateTime-Nullable.Designer.cs">
-      <DependentUpon>201608041434258_BaseModel-DateTime-Nullable.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201608041450302_Level2.cs" />
-    <Compile Include="Migrations\201608041450302_Level2.Designer.cs">
-      <DependentUpon>201608041450302_Level2.cs</DependentUpon>
+    <Compile Include="Migrations\201608042108439_start.cs" />
+    <Compile Include="Migrations\201608042108439_start.Designer.cs">
+      <DependentUpon>201608042108439_start.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Notifications\Clickatell\SMSNotification.cs" />
@@ -112,30 +88,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201608020215545_Initial.resx">
-      <DependentUpon>201608020215545_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201608020325304_AddResponses.resx">
-      <DependentUpon>201608020325304_AddResponses.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201608021520027_Add-Column-MapUrl-Table-Addresses.resx">
-      <DependentUpon>201608021520027_Add-Column-MapUrl-Table-Addresses.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201608040411197_Level1.resx">
-      <DependentUpon>201608040411197_Level1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201608041428516_Table_Incident-DateTime-Nullable.resx">
-      <DependentUpon>201608041428516_Table_Incident-DateTime-Nullable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201608041434258_BaseModel-DateTime-Nullable.resx">
-      <DependentUpon>201608041434258_BaseModel-DateTime-Nullable.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201608041450302_Level2.resx">
-      <DependentUpon>201608041450302_Level2.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201608042108439_start.resx">
+      <DependentUpon>201608042108439_start.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

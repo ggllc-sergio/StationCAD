@@ -99,21 +99,14 @@ namespace StationCAD.Web.Controllers
             }
             catch (Exception ex)
             {
-                err = ex.ToString();
+                string errMsg = string.Format("An error occurred in EventController.Process(). Exception: {0}", ex.Message);
+                base.LogException(errMsg, ex);
                 sb.AppendLine(string.Format("Error:{0}{1}{0}{0}", Environment.NewLine, err));
                 httpResult = new HttpStatusCodeResult(HttpStatusCode.InternalServerError, string.Format("Error encountered processing the event. Message: {0}", ex.Message));
             }
             finally
             {
-                // do something with data 
-                EmailNotification email = new EmailNotification
-                {
-                    Recipient = "skip513@gmail.com",
-                    OrganizationName = "Lionville Fire Company",
-                    MessageSubject = string.Format("Event email recieved from [{0}] @ {1}", sender, DateTime.Now),
-                    MessageBody = sb.ToString()
-                };
-                string result = Email.SendEmailMessage(email);
+                base.LogInfo(sb.ToString());
             }
             return httpResult;
         }

@@ -75,7 +75,6 @@ namespace StationCAD.Processor
                     base.LogException(errMsg, ex);
                     throw ex;
                 }
-
             }
         }
 
@@ -458,8 +457,8 @@ namespace StationCAD.Processor
                 string localUnits = string.Empty;
                 foreach (UnitEntry unit in eventMessage.Units)
                 {
-                    DateTime ts = ParseChesCoEventDate(unit.TimeStamp, incident.DispatchedDateTime);
-                    IncidentUnit item = incident.Units.Where(x => x.UnitID == unit.Unit && x.Disposition == unit.Disposition && x.EnteredDateTime == ts).FirstOrDefault();
+                    DateTime ts = DateTime.Now;// ParseChesCoEventDate(unit.TimeStamp, incident.DispatchedDateTime);
+                    IncidentUnit item = incident.Units.Where(x => x.UnitID == unit.Unit && x.Disposition == unit.Disposition).FirstOrDefault();
                     if (item == null)
                     {
                         item = new IncidentUnit();
@@ -469,7 +468,7 @@ namespace StationCAD.Processor
                         if (item.Id == 0)
                             incident.Units.Add(item);
                     }
-                    if (unit.Unit.Contains(eventMessage.Beat) && !localUnits.Contains(eventMessage.Beat))
+                    if (unit.Unit.Contains(eventMessage.Beat) && !localUnits.Contains(unit.Unit))
                         localUnits += string.Format("{0} ", unit.Unit);
                 }
                 incident.LocalUnits = localUnits;
@@ -505,7 +504,8 @@ namespace StationCAD.Processor
                 List<string> dtTrimmed = new List<string>();
                 string[] dParts;
                 string[] tParts;
-                DateTime dtParsed = dispatchTime;
+                DateTime result = dispatchTime;
+                long ticks = 0;
                 foreach (string item in dtParts)
                 {
                     if (item != string.Empty)
@@ -517,22 +517,23 @@ namespace StationCAD.Processor
                     // Are there date components?
                     dParts = dtParts[0].Split('-');
                     if (dParts.Count() > 1)
-                    { dtParsed = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), 0, 0, 0); }
+                    { ticks = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), 0, 0, 0).Ticks; }
                     dParts = dtParts[0].Split('/');
                     if (dParts.Count() > 1)
-                    { dtParsed = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), 0, 0, 0); }
+                    { ticks = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), 0, 0, 0).Ticks; }
                     // Are there time components?
                     tParts = dtParts[0].Split(':');
                     if (tParts.Count() > 1)
-                    { dtParsed = new DateTime(dispatchTime.Year, dispatchTime.Month, dispatchTime.Day, int.Parse(tParts[0], NumberStyles.Any), int.Parse(tParts[1], NumberStyles.Any), int.Parse(tParts[2], NumberStyles.Any)); }
+                    { ticks = new DateTime(dispatchTime.Year, dispatchTime.Month, dispatchTime.Day, int.Parse(tParts[0], NumberStyles.Any), int.Parse(tParts[1], NumberStyles.Any), int.Parse(tParts[2], NumberStyles.Any)).Ticks; }
                 }
                 else
                 {
                     dParts = dtParts[0].Split('-');
                     tParts = dtParts[1].Split(':');
-                    dtParsed = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), int.Parse(tParts[0]), int.Parse(tParts[1]), 0);
+                    ticks = new DateTime(int.Parse(dParts[2]), int.Parse(dParts[1]), int.Parse(dParts[0]), int.Parse(tParts[0]), int.Parse(tParts[1]), 0).Ticks;
                 }
-                return dtParsed;
+                result = new DateTime(ticks);
+                return result;
             }
             catch
             { return DateTime.MinValue; }
