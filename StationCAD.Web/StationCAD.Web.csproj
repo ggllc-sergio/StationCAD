@@ -301,6 +301,7 @@
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Properties\PublishProfiles\Default Settings %282%29.pubxml" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
     <None Include="Properties\PublishProfiles\SmarterASP - StationCAD.Web.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
