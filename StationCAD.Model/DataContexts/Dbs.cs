@@ -5,10 +5,22 @@ using System.Data.Entity.Core.Objects;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Web;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace StationCAD.Model.DataContexts
 {
+    public class IdentityDb : IdentityDbContext<ApplicationUser>
+    {
+        public IdentityDb()
+            : base("StationCAD_Web", throwIfV1Schema: false)
+        {
+        }
 
+        public static IdentityDb Create()
+        {
+            return new IdentityDb();
+        }
+    }
     public class StationCADDb : DbContext
     {
         public StationCADDb()
@@ -63,7 +75,7 @@ namespace StationCAD.Model.DataContexts
 
         public DbSet<Response> Responses { get; set; }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<UserOrganizationAffiliation> UserOrganizationAffiliations { get; set; }
         public DbSet<OrganizationUserNotifcation> OrganizationUserNotifcations { get; set; }

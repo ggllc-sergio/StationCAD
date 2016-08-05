@@ -70,12 +70,12 @@ namespace StationCAD.Tests
         [TestMethod]
         public void TestDispatchEventParsing()
         {
-            string tag = "CC03-PVFC";
+            string tag = "CC51-FWFC";
             using (var db = new StationCADDb())
             {
 
                 string data;
-                using (StreamReader sr = new StreamReader(@"TestData\UnitClearReport22.htm"))
+                using (StreamReader sr = new StreamReader(@"TestData\UnitDispatchReport-F16001716.htm"))
                 { data = sr.ReadToEnd(); }
                 DispatchManager dispMgr = new DispatchManager();
 
@@ -83,7 +83,7 @@ namespace StationCAD.Tests
                 if (org == null)
                 {
                     org = new Organization();
-                    org.Name = "Paoli Volunteer Fire Company";
+                    org.Name = "First West Chester Fire Company";
                     org.Status = OrganizationStatus.Active;
                     org.Type = OrganizationType.Fire;
                     org.Tag = tag;
@@ -100,32 +100,51 @@ namespace StationCAD.Tests
                         ex.ToString();
                     }
                 }
-                // Add User
-                User usr;
-                usr = db.Users
+                // Add UserProfile
+                UserProfile usr;
+                usr = db.UserProfiles
                     .Include("OrganizationAffiliations")
                     .Include("MobileDevices")
                     .Where(w => w.NotificationEmail == "skip513@gmail.com")
                     .FirstOrDefault();
                 if (usr == null)
                 {
-                    usr = new User();
+                    usr = new UserProfile();
                     usr.FirstName = string.Format("FirstName_{0}", DateTime.Now.Ticks);
                     usr.LastName = string.Format("LastName_{0}", DateTime.Now.Ticks);
                     usr.IdentificationNumber = DateTime.Now.Ticks.ToString();
-                    usr.UserName = string.Format("{0}.{1}", usr.FirstName, usr.LastName);
+                    //usr.UserName = string.Format("{0}.{1}", usr.FirstName, usr.LastName);
                     usr.OrganizationAffiliations = new List<UserOrganizationAffiliation>();
-                    usr.OrganizationAffiliations.Add(new UserOrganizationAffiliation { Status = OrganizationUserStatus.Active, Role = OrganizationUserRole.User, OrganizationId = org.Id });
+                    usr.OrganizationAffiliations.Add(new UserOrganizationAffiliation { Status = OrganizationUserStatus.Active, Role = OrganizationUserRole.User });
                     usr.NotificationEmail = "skip513@gmail.com";
                     usr.MobileDevices = new List<UserMobileDevice>();
                     usr.MobileDevices.Add(new UserMobileDevice { Carrier = MobileCarrier.ATT, EnableSMS = true, MobileNumber = "6108833253" });
-
-                    db.Users.Add(usr);
-                    db.SaveChanges();
+                    db.UserProfiles.Add(usr);
                 }
+
+                //usr2 = db.UserProfiles
+                //    .Include("OrganizationAffiliations")b
+                //    .Include("MobileDevices")
+                //    .Where(w => w.NotificationEmail == "firemike45@gmail.com")
+                //    .FirstOrDefault();
+                //if (usr2 == null)
+                //{ 
+                //    usr2 = new UserProfile();
+                //    usr2.FirstName = "Michael";
+                //    usr2.LastName = "Lam";
+                //    usr2.IdentificationNumber = DateTime.Now.Ticks.ToString();
+                ////    usr2.UserName = string.Format("{0}.{1}", usr2.FirstName, usr2.LastName);
+                //    usr2.OrganizationAffiliations = new List<UserOrganizationAffiliation>();
+                //    usr2.OrganizationAffiliations.Add(new UserOrganizationAffiliation { Status = OrganizationUserStatus.Active, Role = OrganizationUserRole.User });
+                //    usr2.NotificationEmail = "firemike45@gmail.com";
+                //    usr2.MobileDevices = new List<UserMobileDevice>();
+                //    usr2.MobileDevices.Add(new UserMobileDevice { Carrier = MobileCarrier.ATT, EnableSMS = true, MobileNumber = "6108833253" });
+                //    db.UserProfiles.Add(usr2);
+                //}
+                db.SaveChanges();
                 dispMgr.ProcessEvent(org, data, DispatchManager.MessageType.Html);
 
-                //db.Users.Remove(usr);
+                //db.UserProfiles.Remove(usr);
                 //db.SaveChanges();
             }
         }

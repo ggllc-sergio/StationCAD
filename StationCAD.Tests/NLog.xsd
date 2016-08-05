@@ -757,7 +757,7 @@
         </xs:attribute>
         <xs:attribute name="dbUserName" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Database user name. If the ConnectionString is not provided this value will be used to construct the "User ID=" part of the connection string.</xs:documentation>
+            <xs:documentation>Database user name. If the ConnectionString is not provided this value will be used to construct the "UserProfile ID=" part of the connection string.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="keepConnection" type="xs:boolean">
@@ -1303,7 +1303,7 @@
         </xs:attribute>
         <xs:attribute name="password" type="xs:string">
           <xs:annotation>
-            <xs:documentation>User account password.</xs:documentation>
+            <xs:documentation>UserProfile account password.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="revertToSelf" type="xs:boolean">

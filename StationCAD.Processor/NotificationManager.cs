@@ -29,10 +29,10 @@ namespace StationCAD.Processor
                         .Include("CurrentUser")
                         .Include("CurrentUser.MobileDevices")
                         .Include("CurrentOrganization")
-                        .Where(x => x.OrganizationId == incident.OrganizationId).ToList();
+                        .Where(x => x.CurrentOrganization.Id == incident.OrganizationId).ToList();
                 }
                 if (uoas == null)
-                    throw new InvalidProgramException("Unable to find valid User-Org Affiliations.");
+                    throw new InvalidProgramException("Unable to find valid UserProfile-Org Affiliations.");
 
                 ParallelOptions opts = new ParallelOptions();
                 opts.MaxDegreeOfParallelism = ParallelismFactor;
@@ -47,7 +47,7 @@ namespace StationCAD.Processor
                         item.Notification = notification;
                         item.MessageTitle = notification.MessageSubject;
                         item.MessageBody = notification.MessageBody;
-                        item.UserOrganizationAffiliationId = current.Id;
+                        item.Affilitation = current;
                         resultsBag.Add(item);
                     });
 
@@ -62,7 +62,7 @@ namespace StationCAD.Processor
                         item.Notification = notification;
                         item.MessageTitle = notification.MessageSubject;
                         item.MessageBody = notification.MessageBody;
-                        item.UserOrganizationAffiliationId = current.Id;
+                        item.Affilitation = current;
                         resultsBag.Add(item);
                     });
             }

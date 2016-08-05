@@ -190,9 +190,17 @@ namespace StationCAD.Processor
                     var totalNodes = nodes.Count();
                     // Incident Info
                     result.Title = nodes.Where(n => n.GetAttributeValue("class", "").Equals("Title"))
-                                        .Single().InnerText;
+                                        .Single().InnerText.Trim();
                     var unitHeaderKey = nodes.Where(x => x.InnerText.Contains("Unit:")).Single();
-                    result.Unit = nodes.Where(x => x.Line == unitHeaderKey.Line + 1).Single().InnerText;
+                    result.Unit = nodes.Where(x => x.Line == unitHeaderKey.Line + 1).Single().InnerText.Trim();
+
+                    #region Event/Incident IDs 
+                    var evtIDHeaderKey = nodes.Where(x => x.InnerText.Contains("Event ID:")).Single();
+                    result.EventID = nodes.Where(x => x.Line == evtIDHeaderKey.Line + 1).Single().InnerText.Trim();
+
+                    var evtHeaderKey = nodes.Where(x => x.InnerText.Contains("Event:")).Single();
+                    result.Event = nodes.Where(x => x.Line == evtHeaderKey.Line + 1).Single().InnerText.Trim();
+                    #endregion
 
                     #region Dispatch / Clear Times 
 
@@ -202,7 +210,7 @@ namespace StationCAD.Processor
                         result.ReportType = ReportType.Dispatch;
                         typeText = string.Format("{0} Time:", result.ReportType.ToString());
                         var timeHeaderKey = nodes.Where(x => x.InnerText.Contains(typeText)).Single();
-                        result.CallTime = nodes.Where(x => x.Line == timeHeaderKey.Line + 1).Single().InnerText;
+                        result.CallTime = nodes.Where(x => x.Line == timeHeaderKey.Line + 1).Single().InnerText.Trim();
                     }
                     if (result.Title.IndexOf("Update") != -1)
                         result.ReportType = ReportType.Update;
@@ -211,7 +219,7 @@ namespace StationCAD.Processor
                         result.ReportType = ReportType.Clear;
                         typeText = string.Format("{0} Time: ", result.ReportType.ToString());
                         var timeHeaderKey = nodes.Where(x => x.InnerText.Contains(typeText)).Single();
-                        result.ClearTime = nodes.Where(x => x.Line == timeHeaderKey.Line + 1).Single().InnerText;
+                        result.ClearTime = nodes.Where(x => x.Line == timeHeaderKey.Line + 1).Single().InnerText.Trim();
                     }
                     if (result.Title.IndexOf("Close") != -1)
                         result.ReportType = ReportType.Close;
@@ -220,39 +228,39 @@ namespace StationCAD.Processor
 
                     #region Event Type Codes 
                     var typeHeaderKey = nodes.Where(x => x.InnerText.Contains("Event Type:")).Single();
-                    result.EventTypeCode = nodes.Where(x => x.Line == typeHeaderKey.Line + 1).Single().InnerText;
+                    result.EventTypeCode = nodes.Where(x => x.Line == typeHeaderKey.Line + 1).Single().InnerText.Trim();
 
                     var subtypeHeaderKey = nodes.Where(x => x.InnerText.Contains("Event Sub-Type:")).Single();
-                    result.EventSubTypeCode = nodes.Where(x => x.Line == subtypeHeaderKey.Line + 1).Single().InnerText;
+                    result.EventSubTypeCode = nodes.Where(x => x.Line == subtypeHeaderKey.Line + 1).Single().InnerText.Trim();
                     #endregion
 
                     var groupHeaderKey = nodes.Where(x => x.InnerText.Contains("Dispatch Group: ")).Single();
-                    result.Group = nodes.Where(x => x.Line == groupHeaderKey.Line + 1).Single().InnerText;
+                    result.Group = nodes.Where(x => x.Line == groupHeaderKey.Line + 1).Single().InnerText.Trim();
 
                     #region Location 
                     var addrHeaderKey = nodes.Where(x => x.InnerText == ("Address: ")).Single();
-                    result.Address = nodes.Where(x => x.Line == addrHeaderKey.Line + 1).Single().InnerText.Replace(result.Group, "");
+                    result.Address = nodes.Where(x => x.Line == addrHeaderKey.Line + 1).Single().InnerHtml.Replace(result.Group, "").Replace("<br>", " ");
                     var xsHeaderKey = nodes.Where(x => x.InnerText.Contains("Cross Street:")).Single();
-                    result.CrossStreet = nodes.Where(x => x.Line == xsHeaderKey.Line + 1).Single().InnerText;
+                    result.CrossStreet = nodes.Where(x => x.Line == xsHeaderKey.Line + 1).Single().InnerText.Trim();
                     var municHeaderKey = nodes.Where(x => x.InnerText.Contains("Municipality:")).Single();
-                    result.Municipality = nodes.Where(x => x.Line == municHeaderKey.Line + 1).Single().InnerText;
+                    result.Municipality = nodes.Where(x => x.Line == municHeaderKey.Line + 1).Single().InnerText.Trim();
                     var devHeaderKey = nodes.Where(x => x.InnerText.Contains("Development:")).Single();
-                    result.Development = nodes.Where(x => x.Line == devHeaderKey.Line + 1).Single().InnerText;
+                    result.Development = nodes.Where(x => x.Line == devHeaderKey.Line + 1).Single().InnerText.Trim();
                     var beatHeaderKey = nodes.Where(x => x.InnerText.Contains("Beat:")).Single();
-                    result.Beat = nodes.Where(x => x.Line == beatHeaderKey.Line + 1).Single().InnerText;
+                    result.Beat = nodes.Where(x => x.Line == beatHeaderKey.Line + 1).Single().InnerText.Trim();
                     var eszHeaderKey = nodes.Where(x => x.InnerText.Contains("ESZ:")).Single();
-                    result.ESZ = nodes.Where(x => x.Line == eszHeaderKey.Line + 1).Single().InnerText;
+                    result.ESZ = nodes.Where(x => x.Line == eszHeaderKey.Line + 1).Single().InnerText.Trim();
                     #endregion
 
                     #region Caller Information 
                     var cnHeaderKey = nodes.Where(x => x.InnerText.Contains("Caller Name:")).Single();
-                    result.Group = nodes.Where(x => x.Line == cnHeaderKey.Line + 1).Single().InnerText;
+                    result.CallerName = nodes.Where(x => x.Line == cnHeaderKey.Line + 1).Single().InnerText.Trim();
                     var cpHeaderKey = nodes.Where(x => x.InnerText.Contains("Caller Phone:")).Single();
-                    result.Group = nodes.Where(x => x.Line == cpHeaderKey.Line + 1).Single().InnerText;
+                    result.CallerPhoneNumber = nodes.Where(x => x.Line == cpHeaderKey.Line + 1).Single().InnerText.Trim();
                     var caHeaderKey = nodes.Where(x => x.InnerText.Contains("Caller Address:")).Single();
-                    result.Group = nodes.Where(x => x.Line == caHeaderKey.Line + 1).Single().InnerText;
+                    result.CallerAddress = nodes.Where(x => x.Line == caHeaderKey.Line + 1).Single().InnerText.Trim();
                     var csHeaderKey = nodes.Where(x => x.InnerText.Contains("Caller Source:")).Single();
-                    result.Group = nodes.Where(x => x.Line == csHeaderKey.Line + 1).Single().InnerText;
+                    result.CallerSource = nodes.Where(x => x.Line == csHeaderKey.Line + 1).Single().InnerText.Trim();
                     #endregion
 
                     #region Assigned Units
@@ -276,11 +284,11 @@ namespace StationCAD.Processor
                                 HtmlNode[] parts = item.Descendants("td").ToArray<HtmlNode>();
                                 if (parts.Length > 0)
                                 {
-                                    string unit = parts[0].InnerText;
-                                    string station = parts[1].InnerText;
-                                    string agency = parts[2].InnerText;
-                                    string status = parts[3].InnerText;
-                                    string time = parts[4].InnerText;
+                                    string unit = parts[0].InnerText.Trim();
+                                    string station = parts[1].InnerText.Trim();
+                                    string agency = parts[2].InnerText.Trim();
+                                    string status = parts[3].InnerText.Trim();
+                                    string time = parts[4].InnerText.Trim();
                                     result.Units.Add(new UnitEntry { Unit = unit, Disposition = status, TimeStamp = time });
                                 }
                             }
@@ -299,8 +307,8 @@ namespace StationCAD.Processor
                             // get the parent node
                             var parent = item.ParentNode;
                             var parts = parent.Descendants("td").ToArray<HtmlNode>();
-                            string time = parts[0].InnerText;
-                            string note = parts[1].InnerText;
+                            string time = parts[0].InnerText.Trim();
+                            string note = parts[1].InnerText.Trim();
                             result.Comments.Add(new EventComment { TimeStamp = time, Comment = note });
                         }
                     }
@@ -324,23 +332,24 @@ namespace StationCAD.Processor
         {
             // Build Address 
             StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("{0}{1}", eventMessage.Address.Trim(), "+");
+            sb.AppendFormat("{0}{1}", eventMessage.Address.Trim(), " ");
             if (eventMessage.LocationMunicipality != null)
+            { sb.Append(eventMessage.LocationMunicipality.Name); }
+            string[] addrParts = sb.ToString().Split(' ');
+            StringBuilder addrBuilder = new StringBuilder();
+            foreach(string part in addrParts)
             {
-                sb.Append(eventMessage.LocationMunicipality.Name.Replace(" ", "+"));
+                if (part.Length > 0)
+                    addrBuilder.AppendFormat("{0}{1}", part.Trim(), "+");
             }
-            GoogleGeoCodeResponse results = GEOCodeAddress(sb.ToString());
+            GoogleGeoCodeResponse results = GEOCodeAddress(addrBuilder.ToString());
             // If results are ok, save the latitude/longitude
             if (results != null && results.status == "OK")
             {
-
-                string googleAPIKey = ConfigurationManager.AppSettings["GoogleAPIKey"];
-                if (googleAPIKey == null)
-                    throw new ApplicationException("Unable to find Google API Key");
                 eventMessage.GeoLocations = new List<GeoLocation>();
                 foreach(GoogleResult item in results.results)
                 {
-                    string mapUrl = string.Format("https://maps.googleapis.com/maps/api/staticmap?zoom=16&size=400x400&markers=color:red%7C{0},{1}&key={2}", item.geometry.location.lat, item.geometry.location.lng, googleAPIKey);
+                    string mapUrl = string.Format("https://www.google.com/maps/place/{0}/@{1},{2},17z/", item.formatted_address.Replace(" ", "+"), item.geometry.location.lat, item.geometry.location.lng);
                     eventMessage.GeoLocations.Add(new GeoLocation
                     {
                         FormattedAddress = item.formatted_address,

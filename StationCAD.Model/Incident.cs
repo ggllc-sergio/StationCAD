@@ -62,6 +62,9 @@ namespace StationCAD.Model
         [DisplayName("Event")]
         public string LocalIncidentID { get; set; }
 
+        [DisplayName("Event ID")]
+        public string EventID { get; set; }
+
         public string LocalXRefID { get; set; }
 
         public string LocalBoxArea { get; set; }
@@ -100,7 +103,7 @@ namespace StationCAD.Model
 
         public string RAWCADIncidentData { get; set; }
 
-        public SMSNotification GetSMSNotification(User user)
+        public SMSNotification GetSMSNotification(UserProfile user)
         {
             SMSNotification sms = new SMSNotification();
             sms.Recipients = new List<string>();
@@ -112,10 +115,9 @@ namespace StationCAD.Model
         protected string GetShortNotificationBody()
         {
             StringBuilder sb = new StringBuilder();
+            sb.AppendLine(string.Format("EVENT: {0}", this.LocalIncidentID));
             sb.AppendLine(string.Format("DISPATCH TIME: {0}", this.DispatchedDateTime));
-            sb.AppendLine(string.Format("INCIDENT: {0}", this.IncidentTypeCode));
-            if (this.IncidentSubTypeCode != null)
-                sb.AppendLine(string.Format("          {0}", this.IncidentSubTypeCode));
+            sb.AppendLine(string.Format("INCIDENT: {0} - {1}", this.IncidentTypeCode, this.IncidentSubTypeCode.Length > 0 ? this.IncidentSubTypeCode : "N/A"));
             sb.AppendLine("LOCATION:");
             sb.AppendLine(string.Format("{0}", this.PrimaryAddress.NotificationAddress));
             var firstNote = this.Notes.OrderBy(x => x.EnteredDateTime).FirstOrDefault();
@@ -206,6 +208,8 @@ namespace StationCAD.Model
                 if (this.XStreet2 != null)
                     sb.AppendFormat("X2: {1}{0}", Environment.NewLine, this.XStreet2);
                 sb.AppendFormat("{1} ({2}, {3}){0}", Environment.NewLine, this.Municipality, this.County, this.State);
+                if (this.MapUrl != null)
+                    sb.AppendFormat("Map: {1}{0}", Environment.NewLine, this.MapUrl);
                 return sb.ToString();
             }
         }

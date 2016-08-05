@@ -47,6 +47,9 @@ namespace StationCAD.Model
         [DisplayName("Event")]
         public string Event { get; set; }
 
+        [DisplayName("Event ID")]
+        public string EventID { get; set; }
+
         [DisplayName("Event Type Code")]
         public string EventTypeCode { get; set; }
 

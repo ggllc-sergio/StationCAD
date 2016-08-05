@@ -77,26 +77,26 @@ namespace StationCAD.Tests
                     .Where(x => x.LocalIncidentID == "F16001462").FirstOrDefault();
                 if (inc != null)
                 {
-                    User usr;
-                    usr = db.Users
+                    UserProfile usr;
+                    usr = db.UserProfiles
                         .Include("OrganizationAffiliations")
                         .Include("MobileDevices")
                         .Where(w => w.NotificationEmail == "skip513@gmail.com")
                         .FirstOrDefault();
                     if (usr == null)
                     {
-                        usr = new User();
+                        usr = new UserProfile();
                         usr.FirstName = string.Format("FirstName_{0}", DateTime.Now.Ticks);
                         usr.LastName = string.Format("LastName_{0}", DateTime.Now.Ticks);
                         usr.IdentificationNumber = DateTime.Now.Ticks.ToString();
-                        usr.UserName = string.Format("{0}.{1}", usr.FirstName, usr.LastName);
+                        //usr.UserName = string.Format("{0}.{1}", usr.FirstName, usr.LastName);
                         usr.OrganizationAffiliations = new List<UserOrganizationAffiliation>();
-                        usr.OrganizationAffiliations.Add(new UserOrganizationAffiliation { Status = OrganizationUserStatus.Active, Role = OrganizationUserRole.User, OrganizationId = 2 });
+                        usr.OrganizationAffiliations.Add(new UserOrganizationAffiliation { Status = OrganizationUserStatus.Active, Role = OrganizationUserRole.User });
                         usr.NotificationEmail = "skip513@gmail.com";
                         usr.MobileDevices = new List<UserMobileDevice>();
                         usr.MobileDevices.Add(new UserMobileDevice { Carrier = MobileCarrier.ATT, EnableSMS = true, MobileNumber = "6108833253" });
 
-                        db.Users.Add(usr);
+                        db.UserProfiles.Add(usr);
                         db.SaveChanges();
                     }
                     EmailNotification email = inc.GetEmailNotification(usr.OrganizationAffiliations.First());
@@ -105,7 +105,7 @@ namespace StationCAD.Tests
                     string smsResult = Email.SendEmailMessage(sms);
                     Console.WriteLine(string.Format("Email: {0}; SMS: {1}", emailResult, smsResult));
 
-                    db.Users.Remove(usr);
+                    db.UserProfiles.Remove(usr);
                     db.SaveChanges();
                 }
                 else

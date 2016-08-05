@@ -93,7 +93,7 @@ namespace StationCAD.Tests
 
         protected async Task GetPlayer()
         {
-            User player = new User { IdentificationNumber = "5605d53f-9d13-4865-a23c-26dfd92d5c4a" };
+            UserProfile player = new UserProfile { IdentificationNumber = "5605d53f-9d13-4865-a23c-26dfd92d5c4a" };
             
             Push pushNotifier = new Push();
             Device result = await pushNotifier.GetDevice(player);

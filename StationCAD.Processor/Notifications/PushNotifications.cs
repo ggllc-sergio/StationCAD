@@ -44,7 +44,7 @@ namespace StationCAD.Processor.Notifications
         /// GET OneSignal 'Player by ID' (device)
         /// https://onesignal.com/api/v1/players/:id
         /// 
-        public async Task<Device> GetDevice(User user)
+        public async Task<Device> GetDevice(UserProfile user)
         {
             Device results = null;
             string api = string.Format("api/v1/players/{0}", user.IdentificationNumber);

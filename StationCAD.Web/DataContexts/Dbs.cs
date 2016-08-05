@@ -1,19 +1,18 @@
 ﻿using Microsoft.AspNet.Identity.EntityFramework;
-using StationCAD.Model;
 using StationCAD.Web.Models;
 
 namespace StationCAD.Web.DataContexts
 {
-    public class IdentityDb : IdentityDbContext<ApplicationUser>
+    public class IdentityDb1 : IdentityDbContext<ApplicationUser>
     {
-        public IdentityDb()
+        public IdentityDb1()
             : base("StationCAD_Web", throwIfV1Schema: false)
         {
         }
 
-        public static IdentityDb Create()
+        public static IdentityDb1 Create()
         {
-            return new IdentityDb();
+            return new IdentityDb1();
         }
     }
 
