@@ -9,6 +9,7 @@
 /// <reference path="jquery-3.1.0.min.js" />
 /// <reference path="jquery-3.1.0.slim.min.js" />
 /// <reference path="knockout-3.4.0.js" />
+/// <reference path="mailgun_validator.js" />
 /// <reference path="modernizr-2.8.3.js" />
 /// <reference path="onesignal.js" />
 /// <reference path="respond.matchmedia.addlistener.min.js" />
