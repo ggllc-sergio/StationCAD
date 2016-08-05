@@ -125,8 +125,8 @@ namespace StationCAD.Tests
                 }
                 dispMgr.ProcessEvent(org, data, DispatchManager.MessageType.Html);
 
-                db.Users.Remove(usr);
-                db.SaveChanges();
+                //db.Users.Remove(usr);
+                //db.SaveChanges();
             }
         }
 

@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using StationCAD.Web.Models;
+using StationCAD.Web.Business;
 
 namespace StationCAD.Web
 {
@@ -18,6 +19,8 @@ namespace StationCAD.Web
     {
         public Task SendAsync(IdentityMessage message)
         {
+            Business.EmailService email = new Business.EmailService();
+            email.SendAsync(message);
             // Plug in your email service here to send an email.
             return Task.FromResult(0);
         }

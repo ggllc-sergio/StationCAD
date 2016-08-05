@@ -5,9 +5,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using StationCAD.Model;
+using StationCAD.Model.DataContexts;
 using StationCAD.Model.Helpers;
-using StationCAD.Model.Notifications.Mailgun;
-using StationCAD.Processor.Notifications;
 using StationCAD.Processor;
 using System.IO;
 using System.Text;
@@ -30,12 +29,13 @@ namespace StationCAD.Web.Controllers
         public ActionResult Process(FormCollection oColl)
         {
             HttpStatusCodeResult httpResult;
+            string recipient = string.Empty;
+            Organization org;
             string sender = string.Empty;
             string body = string.Empty;
             string attachmentData = string.Empty;
             string userIP = string.Empty;
             string userDomain = string.Empty;
-            string keystring = string.Empty;
             string json = string.Empty;
             string err = string.Empty;
             string uvFileCnt = string.Empty;
@@ -46,20 +46,31 @@ namespace StationCAD.Web.Controllers
             StringBuilder sb = new StringBuilder();
             try
             {
+                recipient = Request.Unvalidated.Form["recipient"];
+                string[] recipientParts = recipient.Split('@');
+                using (var db = new StationCADDb())
+                {
+                    string tag = recipientParts[0];
+                    org = db.Organizations.Where(x => x.Tag == tag).FirstOrDefault();
+                    if (org == null)
+                        throw new InvalidProgramException(string.Format("Invalid Organization tag: {0}", tag));
+                }
                 sender = Request.Unvalidated.Form["sender"];
                 body = Request.Unvalidated.Form["body-plain"];
                 DateTime eventRecieved = DateTime.Now;
                 // Validate the sender
                 userIP = Request.UserHostAddress;
                 userDomain = Request.UserHostName;
-                sb.AppendLine(string.Format("Keys:{0} {1}{0}{0}", Environment.NewLine, keystring));
                 sb.AppendLine(string.Format("User IP:{1}{0}{0}", Environment.NewLine, userIP));
                 sb.AppendLine(string.Format("User Domain:{1}{0}{0}", Environment.NewLine, userDomain));
 
                 var formkeys = Request.Unvalidated.Form.Keys;
+
+                sb.AppendLine(string.Format("Keys:{0}", Environment.NewLine));
                 foreach (var item in formkeys)
                 {
-                    keystring += item.ToString() + ",";
+                    string value = Request.Unvalidated.Form[item.ToString()];
+                    sb.AppendLine(string.Format("Keys: {1}; Value: {2}{0}", Environment.NewLine, item.ToString(), value));
                 }
                 vFileCnt = Request.Files.Count.ToString();
                 uvFileCnt = Request.Unvalidated.Files.Count.ToString();
@@ -88,11 +99,14 @@ namespace StationCAD.Web.Controllers
                 DispatchEvent eventMsg;
                 if (attachmentData.Length > 0)
                 {
-                    eventMsg = dispMgr.ParseEventHtml(attachmentData);
+                    eventMsg = dispMgr.ProcessEvent(org, attachmentData, DispatchManager.MessageType.Html);
                     eventMsg.FileName = attachmentName;
                 }
                 else
-                    eventMsg = dispMgr.ParseEventText(body);
+                    eventMsg = dispMgr.ProcessEvent(org, body, DispatchManager.MessageType.Text);
+
+
+
                 json = JsonUtil<DispatchEvent>.ToJson(eventMsg);
                 sb.AppendLine(string.Format("Json Body:{0} {1}{0}{0}", Environment.NewLine, json));
                 httpResult = new HttpStatusCodeResult(HttpStatusCode.OK);

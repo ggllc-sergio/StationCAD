@@ -81,6 +81,7 @@
     <Compile Include="CodeGenerator.cs" />
     <Compile Include="DispatchManagerTests.cs" />
     <Compile Include="EmailTests.cs" />
+    <Compile Include="MailGunRouteTests.cs" />
     <Compile Include="Model\IncidentTests.cs" />
     <Compile Include="Model\UserTests.cs" />
     <Compile Include="NoSQLDBTests.cs" />

@@ -19,7 +19,7 @@ namespace StationCAD.Processor
     public class DispatchManager : BaseManager
     {
 
-        public void ProcessEvent(Organization organization, string rawEvent, MessageType messageType)
+        public ChesCoPAEventMessage ProcessEvent(Organization organization, string rawEvent, MessageType messageType)
         {
             // Parse the raw message
             ChesCoPAEventMessage dispEvent;
@@ -53,7 +53,7 @@ namespace StationCAD.Processor
                         .FirstOrDefault();
                     if (incident == null)
                         incident = new Incident(organization);
-
+                    incident.RAWCADIncidentData = rawEvent;
                     PopulateIncidentFromChesCoEvent(dispEvent, ref incident);
                     if (incident.Id == 0)
                         db.Incidents.Add(incident);
@@ -68,6 +68,7 @@ namespace StationCAD.Processor
                     // Task Parallel Library - Send notifications
                     NotificationManager.NotifyUsers(ref notifications);
                     db.SaveChanges();
+                    return dispEvent;
                 }
                 catch(Exception ex)
                 {
