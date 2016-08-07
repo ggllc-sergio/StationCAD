@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using StationCAD.Web.Models;
+using StationCAD.Model;
 
 namespace StationCAD.Web.Controllers
 {
@@ -74,7 +75,7 @@ namespace StationCAD.Web.Controllers
             }
 
             // Require the user to have a confirmed email before they can log on.
-            var user = await UserManager.FindByNameAsync(model.Email);
+            var user = await UserManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
                 if (!await UserManager.IsEmailConfirmedAsync(user.Id))
@@ -162,26 +163,37 @@ namespace StationCAD.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email,  };
-                var result = await UserManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
+                var user = new User { UserName = model.UserName, Email = model.Email };
+                user.Id = Guid.NewGuid().ToString();
+                DateTime now = DateTime.Now;
+                user.Profile = new UserProfile { FirstName = model.FirstName, LastName = model.LastName, CreateUser = model.UserName, CreateDate = now, LastUpdateUser = model.UserName, LastUpdateDate = now };
+                try
                 {
-                    //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    var result = await UserManager.CreateAsync(user, model.Password);
 
-                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account",
-                       new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id,
-                       "Confirm your account", "Please confirm your account by clicking <a href=\""
-                       + callbackUrl + "\">here</a>");
+                    if (result.Succeeded)
+                    {
+                        //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
 
-                    ViewBag.Message = "Check your email and confirm your account, you must be confirmed "
-                                    + "before you can log in.";
+                        string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                        var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                           new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                        await UserManager.SendEmailAsync(user.Id,
+                           "Confirm your account", "Please confirm your account by clicking <a href=\""
+                           + callbackUrl + "\">here</a>");
 
-                    return View("Info");
-                    // return RedirectToAction("Index", "Home");
+                        ViewBag.Message = "Check your email and confirm your account, you must be confirmed "
+                                        + "before you can log in.";
+
+                        return View("Info");
+                        // return RedirectToAction("Index", "Home");
+                    }
+                    AddErrors(result);
                 }
-                AddErrors(result);
+                catch(Exception ex)
+                {
+                    ex.ToString();
+                }
             }
 
             // If we got this far, something failed, redisplay form
@@ -383,7 +395,7 @@ namespace StationCAD.Web.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new User { UserName = model.Email, Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

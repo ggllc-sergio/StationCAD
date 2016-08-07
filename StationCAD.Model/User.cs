@@ -10,34 +10,39 @@ using System.Threading.Tasks;
 
 namespace StationCAD.Model
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUserStore :
+    UserStore<User, Role, string, UserLogin, UserRole, UserClaim>,
+    IUserStore<User>,
+    IDisposable
     {
-        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
+        public ApplicationUserStore(DataContexts.IdentityDb context) : base(context) { }
+    }
+
+    public class User : IdentityUser<string, UserLogin, UserRole, UserClaim>
+    {
+        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
             // Add custom user claims here
             return userIdentity;
         }
+
+        public virtual UserProfile Profile { get; set; }
     }
 
+    public class UserRole : IdentityUserRole { }
 
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
-    {
-        public ApplicationDbContext()
-            : base("StationCAD_Web", throwIfV1Schema: false)
-        {
-        }
+    public class Role : IdentityRole<string, UserRole> { }
 
-        public static ApplicationDbContext Create()
-        {
-            return new ApplicationDbContext();
-        }
-    }
+    public class UserClaim : IdentityUserClaim { }
 
+    public class UserLogin : IdentityUserLogin { }
+
+    
     public class UserProfile : BaseModel
     {
-        public virtual ApplicationUser SecurityUser { get; set; }
+        public virtual User SecurityUser { get; set; }
 
         [Required(AllowEmptyStrings = false)]
         public string FirstName { get; set; }

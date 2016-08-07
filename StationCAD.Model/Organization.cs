@@ -30,9 +30,7 @@ namespace StationCAD.Model
         public OrganizationAddress BillingAddress { get; set; }
 
         public virtual ICollection<OrganizationAddress> Addresses { get; set; }
-
-
-
+        
         [JsonIgnore]
         public virtual ICollection<Incident> IncidentHistory { get; set; }
         

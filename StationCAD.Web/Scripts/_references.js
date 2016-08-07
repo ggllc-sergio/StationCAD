@@ -1,4 +1,5 @@
 ﻿/// <autosync enabled="true" />
+/// <reference path="../content/js/events.js" />
 /// <reference path="ai.0.15.0-build58334.js" />
 /// <reference path="bootstrap.min.js" />
 /// <reference path="googlemapsapi.js" />

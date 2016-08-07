@@ -1,0 +1,6 @@
+﻿
+enable-migrations -contexttypename:IdentityDb -migrationsdirectory:IdentityDBMigrations 
+add-migration -configuration:StationCAD.Model.IdentityDBMigrations.Configuration
+Update-Database -configuration:StationCAD.Model.IdentityDBMigrations.Configuration
+
+
