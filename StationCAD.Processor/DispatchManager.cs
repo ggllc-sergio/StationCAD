@@ -62,9 +62,7 @@ namespace StationCAD.Processor
 
                     // Create Notifications
                     // 1. Get list of users by org affiliation
-                    List<OrganizationUserNotifcation> notifications = NotificationManager.CreateNotifications(incident);
-                    db.OrganizationUserNotifcations.AddRange(notifications);
-                    db.SaveChanges();
+                    List<OrganizationUserNotification> notifications = NotificationManager.CreateNotifications(incident);
                     // Task Parallel Library - Send notifications
                     NotificationManager.NotifyUsers(ref notifications);
                     db.SaveChanges();

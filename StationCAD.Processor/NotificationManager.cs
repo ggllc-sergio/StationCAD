@@ -16,55 +16,60 @@ namespace StationCAD.Processor
 {
     public static class NotificationManager
     {
-        public static List<OrganizationUserNotifcation> CreateNotifications(Incident incident)
+        public static List<OrganizationUserNotification> CreateNotifications(Incident incident)
         {
-            List<OrganizationUserNotifcation> results = new List<OrganizationUserNotifcation>();
-            ConcurrentBag<OrganizationUserNotifcation> resultsBag = new ConcurrentBag<OrganizationUserNotifcation>();
-            List<UserOrganizationAffiliation> uoas;
+            List<OrganizationUserNotification> results = new List<OrganizationUserNotification>();
+            ConcurrentBag<OrganizationUserNotification> resultsBag = new ConcurrentBag<OrganizationUserNotification>();
+            List<OrganizationUserAffiliation> uoas;
+            List<OrganizationUserNotification> notifications;
             try
             {
                 using (var db = new StationCADDb())
                 {
-                    uoas = db.UserOrganizationAffiliations
-                        .Include("CurrentUser")
-                        .Include("CurrentUser.MobileDevices")
+                    uoas = db.OrganizationUserAffiliations
+                        .Include("CurrentUserProfile")
+                        .Include("CurrentUserProfile.MobileDevices")
                         .Include("CurrentOrganization")
-                        .Where(x => x.CurrentOrganization.Id == incident.OrganizationId).ToList();
+                        .Where(x => x.CurrentOrganization.Id == incident.OrganizationId && x.Status == OrganizationUserStatus.Active).ToList();
+
+                    if (uoas == null)
+                        throw new InvalidProgramException("Unable to find valid UserProfile-Org Affiliations.");
+
+                    ParallelOptions opts = new ParallelOptions();
+                    opts.MaxDegreeOfParallelism = ParallelismFactor;
+                    ParallelLoopResult ptlseResult = Parallel.ForEach(
+                        uoas,
+                        opts,
+                        current =>
+                        {
+                            OrganizationUserNotification item = new OrganizationUserNotification();
+                            SMSEmailNotification notification = incident.GetSMSEmailNotification(current);
+                            item.NotifcationType = OrganizationUserNotifcationType.TextMessage;
+                            item.Notification = notification;
+                            item.MessageTitle = notification.MessageSubject;
+                            item.MessageBody = notification.MessageBody;
+                            item.Affilitation = current;
+                            resultsBag.Add(item);
+                        });
+
+                    ParallelLoopResult ptleResult = Parallel.ForEach(
+                        uoas,
+                        opts,
+                        current =>
+                        {
+                            OrganizationUserNotification item = new OrganizationUserNotification();
+                            EmailNotification notification = incident.GetEmailNotification(current);
+                            item.NotifcationType = OrganizationUserNotifcationType.Email;
+                            item.Notification = notification;
+                            item.MessageTitle = notification.MessageSubject;
+                            item.MessageBody = notification.MessageBody;
+                            item.Affilitation = current;
+                            resultsBag.Add(item);
+                        });
+                    notifications = resultsBag.ToList<OrganizationUserNotification>();
+                    db.OrganizationUserNotifcations.AddRange(notifications);
+                    db.SaveChanges();
                 }
-                if (uoas == null)
-                    throw new InvalidProgramException("Unable to find valid UserProfile-Org Affiliations.");
-
-                ParallelOptions opts = new ParallelOptions();
-                opts.MaxDegreeOfParallelism = ParallelismFactor;
-                ParallelLoopResult ptlseResult = Parallel.ForEach(
-                    uoas,
-                    opts,
-                    current =>
-                    {
-                        OrganizationUserNotifcation item = new OrganizationUserNotifcation();
-                        SMSEmailNotification notification = incident.GetSMSEmailNotification(current);
-                        item.NotifcationType = OrganizationUserNotifcationType.TextMessage;
-                        item.Notification = notification;
-                        item.MessageTitle = notification.MessageSubject;
-                        item.MessageBody = notification.MessageBody;
-                        item.Affilitation = current;
-                        resultsBag.Add(item);
-                    });
-
-                ParallelLoopResult ptleResult = Parallel.ForEach(
-                    uoas,
-                    opts,
-                    current =>
-                    {
-                        OrganizationUserNotifcation item = new OrganizationUserNotifcation();
-                        EmailNotification notification = incident.GetEmailNotification(current);
-                        item.NotifcationType = OrganizationUserNotifcationType.Email;
-                        item.Notification = notification;
-                        item.MessageTitle = notification.MessageSubject;
-                        item.MessageBody = notification.MessageBody;
-                        item.Affilitation = current;
-                        resultsBag.Add(item);
-                    });
             }
             catch (Exception ex)
             {
@@ -72,17 +77,17 @@ namespace StationCAD.Processor
                 LogException(errMsg, ex);
                 throw ex;
             }
-            return resultsBag.ToList<OrganizationUserNotifcation>();
+            return notifications;
         }
 
-        public static void NotifyUsers(ref List<OrganizationUserNotifcation> users)
+        public static void NotifyUsers(ref List<OrganizationUserNotification> users)
         {
             try
             {
                 // First group the notifications by notificaion Type
                 List<NotificationGroup> groups = users
                     .GroupBy(g => g.NotifcationType)
-                    .Select(x => new NotificationGroup { Type = x.Key, Users = x.ToList<OrganizationUserNotifcation>() })
+                    .Select(x => new NotificationGroup { Type = x.Key, Users = x.ToList<OrganizationUserNotification>() })
                     .ToList<NotificationGroup>();
                 // Use TPL to process each type of notification
                 if (groups.Count > 0)
@@ -90,6 +95,12 @@ namespace StationCAD.Processor
                     ParallelOptions tplOptions = new ParallelOptions();
                     tplOptions.MaxDegreeOfParallelism = ParallelismFactor;
                     Parallel.ForEach<NotificationGroup>(groups, x => ProcessNotificationGroup(ref x));
+                }
+                using (var db = new StationCADDb())
+                {
+                    foreach (OrganizationUserNotification item in users)
+                    { db.OrganizationUserNotifcations.Attach(item); }
+                    db.SaveChanges();
                 }
             }
             catch (Exception ex)
@@ -181,6 +192,6 @@ namespace StationCAD.Processor
     public class NotificationGroup
     {
         public OrganizationUserNotifcationType Type { get; set; }
-        public List<OrganizationUserNotifcation> Users { get; set; }
+        public List<OrganizationUserNotification> Users { get; set; }
     }
 }

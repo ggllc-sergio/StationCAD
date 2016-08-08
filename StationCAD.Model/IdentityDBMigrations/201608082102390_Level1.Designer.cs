@@ -7,13 +7,13 @@ namespace StationCAD.Model.IdentityDBMigrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class AddSecurityQuestionAnswer : IMigrationMetadata
+    public sealed partial class Level1 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(AddSecurityQuestionAnswer));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Level1));
         
         string IMigrationMetadata.Id
         {
-            get { return "201608071525420_Add-Security-QuestionAnswer"; }
+            get { return "201608082102390_Level1"; }
         }
         
         string IMigrationMetadata.Source

@@ -127,20 +127,20 @@ namespace StationCAD.Model
             return sb.ToString();
         }
 
-        public SMSEmailNotification GetSMSEmailNotification(UserOrganizationAffiliation userOrgAffiliation)
+        public SMSEmailNotification GetSMSEmailNotification(OrganizationUserAffiliation userOrgAffiliation)
         {
             SMSEmailNotification smsEmail = new SMSEmailNotification();
-            smsEmail.MobileNumber = userOrgAffiliation.CurrentUser.MobileDevices.First().MobileNumber;
-            smsEmail.Carrier = userOrgAffiliation.CurrentUser.MobileDevices.First().Carrier;
+            smsEmail.MobileNumber = userOrgAffiliation.CurrentUserProfile.MobileDevices.First().MobileNumber;
+            smsEmail.Carrier = userOrgAffiliation.CurrentUserProfile.MobileDevices.First().Carrier;
             smsEmail.MessageBody = GetShortNotificationBody();
             smsEmail.OrganizationName = userOrgAffiliation.CurrentOrganization.Name;
             return smsEmail;
         }
 
-        public EmailNotification GetEmailNotification(UserOrganizationAffiliation userOrgAffiliation)
+        public EmailNotification GetEmailNotification(OrganizationUserAffiliation userOrgAffiliation)
         {
             EmailNotification email = new EmailNotification();
-            email.Recipient = userOrgAffiliation.CurrentUser.NotificationEmail;
+            email.Recipient = userOrgAffiliation.CurrentUserProfile.NotificationEmail;
             email.MessageSubject = string.Format("{0} - Incident: {1}", userOrgAffiliation.CurrentOrganization.Name, this.IncidentTypeCode);
             email.MessageBody = GetShortNotificationBody();
             email.OrganizationName = userOrgAffiliation.CurrentOrganization.Name;
@@ -161,11 +161,11 @@ namespace StationCAD.Model
             return push;
         }
 
-        public List<IncidentNotification> GetNotifications(UserOrganizationAffiliation userOrgAffiliation)
+        public List<IncidentNotification> GetNotifications(OrganizationUserAffiliation userOrgAffiliation)
         {
             List<IncidentNotification> results = new List<IncidentNotification>();
 
-            if (userOrgAffiliation.CurrentUser.NotifcationPushMobile != null)
+            if (userOrgAffiliation.CurrentUserProfile.NotifcationPushMobile != null)
                 results.Add(GetPushNotification());
 
             return results;

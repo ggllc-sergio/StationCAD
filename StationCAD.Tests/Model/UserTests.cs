@@ -31,8 +31,8 @@ namespace StationCAD.Tests.Model
                 usr.LastName = string.Format("LastName_{0}", DateTime.Now.Ticks);
                 usr.IdentificationNumber = DateTime.Now.Ticks.ToString();
                 //usr.UserName = string.Format("{0}.{1}", usr.FirstName, usr.LastName);
-                usr.OrganizationAffiliations = new List<UserOrganizationAffiliation>();
-                usr.OrganizationAffiliations.Add(new UserOrganizationAffiliation { Status = OrganizationUserStatus.Active, Role = OrganizationUserRole.User });
+                usr.OrganizationAffiliations = new List<OrganizationUserAffiliation>();
+                usr.OrganizationAffiliations.Add(new OrganizationUserAffiliation { Status = OrganizationUserStatus.Active, Role = OrganizationUserRole.User });
                 usr.NotificationEmail = "skip513@gmail.com";
                 usr.MobileDevices = new List<UserMobileDevice>();
                 usr.MobileDevices.Add(new UserMobileDevice { Carrier = MobileCarrier.ATT, EnableSMS = true, MobileNumber = "6108833253" });

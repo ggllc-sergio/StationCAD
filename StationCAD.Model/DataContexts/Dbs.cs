@@ -23,6 +23,10 @@ namespace StationCAD.Model.DataContexts
         }
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+
+            modelBuilder.Properties<DateTime>()
+                .Configure(c => c.HasColumnType("datetime2"));
+
             modelBuilder.Entity<UserLogin>().Map(c =>
             {
                 c.ToTable("UserLogin");
@@ -236,8 +240,8 @@ namespace StationCAD.Model.DataContexts
         public DbSet<User> Users { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<UserAddress> UserAddresses { get; set; }
-        public DbSet<UserOrganizationAffiliation> UserOrganizationAffiliations { get; set; }
-        public DbSet<OrganizationUserNotifcation> OrganizationUserNotifcations { get; set; }
+        public DbSet<OrganizationUserAffiliation> OrganizationUserAffiliations { get; set; }
+        public DbSet<OrganizationUserNotification> OrganizationUserNotifcations { get; set; }
 
         public DbSet<Organization> Organizations { get; set; }
         public DbSet<OrganizationAddress> OrganizationAddresses { get; set; }
@@ -249,16 +253,19 @@ namespace StationCAD.Model.DataContexts
             var currentTime = DateTime.Now;
 
             foreach (var entry in entries)
-            {   
+            {
                 var baseModel = entry.Entity as BaseModel;
-                var user = HttpContext.Current != null && HttpContext.Current.User != null && HttpContext.Current.User.Identity.IsAuthenticated ? HttpContext.Current.User.Identity.Name : "Anonymous";
-                if (entry.State == EntityState.Added)
+                if (baseModel != null)
                 {
-                    baseModel.CreateUser = user;
-                    baseModel.CreateDate = currentTime;
+                    var user = HttpContext.Current != null && HttpContext.Current.User != null && HttpContext.Current.User.Identity.IsAuthenticated ? HttpContext.Current.User.Identity.Name : "Anonymous";
+                    if (entry.State == EntityState.Added)
+                    {
+                        baseModel.CreateUser = user;
+                        baseModel.CreateDate = currentTime;
+                    }
+                    baseModel.LastUpdateUser = user;
+                    baseModel.LastUpdateDate = currentTime;
                 }
-                baseModel.LastUpdateUser = user;
-                baseModel.LastUpdateDate = currentTime;
             }
 
             return base.SaveChanges();

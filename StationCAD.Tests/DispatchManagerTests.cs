@@ -10,7 +10,8 @@ using StationCAD.Processor;
 using System.IO;
 using StationCAD.Model.Helpers;
 using System.Globalization;
-using HtmlAgilityPack;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace StationCAD.Tests
 {
@@ -101,25 +102,37 @@ namespace StationCAD.Tests
                     }
                 }
                 // Add UserProfile
-                UserProfile usr;
-                usr = db.UserProfiles
-                    .Include("OrganizationAffiliations")
-                    .Include("MobileDevices")
-                    .Where(w => w.NotificationEmail == "skip513@gmail.com")
+                string email = "skip513@gmail.com";
+                User user;
+                UserProfile usrp;
+                user = db.Users
+                    .Include("Profile")
+                    .Include("Profile.OrganizationAffiliations")
+                    .Include("Profile.MobileDevices")
+                    .Where(w => w.Email == email)
                     .FirstOrDefault();
-                if (usr == null)
+                if (user == null)
                 {
-                    usr = new UserProfile();
-                    usr.FirstName = string.Format("FirstName_{0}", DateTime.Now.Ticks);
-                    usr.LastName = string.Format("LastName_{0}", DateTime.Now.Ticks);
-                    usr.IdentificationNumber = DateTime.Now.Ticks.ToString();
-                    //usr.UserName = string.Format("{0}.{1}", usr.FirstName, usr.LastName);
-                    usr.OrganizationAffiliations = new List<UserOrganizationAffiliation>();
-                    usr.OrganizationAffiliations.Add(new UserOrganizationAffiliation { Status = OrganizationUserStatus.Active, Role = OrganizationUserRole.User });
-                    usr.NotificationEmail = "skip513@gmail.com";
-                    usr.MobileDevices = new List<UserMobileDevice>();
-                    usr.MobileDevices.Add(new UserMobileDevice { Carrier = MobileCarrier.ATT, EnableSMS = true, MobileNumber = "6108833253" });
-                    db.UserProfiles.Add(usr);
+                    user = new User { Id = Guid.NewGuid().ToString(), UserName = email, Email = email };
+                    usrp = new UserProfile();
+                    usrp.FirstName = string.Format("FirstName_{0}", DateTime.Now.Ticks);
+                    usrp.LastName = string.Format("LastName_{0}", DateTime.Now.Ticks);
+                    usrp.AccountEmail = email;                    usrp.IdentificationNumber = DateTime.Now.Ticks.ToString();
+                    //usrp.UserName = string.Format("{0}.{1}", usrp.FirstName, usrp.LastName);
+                    usrp.OrganizationAffiliations = new List<OrganizationUserAffiliation>();
+                    usrp.OrganizationAffiliations.Add(new OrganizationUserAffiliation { Status = OrganizationUserStatus.Active, Role = OrganizationUserRole.User });
+                    usrp.NotificationEmail = email;
+                    usrp.MobileDevices = new List<UserMobileDevice>();
+                    usrp.MobileDevices.Add(new UserMobileDevice { Carrier = MobileCarrier.ATT, EnableSMS = true, MobileNumber = "6108833253" });
+                    user.Profile = usrp;
+                    user.Profile.OrganizationAffiliations = new List<OrganizationUserAffiliation>();
+                    OrganizationUserAffiliation uoa = new OrganizationUserAffiliation();
+                    uoa.CurrentOrganization = org;
+                    uoa.Role = OrganizationUserRole.User;
+                    uoa.Status = OrganizationUserStatus.Active;
+                    
+                    user.Profile.OrganizationAffiliations.Add(uoa);
+                    db.Users.Add(user);
                 }
 
                 //usr2 = db.UserProfiles
@@ -144,7 +157,7 @@ namespace StationCAD.Tests
                 db.SaveChanges();
                 dispMgr.ProcessEvent(org, data, DispatchManager.MessageType.Html);
 
-                //db.UserProfiles.Remove(usr);
+                //db.UserProfiles.Remove(usrp);
                 //db.SaveChanges();
             }
         }

@@ -44,6 +44,7 @@ namespace StationCAD.Model
             return userIdentity;
         }
 
+
         public virtual UserProfile Profile { get; set; }
     }
 
@@ -89,7 +90,7 @@ namespace StationCAD.Model
 
         public virtual ICollection<UserAddress> Addresses { get; set; }
 
-        public virtual ICollection<UserOrganizationAffiliation> OrganizationAffiliations { get; set; }
+        public virtual ICollection<OrganizationUserAffiliation> OrganizationAffiliations { get; set; }
         
         public virtual ICollection<UserMobileDevice> MobileDevices { get; set; }
 
@@ -101,9 +102,9 @@ namespace StationCAD.Model
         public virtual UserProfile User { get; set; }
     }
 
-    public class UserOrganizationAffiliation : BaseModel
+    public class OrganizationUserAffiliation : BaseModel
     {
-        public virtual UserProfile CurrentUser { get; set; }
+        public virtual UserProfile CurrentUserProfile { get; set; }
         
         public virtual Organization CurrentOrganization { get; set; }
 
@@ -111,13 +112,13 @@ namespace StationCAD.Model
 
         public OrganizationUserRole Role { get; set; }
 
-        public virtual ICollection<OrganizationUserNotifcation> NotificationHistory { get; set; }
+        public virtual ICollection<OrganizationUserNotification> NotificationHistory { get; set; }
 
     }
 
-    public class OrganizationUserNotifcation : BaseModel
+    public class OrganizationUserNotification : BaseModel
     {
-        public virtual UserOrganizationAffiliation Affilitation { get; set; }
+        public virtual OrganizationUserAffiliation Affilitation { get; set; }
 
         public OrganizationUserNotifcationType NotifcationType { get; set; }
 
@@ -136,7 +137,7 @@ namespace StationCAD.Model
     public class UserMobileDevice : BaseModel
     {
 
-        public virtual UserProfile User { get; set; }
+        public virtual UserProfile UserProfile { get; set; }
 
         public string MobileNumber { get; set; }
         public MobileCarrier Carrier { get; set; }
@@ -177,6 +178,7 @@ namespace StationCAD.Model
     public enum OrganizationUserRole
     {
         User = 1,
+        SuperAdministrator,
         Administrator,
         Owner
     }

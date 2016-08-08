@@ -65,7 +65,7 @@ namespace StationCAD.Web.Controllers
                         // 1b. if not, CreateAsync() for User
                         if (user == null)
                         {
-                            user = new User { Id = Guid.NewGuid().ToString(), UserName = item.Email, Email = item.Email };
+                            user = new User { Id = Guid.NewGuid().ToString(), UserName = item.Email, Email = item.Email };  
                             DateTime now = DateTime.Now;
                             user.Profile = new UserProfile { FirstName = item.FirstName, LastName = item.LastName, CreateUser = "", CreateDate = now, LastUpdateUser = "", LastUpdateDate = now };
                             var result = await UserManager.CreateAsync(user, "P@ssword1");
@@ -76,12 +76,12 @@ namespace StationCAD.Web.Controllers
                             }
                         }
                         // add user-org-affiliation
-                        UserOrganizationAffiliation uoa = new UserOrganizationAffiliation();
+                        OrganizationUserAffiliation uoa = new OrganizationUserAffiliation();
                         uoa.CurrentOrganization = orgUserReg.Organization;
-                        uoa.CurrentUser = user.Profile;
                         uoa.Role = OrganizationUserRole.User;
                         uoa.Status = OrganizationUserStatus.Active;
-                        db.UserOrganizationAffiliations.Add(uoa);
+                        user.Profile.OrganizationAffiliations = new List<OrganizationUserAffiliation>();
+                        user.Profile.OrganizationAffiliations.Add(uoa);
                         await db.SaveChangesAsync();
                     }
                     catch(Exception ex)

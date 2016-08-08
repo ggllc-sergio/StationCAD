@@ -21,7 +21,7 @@ namespace StationCAD.Web.Controllers
         public IncidentController() { }
 
 
-        public async Task<ActionResult> Index(int orgID)
+        public ActionResult Index(int orgID)
         {
             Organization orgModel = new Organization();
             using (var db = new StationCADDb())
@@ -29,7 +29,8 @@ namespace StationCAD.Web.Controllers
                 orgModel = db.Organizations
                     .Include("Addresses")
                     .Include("IncidentHistory")
-                    .Where(x => x.Id == )
+                    .Where(x => x.Id == orgID)
+                    .FirstOrDefault();
             }
             return View(orgModel);
         }

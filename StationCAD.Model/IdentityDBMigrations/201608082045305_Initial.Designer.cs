@@ -13,7 +13,7 @@ namespace StationCAD.Model.IdentityDBMigrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201608070001201_Initial"; }
+            get { return "201608082045305_Initial"; }
         }
         
         string IMigrationMetadata.Source
