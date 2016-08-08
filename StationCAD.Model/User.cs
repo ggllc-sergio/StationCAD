@@ -18,6 +18,22 @@ namespace StationCAD.Model
         public ApplicationUserStore(DataContexts.IdentityDb context) : base(context) { }
     }
 
+    public class OrgUserRegistration
+    {
+        public Organization Organization { get; set; }
+
+        public List<UserRegistration> Users { get; set; }
+    }
+
+    public class UserRegistration
+    {
+        [EmailAddress]
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string IdentificationNumber { get; set; }
+    }
+
     public class User : IdentityUser<string, UserLogin, UserRole, UserClaim>
     {
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<User> manager)
@@ -49,6 +65,10 @@ namespace StationCAD.Model
 
         [Required(AllowEmptyStrings = false)]
         public string LastName { get; set; }
+
+        public string SecurityQuestion { get; set; }
+
+        public string SecurityAnswer { get; set; }
 
         [EmailAddress]
         public string AccountEmail { get; set; }

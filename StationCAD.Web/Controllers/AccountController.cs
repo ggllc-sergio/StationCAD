@@ -75,6 +75,7 @@ namespace StationCAD.Web.Controllers
             }
 
             // Require the user to have a confirmed email before they can log on.
+
             var user = await UserManager.FindByEmailAsync(model.Email);
             if (user != null)
             {
@@ -163,18 +164,25 @@ namespace StationCAD.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = model.UserName, Email = model.Email };
-                user.Id = Guid.NewGuid().ToString();
+                var user = new User { Id = Guid.NewGuid().ToString(), UserName = model.Email, Email = model.Email };
+
                 DateTime now = DateTime.Now;
-                user.Profile = new UserProfile { FirstName = model.FirstName, LastName = model.LastName, CreateUser = model.UserName, CreateDate = now, LastUpdateUser = model.UserName, LastUpdateDate = now };
+                user.Profile = new UserProfile
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    CreateUser = model.UserName,
+                    CreateDate = now,
+                    LastUpdateUser = model.UserName,
+                    LastUpdateDate = now
+                };
+
                 try
                 {
                     var result = await UserManager.CreateAsync(user, model.Password);
 
                     if (result.Succeeded)
                     {
-                        //await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
-
                         string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                         var callbackUrl = Url.Action("ConfirmEmail", "Account",
                            new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
@@ -282,7 +290,8 @@ namespace StationCAD.Web.Controllers
                 // Don't reveal that the user does not exist
                 return RedirectToAction("ResetPasswordConfirmation", "Account");
             }
-            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            var result = await UserManager.ChangePasswordAsync(user.Id, model.CurrentPassword, model.NewPassword);
+            //var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.NewPassword);
             if (result.Succeeded)
             {
                 return RedirectToAction("ResetPasswordConfirmation", "Account");

@@ -56,6 +56,7 @@ namespace StationCAD.Model.DataContexts
             })
             .HasKey(c => new { c.UserId, c.RoleId });
 
+
             modelBuilder.Entity<User>().Map(c =>
             {
                 c.ToTable("User");
@@ -79,7 +80,6 @@ namespace StationCAD.Model.DataContexts
             modelBuilder.Entity<User>().HasMany(c => c.Logins).WithOptional().HasForeignKey(c => c.UserId);
             modelBuilder.Entity<User>().HasMany(c => c.Claims).WithOptional().HasForeignKey(c => c.UserId);
             modelBuilder.Entity<User>().HasMany(c => c.Roles).WithRequired().HasForeignKey(c => c.UserId);
-            
             modelBuilder.Entity<UserClaim>().Map(c =>
             {
                 c.ToTable("UserClaim");
@@ -233,6 +233,7 @@ namespace StationCAD.Model.DataContexts
 
         public DbSet<Response> Responses { get; set; }
 
+        public DbSet<User> Users { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<UserAddress> UserAddresses { get; set; }
         public DbSet<UserOrganizationAffiliation> UserOrganizationAffiliations { get; set; }
