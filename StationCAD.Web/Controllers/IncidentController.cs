@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using StationCAD.Web.Models;
 using StationCAD.Model;
+using StationCAD.Model.DataContexts;
 
 namespace StationCAD.Web.Controllers
 {
@@ -18,9 +19,22 @@ namespace StationCAD.Web.Controllers
     {
         
         public IncidentController() { }
-        
 
 
-        
+        public async Task<ActionResult> Index(int orgID)
+        {
+            Organization orgModel = new Organization();
+            using (var db = new StationCADDb())
+            {
+                orgModel = db.Organizations
+                    .Include("Addresses")
+                    .Include("IncidentHistory")
+                    .Where(x => x.Id == )
+            }
+            return View(orgModel);
+        }
+
+
+
     }
 }
