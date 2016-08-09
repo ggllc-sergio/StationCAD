@@ -145,11 +145,11 @@ namespace StationCAD.Model.IdentityDBMigrations
                         CreateDate = c.DateTime(nullable: false, precision: 7, storeType: "datetime2"),
                         LastUpdateUser = c.String(nullable: false),
                         LastUpdateDate = c.DateTime(nullable: false, precision: 7, storeType: "datetime2"),
-                        User_Id = c.Int(),
+                        UserProfile_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.UserProfiles", t => t.User_Id)
-                .Index(t => t.User_Id);
+                .ForeignKey("dbo.UserProfiles", t => t.UserProfile_Id)
+                .Index(t => t.UserProfile_Id);
             
             CreateTable(
                 "dbo.UserMobileDeviceOrganizations",
@@ -241,6 +241,7 @@ namespace StationCAD.Model.IdentityDBMigrations
                         OrganizationId = c.Int(nullable: false),
                         CADIdentifier = c.Int(nullable: false),
                         Title = c.String(),
+                        EventType = c.Int(nullable: false),
                         IncidentIdentifier = c.Guid(nullable: false),
                         DispatchedDateTime = c.DateTime(nullable: false, precision: 7, storeType: "datetime2"),
                         ConsoleID = c.String(),
@@ -342,6 +343,27 @@ namespace StationCAD.Model.IdentityDBMigrations
                 .Index(t => t.Incident_Id);
             
             CreateTable(
+                "dbo.OrganizationNotificationRules",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        EventType = c.Int(nullable: false),
+                        EventTypeCode = c.String(),
+                        EventSubTypeCode = c.String(),
+                        CutoffDuration = c.Time(nullable: false, precision: 7),
+                        RuleEnabled = c.Boolean(nullable: false),
+                        EnableNotification = c.Boolean(nullable: false),
+                        CreateUser = c.String(nullable: false),
+                        CreateDate = c.DateTime(nullable: false, precision: 7, storeType: "datetime2"),
+                        LastUpdateUser = c.String(nullable: false),
+                        LastUpdateDate = c.DateTime(nullable: false, precision: 7, storeType: "datetime2"),
+                        Organization_Id = c.Int(),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.Organizations", t => t.Organization_Id)
+                .Index(t => t.Organization_Id);
+            
+            CreateTable(
                 "dbo.OrganizationUserAffiliations",
                 c => new
                     {
@@ -353,16 +375,13 @@ namespace StationCAD.Model.IdentityDBMigrations
                         LastUpdateUser = c.String(nullable: false),
                         LastUpdateDate = c.DateTime(nullable: false, precision: 7, storeType: "datetime2"),
                         CurrentOrganization_Id = c.Int(),
-                        CurrentUser_Id = c.String(maxLength: 128),
-                        UserProfile_Id = c.Int(),
+                        CurrentUserProfile_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.Organizations", t => t.CurrentOrganization_Id)
-                .ForeignKey("dbo.User", t => t.CurrentUser_Id)
-                .ForeignKey("dbo.UserProfiles", t => t.UserProfile_Id)
+                .ForeignKey("dbo.UserProfiles", t => t.CurrentUserProfile_Id)
                 .Index(t => t.CurrentOrganization_Id)
-                .Index(t => t.CurrentUser_Id)
-                .Index(t => t.UserProfile_Id);
+                .Index(t => t.CurrentUserProfile_Id);
             
             CreateTable(
                 "dbo.OrganizationUserNotifications",
@@ -389,12 +408,13 @@ namespace StationCAD.Model.IdentityDBMigrations
         {
             DropForeignKey("dbo.UserRole", "UserId", "dbo.User");
             DropForeignKey("dbo.UserProfiles", "SecurityUser_Id", "dbo.User");
-            DropForeignKey("dbo.OrganizationUserAffiliations", "UserProfile_Id", "dbo.UserProfiles");
             DropForeignKey("dbo.OrganizationUserNotifications", "Affilitation_Id", "dbo.OrganizationUserAffiliations");
-            DropForeignKey("dbo.OrganizationUserAffiliations", "CurrentUser_Id", "dbo.User");
+            DropForeignKey("dbo.OrganizationUserAffiliations", "CurrentUserProfile_Id", "dbo.UserProfiles");
             DropForeignKey("dbo.OrganizationUserAffiliations", "CurrentOrganization_Id", "dbo.Organizations");
+            DropForeignKey("dbo.UserMobileDevices", "UserProfile_Id", "dbo.UserProfiles");
             DropForeignKey("dbo.UserMobileDeviceOrganizations", "UserDevice_Id", "dbo.UserMobileDevices");
             DropForeignKey("dbo.UserMobileDeviceOrganizations", "Organization_Id", "dbo.Organizations");
+            DropForeignKey("dbo.OrganizationNotificationRules", "Organization_Id", "dbo.Organizations");
             DropForeignKey("dbo.Organizations", "MailingAddress_Id", "dbo.OrganizationAddresses");
             DropForeignKey("dbo.IncidentUnits", "Incident_Id", "dbo.Incidents");
             DropForeignKey("dbo.Incidents", "OrganizationId", "dbo.Organizations");
@@ -403,15 +423,14 @@ namespace StationCAD.Model.IdentityDBMigrations
             DropForeignKey("dbo.Organizations", "BillingAddress_Id", "dbo.OrganizationAddresses");
             DropForeignKey("dbo.OrganizationAddresses", "Organization_Id1", "dbo.Organizations");
             DropForeignKey("dbo.OrganizationAddresses", "Organization_Id", "dbo.Organizations");
-            DropForeignKey("dbo.UserMobileDevices", "User_Id", "dbo.UserProfiles");
             DropForeignKey("dbo.UserAddresses", "User_Id", "dbo.UserProfiles");
             DropForeignKey("dbo.UserLogin", "UserId", "dbo.User");
             DropForeignKey("dbo.UserClaim", "UserId", "dbo.User");
             DropForeignKey("dbo.UserRole", "RoleId", "dbo.Role");
             DropIndex("dbo.OrganizationUserNotifications", new[] { "Affilitation_Id" });
-            DropIndex("dbo.OrganizationUserAffiliations", new[] { "UserProfile_Id" });
-            DropIndex("dbo.OrganizationUserAffiliations", new[] { "CurrentUser_Id" });
+            DropIndex("dbo.OrganizationUserAffiliations", new[] { "CurrentUserProfile_Id" });
             DropIndex("dbo.OrganizationUserAffiliations", new[] { "CurrentOrganization_Id" });
+            DropIndex("dbo.OrganizationNotificationRules", new[] { "Organization_Id" });
             DropIndex("dbo.IncidentUnits", new[] { "Incident_Id" });
             DropIndex("dbo.IncidentNotes", new[] { "Incident_Id" });
             DropIndex("dbo.IncidentAddresses", new[] { "Incident_Id" });
@@ -422,7 +441,7 @@ namespace StationCAD.Model.IdentityDBMigrations
             DropIndex("dbo.Organizations", new[] { "BillingAddress_Id" });
             DropIndex("dbo.UserMobileDeviceOrganizations", new[] { "UserDevice_Id" });
             DropIndex("dbo.UserMobileDeviceOrganizations", new[] { "Organization_Id" });
-            DropIndex("dbo.UserMobileDevices", new[] { "User_Id" });
+            DropIndex("dbo.UserMobileDevices", new[] { "UserProfile_Id" });
             DropIndex("dbo.UserAddresses", new[] { "User_Id" });
             DropIndex("dbo.UserProfiles", new[] { "SecurityUser_Id" });
             DropIndex("dbo.UserLogin", new[] { "UserId" });
@@ -431,6 +450,7 @@ namespace StationCAD.Model.IdentityDBMigrations
             DropIndex("dbo.UserRole", new[] { "UserId" });
             DropTable("dbo.OrganizationUserNotifications");
             DropTable("dbo.OrganizationUserAffiliations");
+            DropTable("dbo.OrganizationNotificationRules");
             DropTable("dbo.IncidentUnits");
             DropTable("dbo.IncidentNotes");
             DropTable("dbo.IncidentAddresses");

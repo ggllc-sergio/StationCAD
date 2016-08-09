@@ -58,14 +58,33 @@ namespace StationCAD.Processor
                     if (incident.Id == 0)
                         db.Incidents.Add(incident);
                 
-                    db.SaveChanges();             
-
-                    // Create Notifications
-                    // 1. Get list of users by org affiliation
-                    List<OrganizationUserNotification> notifications = NotificationManager.CreateNotifications(incident);
-                    // Task Parallel Library - Send notifications
-                    NotificationManager.NotifyUsers(ref notifications);
                     db.SaveChanges();
+
+                    // Check the Notification Rule to see if we need to send notifications...
+                    bool sendNotifications = true;
+                    if (organization.NotificationRules != null)
+                    {
+                        List<OrganizationNotificationRule> rules = organization.NotificationRules
+                            .Where(x => x.EventType == incident.EventType && x.RuleEnabled == true)
+                            .ToList<OrganizationNotificationRule>();
+                        if (rules != null && rules.Count > 0)
+                        {
+                            sendNotifications = rules.Where
+                                (
+                                    x => (x.EventTypeCode != null && x.EventTypeCode == incident.FinalIncidentTypeCode)
+                                    && (x.EventSubTypeCode != null && x.EventSubTypeCode == incident.FinalIncidentSubTypeCode)
+                                ).Count() == 0;
+                        }
+                    }
+                    if (sendNotifications)
+                    {
+                        // Create Notifications
+                        // 1. Get list of users by org affiliation
+                        List<OrganizationUserNotification> notifications = NotificationManager.CreateNotifications(incident);
+                        // Task Parallel Library - Send notifications
+                        NotificationManager.NotifyUsers(ref notifications);
+                        db.SaveChanges();
+                    }
                     return dispEvent;
                 }
                 catch(Exception ex)
@@ -386,6 +405,7 @@ namespace StationCAD.Processor
         protected void PopulateIncidentFromChesCoEvent(ChesCoPAEventMessage eventMessage, ref Incident incident)
         {
             incident.Title = eventMessage.Title;
+            incident.EventType = eventMessage.ReportType;
             incident.LocalIncidentID = eventMessage.Event;
             incident.LocalBoxArea = eventMessage.ESZ;
             // Times

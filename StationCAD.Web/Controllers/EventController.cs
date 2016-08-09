@@ -51,7 +51,9 @@ namespace StationCAD.Web.Controllers
                 using (var db = new StationCADDb())
                 {
                     string tag = recipientParts[0];
-                    org = db.Organizations.Where(x => x.Tag == tag).FirstOrDefault();
+                    org = db.Organizations
+                        .Include("NotificationRules")
+                        .Where(x => x.Tag == tag).FirstOrDefault();
                     if (org == null)
                         throw new InvalidProgramException(string.Format("Invalid Organization tag: {0}", tag));
                 }

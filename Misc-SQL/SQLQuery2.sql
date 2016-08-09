@@ -1,3 +1,3 @@
 ﻿select	*
 --from	OrganizationUserNotifcations
-from	OrganizationUserAffiliations
+from	[dbo].[OrganizationUserNotifications]

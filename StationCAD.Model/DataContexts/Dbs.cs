@@ -244,6 +244,7 @@ namespace StationCAD.Model.DataContexts
         public DbSet<OrganizationUserNotification> OrganizationUserNotifcations { get; set; }
 
         public DbSet<Organization> Organizations { get; set; }
+        public DbSet<OrganizationNotificationRule> OrganizationNotificationRules { get; set; }
         public DbSet<OrganizationAddress> OrganizationAddresses { get; set; }
 
         public override int SaveChanges()

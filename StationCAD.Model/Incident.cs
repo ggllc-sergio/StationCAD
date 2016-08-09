@@ -36,8 +36,10 @@ namespace StationCAD.Model
         /// The Identifier specific to the CAD system that delivered it.
         /// </summary>
         public int CADIdentifier { get; set; }
-        
+
         public string Title { get; set; }
+
+        public ReportType EventType { get; set; }
 
         public Guid IncidentIdentifier { get; set; }
 

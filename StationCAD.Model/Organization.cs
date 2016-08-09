@@ -1,7 +1,10 @@
 ﻿
+
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
+using System;
+using System.Web;
 
 namespace StationCAD.Model
 {
@@ -31,6 +34,8 @@ namespace StationCAD.Model
 
         public virtual ICollection<OrganizationAddress> Addresses { get; set; }
         
+        public virtual ICollection<OrganizationNotificationRule> NotificationRules { get; set; }
+
         [JsonIgnore]
         public virtual ICollection<Incident> IncidentHistory { get; set; }
         
@@ -45,6 +50,47 @@ namespace StationCAD.Model
         public bool BillingAddress { get; set; }
     }
 
+    public class OrganizationNotificationRule : BaseModel
+    {
+        [JsonIgnore]
+        public virtual Organization Organization { get; set; }
+
+        public ReportType EventType { get; set; }
+
+        public string EventTypeCode { get; set; }
+
+        public string EventSubTypeCode { get; set; }
+
+        public TimeSpan CutoffDuration { get; set; }
+
+        public bool RuleEnabled { get; set; }
+
+        public bool EnableNotification { get; set; }
+    }
+
+    public class OrganizationUserRegistrationUpload
+    {
+        public virtual Organization Organization { get; set; }
+
+        [Required(ErrorMessage = "* ")]
+        public HttpPostedFileBase File { get; set; }
+
+        public string FileName
+        {
+            get
+            {
+                if (File != null)
+                    return File.FileName;
+                else
+                    return string.Empty;
+            }
+        }
+
+        public int UserCount { get; set; }
+
+        public int ProcessedCount { get; set; }
+
+    }
     public enum OrganizationType
     {
         Fire=1,
