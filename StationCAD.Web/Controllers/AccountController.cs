@@ -81,8 +81,9 @@ namespace StationCAD.Web.Controllers
             {
                 if (!await UserManager.IsEmailConfirmedAsync(user.Id))
                 {
-                    ViewBag.errorMessage = "You must have a confirmed email to log on.";
-                    return View("Error");
+                    var callback = Url.Action("ResendConfirmEmail", "Account", new { userId = user.Id }, protocol: Request.Url.Scheme);
+                    ViewBag.callBack = callback;
+                    return View("ResendConfirmEmail");
                 }
             }
 
@@ -183,13 +184,8 @@ namespace StationCAD.Web.Controllers
 
                     if (result.Succeeded)
                     {
-                        string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                        var callbackUrl = Url.Action("ConfirmEmail", "Account",
-                           new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                        await UserManager.SendEmailAsync(user.Id,
-                           "Confirm your account", "Please confirm your account by clicking <a href=\""
-                           + callbackUrl + "\">here</a>");
-
+                        await SendConfirmationEmail(user);
+                        Url.Action("ConfirmEmail", "Account");
                         ViewBag.Message = "Check your email and confirm your account, you must be confirmed "
                                         + "before you can log in.";
 
@@ -206,6 +202,21 @@ namespace StationCAD.Web.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+
+        [AllowAnonymous]
+        public async Task<ActionResult> ResendConfirmEmail(string userId)
+        {
+            var user = await UserManager.FindByIdAsync(userId);
+
+            if (user != null)
+            {
+                await SendConfirmationEmail(user);
+                Url.Action("ConfirmEmail", "Account");
+            }
+            ViewBag.Message = "We have resent your confirmation email.  Check your email and confirm your account.";
+            return View("Info");
         }
 
         //
@@ -516,6 +527,17 @@ namespace StationCAD.Web.Controllers
                 }
                 context.HttpContext.GetOwinContext().Authentication.Challenge(properties, LoginProvider);
             }
+        }
+
+        private async Task SendConfirmationEmail(User user)
+        {
+            string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account",
+               new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+            await UserManager.SendEmailAsync(user.Id,
+               "Confirm your account", "Please confirm your account by clicking <a href=\""
+               + callbackUrl + "\">here</a>");
+            
         }
         #endregion
     }
