@@ -263,6 +263,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Business\EmailService.cs" />
+    <Compile Include="Business\FileService.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
@@ -398,6 +399,7 @@
     <Content Include="Views\Shared\Info.cshtml" />
     <Content Include="Views\Organization\Index.cshtml" />
     <Content Include="Views\Account\ResendConfirmEmail.cshtml" />
+    <Content Include="Views\Organization\UploadWidget.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Base\" />

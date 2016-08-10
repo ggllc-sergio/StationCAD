@@ -1,0 +1,25 @@
+﻿@using StationCAD.Model
+@model OrganizationUserRegistrationUpload
+<div>
+    using (Html.BeginForm("new", "batch", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+    <p>
+        <label class="admin-label" for="file">@Html.ValidationMessageFor(model => model.File) Select a File</label>
+        @Html.TextBoxFor(model => model.File, new { type = "file", accept = ".csv" })
+    </p>
+    <p>
+        <label class="admin-label"></label>
+        <input type="submit" value="Upload" class="button" id="btnWidgetUpload" />
+    </p>
+    if (Model != null && !string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+    <p class="error">
+        <label>@Model.ErrorMessage</label>
+    </p>
+    }
+    <p class="sample">
+        <a href="~/Resources/sample.csv" title="Download a sample file"><img src="~/ui/images/icon_excel_25X25.png" alt="" /></a>
+        <a href="~/Resources/sample.csv">Download a sample file</a>
+    </p>
+    }
+</div>

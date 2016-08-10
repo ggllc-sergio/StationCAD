@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using StationCAD.Web.Models;
+using StationCAD.Web.Business;
 using StationCAD.Model;
 using StationCAD.Model.DataContexts;
 
@@ -47,8 +47,19 @@ namespace StationCAD.Web.Controllers
             return View();
         }
 
+        public async Task<ActionResult> UploadUsers(OrganizationUserRegistrationUpload orgUserReg)
+        {
 
-        private async Task<ICollection<UserRegistration>> ImportUsers(OrgUserRegistration orgUserReg)
+            List<UserRegistration> userErrors = new List<UserRegistration>();
+            OrgUserRegistration orgReg = new OrgUserRegistration();
+            orgReg.Organization = new Organization();
+            orgReg.Users = FileService.ParseFileStream(orgUserReg.File.InputStream);
+            userErrors = await ImportUsers(orgUserReg);
+
+            return View(userErrors);
+        }
+
+        private async Task<List<UserRegistration>> ImportUsers(OrgUserRegistration orgUserReg)
         {
             List<UserRegistration> userErrors = new List<UserRegistration>();
             using (var db = new StationCADDb())
