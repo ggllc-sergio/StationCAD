@@ -172,9 +172,9 @@ namespace StationCAD.Web.Controllers
                 {
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-                    CreateUser = model.UserName,
+                    CreateUser = model.Email,
                     CreateDate = now,
-                    LastUpdateUser = model.UserName,
+                    LastUpdateUser = model.Email,
                     LastUpdateDate = now
                 };
 
@@ -196,7 +196,9 @@ namespace StationCAD.Web.Controllers
                 }
                 catch(Exception ex)
                 {
-                    ex.ToString();
+
+                    string errMsg = string.Format("An error occurred in AccountController.Register(RegisterViewModel model). User:{0}; Exception: {0}", model.Email, ex.Message);
+                    base.LogException(errMsg, ex);
                 }
             }
 

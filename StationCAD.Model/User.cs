@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace StationCAD.Model
@@ -62,28 +63,38 @@ namespace StationCAD.Model
         public virtual User SecurityUser { get; set; }
 
         [Required(AllowEmptyStrings = false)]
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
 
         [Required(AllowEmptyStrings = false)]
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
+        [Display(Name = "Security Question")]
         public string SecurityQuestion { get; set; }
 
+        [Display(Name = "Security Answer")]
         public string SecurityAnswer { get; set; }
 
         [EmailAddress]
+        [Display(Name = "Account Email")]
         public string AccountEmail { get; set; }
 
+        [Display(Name = "ID Number")]
         public string IdentificationNumber { get; set; }
 
         [EmailAddress]
+        [Display(Name = "Notification Email")]
         public string NotificationEmail { get; set; }
 
         [Phone]
+        [Display(Name = "Notification Phone")]
         public string NotificationCellPhone { get; set; }
 
+        [Display(Name = "Notification Push")]
         public string NotifcationPushMobile { get; set; }
 
+        [Display(Name = "Notification Browser")]
         public string NotifcationPushBrowser { get; set; }
 
         public ICollection<string> MobileDeviceIds { get; set; }
@@ -100,6 +111,34 @@ namespace StationCAD.Model
     public class UserAddress : Address
     {
         public virtual UserProfile User { get; set; }
+
+        public string  DisplayFormat
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                // 123 Main St
+                sb.AppendFormat("{1}{2}{0}", Environment.NewLine,
+                                    this.Number.Length > 0 ? this.Number : string.Empty,
+                                    this.Street.Length > 0 ? this.Street : string.Empty);
+                // Apt 101C
+                if (this.Apartment.Length > 0)
+                    sb.AppendFormat("Apt. {1}{0}", Environment.NewLine, this.Apartment);
+                // Building 201
+                if (this.Building.Length > 0)
+                    sb.AppendFormat("Bldg. {1}{0}", Environment.NewLine, this.Building);
+                // Hideaway Farms Development
+                if (this.Development.Length > 0)
+                    sb.AppendFormat("{1}{0}", Environment.NewLine, this.Development);
+                // Downingtown, PA 19335 (East Brandywine Twp)
+                sb.AppendFormat("{1}{2}{3}{4}{0}", Environment.NewLine,
+                                    this.City.Length > 0 ? this.City + ", " : string.Empty,
+                                    this.State.Length > 0 ? this.State + " " : string.Empty,
+                                    this.PostalCode.Length > 0 ? this.PostalCode + " " : string.Empty,
+                                    this.Municipality.Length > 0 ? "(" + this.Municipality +")" : string.Empty);
+                return sb.ToString();
+            }
+        }
     }
 
     public class OrganizationUserAffiliation : BaseModel

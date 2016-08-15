@@ -27,6 +27,8 @@ namespace StationCAD.Model
 
         public string Building { get; set; }
 
+        public string Apartment { get; set; }
+
         public string Development { get; set; }
 
         public string OccupantName { get; set; }
@@ -47,6 +49,7 @@ namespace StationCAD.Model
 
         public string State { get; set; }
 
+        [Display(Name = "Postal Code")]
         public string PostalCode { get; set; }
 
         public decimal XCoordinate { get; set; }

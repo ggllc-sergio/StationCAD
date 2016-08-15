@@ -51,7 +51,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.3.6\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.3.7\lib\net45\NLog.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -74,6 +74,10 @@
     <Compile Include="IdentityDBMigrations\201608092028210_Initial.cs" />
     <Compile Include="IdentityDBMigrations\201608092028210_Initial.Designer.cs">
       <DependentUpon>201608092028210_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IdentityDBMigrations\201608121818072_Address_Apartment.cs" />
+    <Compile Include="IdentityDBMigrations\201608121818072_Address_Apartment.Designer.cs">
+      <DependentUpon>201608121818072_Address_Apartment.cs</DependentUpon>
     </Compile>
     <Compile Include="IdentityDBMigrations\Configuration.cs" />
     <Compile Include="Notifications\Clickatell\SMSNotification.cs" />
@@ -112,6 +116,9 @@
   <ItemGroup>
     <EmbeddedResource Include="IdentityDBMigrations\201608092028210_Initial.resx">
       <DependentUpon>201608092028210_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="IdentityDBMigrations\201608121818072_Address_Apartment.resx">
+      <DependentUpon>201608121818072_Address_Apartment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="StationCADDbMigrations\201608070001383_Initial.resx">
       <DependentUpon>201608070001383_Initial.cs</DependentUpon>

@@ -65,9 +65,6 @@ namespace StationCAD.Web.Models
     public class RegisterViewModel
     {
         [Required]
-        [Display(Name = "User Name")]
-        public string UserName { get; set; }
-        [Required]
         [Display(Name = "First Name")]
         public string FirstName { get; set; }
         [Required]

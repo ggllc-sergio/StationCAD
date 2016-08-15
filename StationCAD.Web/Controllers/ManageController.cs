@@ -6,6 +6,8 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using StationCAD.Model;
+using StationCAD.Model.DataContexts;
 using StationCAD.Web.Models;
 
 namespace StationCAD.Web.Controllers
@@ -64,15 +66,92 @@ namespace StationCAD.Web.Controllers
                 : "";
 
             var userId = User.Identity.GetUserId();
-            var model = new IndexViewModel
+            User user = null;
+            using (var db = new StationCADDb())
             {
-                HasPassword = HasPassword(),
-                PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
-                TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
-                Logins = await UserManager.GetLoginsAsync(userId),
-                BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId)
-            };
+                 user = db.Users.Include("Profile").Where(x => x.Id == userId).FirstOrDefault();
+            }
+            if (User == null)
+            { throw new ApplicationException(string.Format("No user data. User ID: {0}", userId)); }
+            var model = new IndexViewModel(user);
+            model.HasPassword = HasPassword();
+            model.PhoneNumber = await UserManager.GetPhoneNumberAsync(userId);
+            model.TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId);
+            model.Logins = await UserManager.GetLoginsAsync(userId);
+            model.BrowserRemembered = await AuthenticationManager.TwoFactorBrowserRememberedAsync(userId);
             return View(model);
+        }
+        
+
+        public ActionResult Edit()
+        {
+
+            EditViewModel model = null;
+            try
+            {
+                string id = User.Identity.GetUserId();
+                using (var db = new StationCADDb())
+                {
+                    var user = db.Users.Include("Profile").Where(x => x.Id == id).FirstOrDefault();
+                    if (user != null)
+                        model = new Models.EditViewModel(user);
+                }
+            }
+            catch(Exception ex)
+            {
+                string msg = string.Format("An error occured in ManageController.Edit(string id). Message: {0}", ex.Message);
+                LogException(msg, ex);
+                return View("Error");
+            }
+            if (model == null)
+            {
+                ViewBag.errorMessage = "Unable to find user data.";
+                // Log them out for safety...
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            { return View(model); }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Update(EditViewModel model)
+        {
+            try
+            {
+                string id = User.Identity.GetUserId();
+                using (var db = new StationCADDb())
+                {
+                    User usrUpdate = db.Users.Include("Profile").Where(x => x.Id == id).FirstOrDefault();
+                    usrUpdate.Profile.FirstName = model.FirstName;
+                    usrUpdate.Profile.LastName = model.LastName;
+                    usrUpdate.Profile.SecurityQuestion = model.SecurityQuestion;
+                    usrUpdate.Profile.SecurityAnswer = model.SecurityAnswer;
+                    usrUpdate.Profile.AccountEmail = model.AccountEmail;
+                    usrUpdate.Profile.IdentificationNumber = model.IdentificationNumber;
+                    usrUpdate.Profile.NotificationEmail = model.NotificationEmail;
+                    usrUpdate.Profile.NotificationCellPhone = model.NotificationCellPhone;
+                    usrUpdate.Profile.NotifcationPushMobile = model.NotifcationPushMobile;
+                    usrUpdate.Profile.NotifcationPushBrowser = model.NotifcationPushBrowser;
+                    await db.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = string.Format("An error occured in ManageController.Update(EditViewModel model). Message: {0}", ex.Message);
+                LogException(msg, ex);
+                return View("Error");
+            }
+            if (model == null)
+            {
+                ViewBag.errorMessage = "Unable to find user data.";
+                // Log them out for safety...
+                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                return RedirectToAction("Index", "Home");
+            }
+            else
+            { return View(model); }
         }
 
         //
