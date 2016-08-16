@@ -25,6 +25,8 @@ namespace StationCAD.Web.Models
 
     public class EditViewModel
     {
+        public EditViewModel() { }
+
         public EditViewModel(User userInfo)
         {
             _userInfo = userInfo.Profile;

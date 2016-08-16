@@ -54,7 +54,7 @@ namespace StationCAD.Web.Controllers
             OrgUserRegistration orgReg = new OrgUserRegistration();
             orgReg.Organization = new Organization();
             orgReg.Users = FileService.ParseFileStream(orgUserReg.File.InputStream);
-            userErrors = await ImportUsers(orgUserReg);
+            userErrors = await ImportUsers(orgReg);
 
             return View(userErrors);
         }

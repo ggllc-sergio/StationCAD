@@ -113,6 +113,7 @@ namespace StationCAD.Web.Controllers
             else
             { return View(model); }
         }
+        
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -143,15 +144,7 @@ namespace StationCAD.Web.Controllers
                 LogException(msg, ex);
                 return View("Error");
             }
-            if (model == null)
-            {
-                ViewBag.errorMessage = "Unable to find user data.";
-                // Log them out for safety...
-                AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                return RedirectToAction("Index", "Home");
-            }
-            else
-            { return View(model); }
+            return RedirectToAction("index");
         }
 
         //
