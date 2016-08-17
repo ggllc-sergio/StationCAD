@@ -6,7 +6,13 @@
     <title>@ViewBag.Title - StationCAD</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Styles.Render("~/Content/kendo/css")
+    <link href="@Url.Content("~/content/less/site.css")" rel="stylesheet" type="text/css" />
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/kendo")
 
+    <script type="text/javascript" src="~/Scripts/mailgun_validator.js" ></script>
+    <script type="text/javascript" src="~/Content/js/events.js" ></script>
     <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async></script>
     <script>
         var OneSignal = OneSignal || [];
@@ -67,7 +73,6 @@
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>

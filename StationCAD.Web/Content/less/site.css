@@ -35,3 +35,9 @@ div.section-header a.edit-action {
   float: right;
   padding: 5px;
 }
+div.row {
+  padding: 5px;
+}
+div.row input.k-textbox {
+  width: 50%;
+}

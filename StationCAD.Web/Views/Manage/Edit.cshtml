@@ -19,15 +19,23 @@
                 <hr />
                 @Html.ValidationSummary("", new { @class = "text-danger" })
                 <div class="form-group">
-                    @Html.LabelFor(m => m.FirstName, new { @class = "col-md-2 control-label" })
-                    @Html.TextBoxFor(m => m.FirstName, new { @class = "col-md-10 form-control" })
-                    @Html.LabelFor(m => m.LastName, new { @class = "col-md-2 control-label" })
-                    @Html.TextBoxFor(m => m.LastName, new { @class = "col-md-10 form-control" })
-                    @Html.LabelFor(m => m.AccountEmail, new { @class = "col-md-2 control-label" })
-                    @Html.TextBoxFor(m => m.AccountEmail, new { @class = "col-md-10 form-control" })
-                    @Html.LabelFor(m => m.IdentificationNumber, new { @class = "col-md-2 control-label" })
-                    @Html.TextBoxFor(m => m.IdentificationNumber, new { @class = "col-md-10 form-control" })    
-                    
+                    <div class="row">
+                        @Html.LabelFor(m => m.FirstName, new { @class = "col-md-3 control-label" })
+                        @Html.Kendo().TextBoxFor(m => m.FirstName).HtmlAttributes(new { @class = "edit-textbox" })
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(m => m.LastName, new { @class = "col-md-3 control-label" })
+                        @Html.Kendo().TextBoxFor(m => m.LastName).HtmlAttributes(new { @class = "edit-textbox" })
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(m => m.AccountEmail, new { @class = "col-md-3 control-label" })
+                        @Html.Kendo().TextBoxFor(m => m.AccountEmail).HtmlAttributes(new { @class = "edit-textbox", @group = "email" })
+                        <div id="status"></div>
+                    </div>
+                    <div class="row">
+                        @Html.LabelFor(m => m.IdentificationNumber, new { @class = "col-md-3 control-label" })
+                        @Html.Kendo().TextBoxFor(m => m.IdentificationNumber).HtmlAttributes(new { @class = "edit-textbox" })
+                    </div>
                 </div>
             </article>
             <hr />
@@ -37,21 +45,21 @@
                 </div>
                 <hr />
                 <div class="form-group">
-                    @Html.LabelFor(m => m.NotificationEmail, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.NotificationEmail, new { @class = "form-control" })
+                    <div class="row">
+                        @Html.LabelFor(m => m.NotificationEmail, new { @class = "col-md-3 control-label" })
+                        @Html.Kendo().TextBoxFor(m => m.NotificationEmail).HtmlAttributes(new { @class = "edit-textbox", @group = "email" })
                     </div>
-                    @Html.LabelFor(m => m.NotificationCellPhone, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.NotificationCellPhone, new { @class = "form-control" })
+                    <div class="row">
+                        @Html.LabelFor(m => m.NotificationCellPhone, new { @class = "col-md-3 control-label" })
+                        @Html.Kendo().MaskedTextBoxFor(m => m.NotificationCellPhone).Mask("(000) 000-0000").HtmlAttributes(new { @class = "edit -textbox" })
                     </div>
-                    @Html.LabelFor(m => m.NotifcationPushMobile, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.NotifcationPushMobile, new { @class = "form-control" })
+                    <div class="row">
+                        @Html.LabelFor(m => m.NotifcationPushMobile, new { @class = "col-md-3 control-label" })
+                        @Html.Kendo().TextBoxFor(m => m.NotifcationPushMobile).HtmlAttributes(new { @class = "edit-textbox" })
                     </div>
-                    @Html.LabelFor(m => m.NotifcationPushBrowser, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.NotifcationPushBrowser, new { @class = "form-control" })
+                    <div class="row">
+                        @Html.LabelFor(m => m.NotifcationPushBrowser, new { @class = "col-md-3 control-label" })
+                        @Html.Kendo().TextBoxFor(m => m.NotifcationPushBrowser).HtmlAttributes(new { @class = "edit-textbox" })
                     </div>
                 </div>
             </article>
@@ -65,3 +73,19 @@
 
     </div>
 </div>
+
+<script>
+
+    // document ready
+    $(document).ready(function () {
+
+        // attach jquery plugin to validate address
+        $("input[group='email']").mailgun_validator({
+            api_key: 'pubkey-98eda3cdea4b3bf74327832f679f6690',
+            in_progress: validation_in_progress,
+            success: validation_success,
+            error: validation_error,
+        });
+
+    });
+</script>

@@ -1,16 +1,4 @@
 ﻿
-// document ready
-$(document).ready( function () {
-        
-    // attach jquery plugin to validate address
-    $("input[group='email']").mailgun_validator({
-        api_key: 'pubkey-98eda3cdea4b3bf74327832f679f6690',
-        in_progress: validation_in_progress,
-        success: validation_success,
-        error: validation_error,
-    });
-
-});
 
 
 
